@@ -4,13 +4,13 @@
 	[
 
 		{
-			"name": "trading_python",
+			"name": "python",
 
 			"cmd":
 
 			[
 
-				"C:\\Anaconda3\\envs\\trading\\python.exe",
+				"C:\\Anaconda3\\envs\\finance\\python.exe",
 
 				"-u",
 
@@ -24,7 +24,7 @@
 
 			{
 
-				"PYTHONPATH": "C:\\Users\\Pedro\\Dropbox\\repository\\projects\\finance.git"
+				"PYTHONPATH": "C:\\Users\\Pedro\\Dropbox\\repository\\projects\\finances.git"
 
 			},
 
@@ -43,7 +43,7 @@
 
 					[
 
-						"C:\\Anaconda3\\envs\\trading27\\python.exe",
+						"C:\\Anaconda3\\envs\\finance27\\python.exe",
 
 						"-u",
 
@@ -62,48 +62,17 @@
 					"cmd":
 
 					[
-
 						"start",
-
-						"C:\\Users\\Pedro\\Dropbox\\repository\\projects\\finance.git",
-
+						"C:\\Users\\Pedro\\Dropbox\\repository\\projects\\finances.git",
 						"cmd",
-
 						"/k",
-
-						"C:\\Anaconda3\\envs\\trading\\Scripts\\jupyter",
-
+						"C:\\Anaconda3\\envs\\finance\\Scripts\\jupyter",
 						"notebook"
-
 					],
 
 					"name": "start ipython 3.5"
 
 				},
-
-				{
-
-					"cmd":
-
-					[
-
-						"start",
-
-						"C:\\Users\\Pedro\\Dropbox\\repository\\projects\\finance.git",
-
-						"cmd",
-
-						"/k",
-
-						"C:\\Anaconda3\\envs\\trading27\\Scripts\\jupyter",
-
-						"notebook"
-
-					],
-
-					"name": "start ipython 2.7"
-
-				}
 
 			]
 		}
@@ -113,7 +82,7 @@
     "folders":
     [
         {
-            "path": "C:\\Users\\Pedro\\Dropbox\\repository\\projects\\finance.git"
+            "path": "C:\\Users\\Pedro\\Dropbox\\repository\\projects\\finances.git"
         }
     ],
 }
