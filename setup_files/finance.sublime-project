@@ -1,0 +1,119 @@
+{
+		"build_systems":
+
+	[
+
+		{
+			"name": "trading_python",
+
+			"cmd":
+
+			[
+
+				"C:\\Anaconda3\\envs\\trading\\python.exe",
+
+				"-u",
+
+				"$file",
+
+				"${file/\\.py/}"
+
+			],
+
+			"env":
+
+			{
+
+				"PYTHONPATH": "C:\\Users\\Pedro\\Dropbox\\repository\\projects\\finance.git"
+
+			},
+
+			"selector": "source.python",
+
+			"shell": true,
+			
+
+			"variants":
+
+			[
+
+				{
+
+                    "cmd":
+
+					[
+
+						"C:\\Anaconda3\\envs\\trading27\\python.exe",
+
+						"-u",
+
+						"$file",
+
+						"${file/\\.py/}"
+
+					],
+
+                    "name": "pyalgotrade: 2.7"
+
+                },
+
+				{
+
+					"cmd":
+
+					[
+
+						"start",
+
+						"C:\\Users\\Pedro\\Dropbox\\repository\\projects\\finance.git",
+
+						"cmd",
+
+						"/k",
+
+						"C:\\Anaconda3\\envs\\trading\\Scripts\\jupyter",
+
+						"notebook"
+
+					],
+
+					"name": "start ipython 3.5"
+
+				},
+
+				{
+
+					"cmd":
+
+					[
+
+						"start",
+
+						"C:\\Users\\Pedro\\Dropbox\\repository\\projects\\finance.git",
+
+						"cmd",
+
+						"/k",
+
+						"C:\\Anaconda3\\envs\\trading27\\Scripts\\jupyter",
+
+						"notebook"
+
+					],
+
+					"name": "start ipython 2.7"
+
+				}
+
+			]
+		}
+	],
+
+
+    "folders":
+    [
+        {
+            "path": "C:\\Users\\Pedro\\Dropbox\\repository\\projects\\finance.git"
+        }
+    ],
+}
