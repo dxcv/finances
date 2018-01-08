@@ -1,66 +1,35 @@
 {
-		"build_systems":
-
+	"build_systems":
 	[
-
 		{
-			"name": "python",
-
 			"cmd":
-
 			[
-
 				"C:\\Anaconda3\\envs\\finance\\python.exe",
-
 				"-u",
-
 				"$file",
-
 				"${file/\\.py/}"
-
 			],
-
 			"env":
-
 			{
-
 				"PYTHONPATH": "C:\\Users\\Pedro\\Dropbox\\repository\\projects\\finances.git"
-
 			},
-
+			"name": "python",
 			"selector": "source.python",
-
 			"shell": true,
-			
-
 			"variants":
-
 			[
-
 				{
-
-                    "cmd":
-
-					[
-
-						"C:\\Anaconda3\\envs\\finance27\\python.exe",
-
-						"-u",
-
-						"$file",
-
-						"${file/\\.py/}"
-
-					],
-
-                    "name": "pyalgotrade: 2.7"
-
-                },
-
-				{
-
 					"cmd":
-
+					[
+						"C:\\Anaconda3\\envs\\finance27\\python.exe",
+						"-u",
+						"$file",
+						"${file/\\.py/}"
+					],
+					"name": "pyalgotrade: 2.7"
+				},
+				{
+					"cmd":
 					[
 						"start",
 						"C:\\Users\\Pedro\\Dropbox\\repository\\projects\\finances.git",
@@ -69,20 +38,25 @@
 						"C:\\Anaconda3\\envs\\finance\\Scripts\\jupyter",
 						"notebook"
 					],
-
 					"name": "start ipython 3.5"
-
-				},
-
+				}
 			]
+		},
+		{
+			"file_regex": "^[ ]*File \"(...*?)\", line ([0-9]*)",
+			"name": "Anaconda Python Builder",
+			"selector": "source.python",
+			"shell_cmd": "\"python\" -u \"$file\""
 		}
 	],
+	"folders":
+	[
+		{
+			"path": "C:\\Users\\Pedro\\Dropbox\\repository\\projects\\finances.git"
+		},
+		{
 
-
-    "folders":
-    [
-        {
-            "path": "C:\\Users\\Pedro\\Dropbox\\repository\\projects\\finances.git"
-        }
-    ],
+			"path": "C:\\Anaconda3\\envs\\finance\\Lib\\site-packages\\pyfolio"
+		},
+	]
 }
