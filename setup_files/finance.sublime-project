@@ -11,7 +11,7 @@
 			],
 			"env":
 			{
-				"PYTHONPATH": "C:\\Users\\Pedro\\Dropbox\\repository\\projects\\finances.git"
+				"PYTHONPATH": "C:\\Users\\Pedro\\Dropbox\\repository\\projects\\finances.git\\finances"
 			},
 			"name": "python",
 			"selector": "source.python",
@@ -32,7 +32,7 @@
 					"cmd":
 					[
 						"start",
-						"C:\\Users\\Pedro\\Dropbox\\repository\\projects\\finances.git",
+						"C:\\Users\\Pedro\\Dropbox\\repository\\projects\\finances.git\\finances",
 						"cmd",
 						"/k",
 						"C:\\Anaconda3\\envs\\finance\\Scripts\\jupyter",
@@ -52,7 +52,7 @@
 	"folders":
 	[
 		{
-			"path": "C:\\Users\\Pedro\\Dropbox\\repository\\projects\\finances.git"
+			"path": "C:\\Users\\Pedro\\Dropbox\\repository\\projects\\finances.git\\finances"
 		},
 		{
 

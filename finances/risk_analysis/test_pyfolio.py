@@ -18,9 +18,11 @@ from crypto_analysis.crypto_data import get_quandl_data
 def cal_returns(array):
     return array[-1]/array[0]
 
-btc_usd = get_quandl_data('BCHARTS/KRAKENUSD')
+btc_usd = pd.read_csv('C:\\Users\\Pedro\\Dropbox\\repository\\projects\\finances.git\\data\\btc_usd.csv')
 
-btc_returns = btc_usd.rolling(window=2).apply(cal_returns).dropna()['Close']
+print(btc_usd.dropna())
+
+btc_returns = btc_usd.rolling(window=2).apply(cal_returns).dropna()['avg_btc_price_usd']
 
 out_of_sample = btc_returns.index[-40]
 
