@@ -56,7 +56,7 @@ def get_btc_exchanges_data(column):
     full_exchange_data = {}
 
     for exchange in exchanges:
-        exchange_code = 'BCHARTS/{1}_USD'.format(exchange)
+        exchange_code = 'BCHARTS/{}USD'.format(exchange)
         exchange_df = get_quandl_data(exchange_code)
 
         # removes all the zeros
@@ -68,10 +68,10 @@ def get_btc_exchanges_data(column):
     return pd.DataFrame(full_exchange_data)
 
 
-def get_btc_price(column):
-    full_exchange_data = get_exchanges_data(column=column)
-    average_exchange_price = full_exchange_data.mean(axis=1)
-    return average_exchange_price
+def get_btc_price(column='Close'):
+    full_exchange_data = get_btc_exchanges_data(column=column)
+    full_exchange_data['Average'] = full_exchange_data.mean(axis=1)
+    return full_exchange_data['Average'].dropna()
 
 
 def get_crypto_data(
@@ -90,6 +90,6 @@ def get_crypto_data(
     return data_df
 
 if __name__=='__main__':
-    df = get_crypto_data(poloniex_pair='BTC_ETH')
+    df = get_btc_price(column='Close')
     df.close.plot()
     plt.show()
