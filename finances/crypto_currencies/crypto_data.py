@@ -74,14 +74,16 @@ def get_btc_price(column='Close'):
     return full_exchange_data['Average'].dropna()
 
 
-def get_crypto_data(
-    poloniex_pair,
-    start_date=datetime.strptime('2015-01-01', '%Y-%m-%d'),
+def get_crypto_vs_btc_data(
+    crypto_code,
+    start_date=datetime.strptime('2014-01-01', '%Y-%m-%d'),
     end_date=datetime.now(),
     period='Day'
     ):
     '''Retrieve cryptocurrency data from poloniex'''
 
+
+    poloniex_pair='BTC_{}'.format(crypto_code)
     period_dict = {'Day': 86400, 'Hour':3600, 'Min': 60, 'Sec':1}
     base_poloniex_url = 'https://poloniex.com/public?command=returnChartData&currencyPair={}&start={}&end={}&period={}'
     json_url = base_poloniex_url.format(poloniex_pair, start_date.timestamp(), end_date.timestamp(), period_dict[period])
@@ -89,7 +91,32 @@ def get_crypto_data(
     data_df = data_df.set_index('date')
     return data_df
 
+def get_crypto_vs_usd_data(
+    crypto_code,
+    start_date=datetime.strptime('2014-01-01', '%Y-%m-%d'),
+    end_date=datetime.now()
+    ):
+    vs_btc_df = get_crypto_vs_btc_data(
+        crypto_code=crypto_code,
+        start_date=start_date,
+        end_date=end_date,
+        )
+
+    for col in vs_btc_df.columns:
+        vs_btc_df[col] = vs_btc_df[col]*get_btc_price()
+
+    return vs_btc_df
+
 if __name__=='__main__':
-    df = get_btc_price(column='Close')
-    df.close.plot()
+    fig, ax = plt.subplots(1,1)
+    df_eth = get_crypto_vs_btc_data('ETH').close
+    df_btc = get_btc_price()
+
+    df_eth['ETH']=df_eth*df_btc
+    # df_btc.plot(ax=ax)
+    df_eth.ETH.plot(ax=ax)
+
+    # function
+    a = get_crypto_vs_usd_data('ETH')
+    a.close.plot(ax=ax)
     plt.show()
