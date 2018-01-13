@@ -5,19 +5,19 @@ from crypto_currencies import crypto_data
 
 class PortFolio():
 
-	allocation = {}
+	assets = {}
 	historical_value = pd.DataFrame()
 	transactions = pd.DataFrame()
 	value = 0
 
-	def __init__(self, allocation):
-		self.allocation = allocation
+	def __init__(self, assets):
+		self.assets = assets
 
 	def update_value(self):
 		value = 0
-		for asset in self.allocation:
+		for asset in self.assets:
 			asset_value = crypto_data.get_btc_price('Close')[-1]
-			value += self.allocation[asset]*asset_value
+			value += self.assets[asset]*asset_value
 		self.value = value
 
 
