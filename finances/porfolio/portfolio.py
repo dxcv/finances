@@ -15,13 +15,13 @@ class PortFolio():
 	prices_history = pd.DataFrame()
 	assets_history = pd.DataFrame()
 	value_history = pd.DataFrame()
-	portfolio_path = os.path.join(path, name)
+
 
 	def __init__(self, name, assets, invested):
 		self.assets = assets
 		self.invested = invested
 		self.name = name
-
+		self.portfolio_path = os.path.join(cfd, name)
 
 	def set_data_from_path(self, path=os.path.join(cfd)):
 		f = open(os.path.join(path, self.name, 'prices_history.pk'), 'rb')
@@ -67,9 +67,6 @@ class PortFolio():
 			self.value_history[asset] = self.prices_history[asset]*self.assets_history[asset]
 		self.value_history['Total'] = self.value_history.sum(axis=1)
 		return self.value_history
-
-	def 
-
 
 
 
