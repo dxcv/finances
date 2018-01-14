@@ -30,42 +30,34 @@ class PortFolio():
 		self.portfolio_path = directory
 
 
-	def set_data_from_path(self):
-		f = open(os.path.join(self.portfolio_path, 'prices_history.pk'), 'rb')
+	def set_historic_data_from_path(self, path):
+		f = open(os.path.join(path, 'prices_history.pk'), 'rb')
 		self.prices_history = pickle.load(f)
 
-		f = open(os.path.join(self.portfolio_path, 'assets_history.pk'), 'rb')
+		f = open(os.path.join(path, 'assets_history.pk'), 'rb')
 		self.assets_history = pickle.load(f)
 
 
-	def update_value(self):
-		value = 0
-		for asset in self.assets:
-			asset_value= market.get_coin_value(asset)
-			value += self.assets[asset]*asset_value
-			print(asset, asset_value, self.assets[asset]*asset_value)
-		self.value = value
-
-	def update_prices_history(self, name='prices_history'):
+	def update_prices_history(self, output_name='prices_history'):
 		temp_df = pd.DataFrame(index=[datetime.now().replace(second=0, microsecond=0)])
 
 		for asset in self.assets:
 			temp_df[asset] = market.get_coin_value(asset)
 
 		self.prices_history = self.prices_history.append(temp_df)
-		self.prices_history.to_pickle(os.path.join(self.portfolio_path, name+'.pk'))
-		self.prices_history.to_csv(os.path.join(self.portfolio_path, name+'.csv'))
+		self.prices_history.to_pickle(os.path.join(self.portfolio_path, output_name+'.pk'))
+		self.prices_history.to_csv(os.path.join(self.portfolio_path, output_name+'.csv'))
 
-	def update_assets_history(self, name='assets_history'):
+	def update_assets_history(self, output_name='assets_history'):
 		temp_df = pd.DataFrame(self.assets, index=[datetime.now().replace(second=0, microsecond=0)])
 		self.assets_history = self.assets_history.append(temp_df)
 
-		self.assets_history.to_pickle(os.path.join(self.portfolio_path, name+'.pk'))
-		self.assets_history.to_csv(os.path.join(self.portfolio_path, name+'.csv'))
+		self.assets_history.to_pickle(os.path.join(self.portfolio_path, output_name+'.pk'))
+		self.assets_history.to_csv(os.path.join(self.portfolio_path, output_name+'.csv'))
 
 	def update_portfolio_history(self, assets_name, prices_name):
-		self.update_prices_history(name=prices_name)
-		self.update_assets_history(name=assets_name)
+		self.update_prices_history(output_name=prices_name)
+		self.update_assets_history(output_name=assets_name)
 
 	def create_value_dataframe(self):
 		for asset in self.assets_history.columns:
@@ -101,7 +93,8 @@ if __name__=='__main__':
 		name= 'MyPortfolio',
 		assets = portfolio_assets,
 		invested = 2270.0)
-	myportfolio.set_data_from_path(path=os.path.join(cfd))
+
+	myportfolio.set_historic_data_from_path(myportfolio.portfolio_path)
 
 	myportfolio.update_portfolio_history(assets_name='assets_history', prices_name='prices_history')
 	print(myportfolio.assets_history)
