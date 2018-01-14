@@ -16,21 +16,26 @@ class PortFolio():
 	assets_history = pd.DataFrame()
 	value_history = pd.DataFrame()
 
-
 	def __init__(self, name, assets, invested):
 		self.assets = assets
 		self.invested = invested
 		self.name = name
-		self.portfolio_path = os.path.join(cfd, name)
+		self.set_portfolio_path()
 
-	def set_data_from_path(self, path=os.path.join(cfd)):
-		f = open(os.path.join(path, self.name, 'prices_history.pk'), 'rb')
+	def set_portfolio_path(self):
+		directory = os.path.join(cfd, self.name)
+		if not os.path.exists(directory):
+			os.makedirs(directory)
+
+		self.portfolio_path = directory
+
+
+	def set_data_from_path(self):
+		f = open(os.path.join(self.portfolio_path, 'prices_history.pk'), 'rb')
 		self.prices_history = pickle.load(f)
 
-		f = open(os.path.join(path, self.name, 'assets_history.pk'), 'rb')
+		f = open(os.path.join(self.portfolio_path, 'assets_history.pk'), 'rb')
 		self.assets_history = pickle.load(f)
-
-		self.portfolio_path = os.path.join(path, self.name)
 
 
 	def update_value(self):
