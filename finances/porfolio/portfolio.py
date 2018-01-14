@@ -15,6 +15,7 @@ class PortFolio():
 	prices_history = pd.DataFrame()
 	assets_history = pd.DataFrame()
 	value_history = pd.DataFrame()
+	portfolio_path = os.path.join(path, name)
 
 	def __init__(self, name, assets, invested):
 		self.assets = assets
@@ -61,10 +62,13 @@ class PortFolio():
 		self.update_prices_history(name=prices_name)
 		self.update_assets_history(name=assets_name)
 
-	def  create_value_dataframe(self):
+	def create_value_dataframe(self):
 		for asset in self.assets_history.columns:
 			self.value_history[asset] = self.prices_history[asset]*self.assets_history[asset]
+		self.value_history['Total'] = self.value_history.sum(axis=1)
 		return self.value_history
+
+	def 
 
 
 
@@ -91,10 +95,13 @@ if __name__=='__main__':
 	import pylab as plt
 	from pprint import pprint
 	
-	myportfolio = PortFolio(name= 'MyPortfolio', assets = portfolio_assets, invested = 2270.0)
+	myportfolio = PortFolio(
+		name= 'MyPortfolio',
+		assets = portfolio_assets,
+		invested = 2270.0)
 	myportfolio.set_data_from_path(path=os.path.join(cfd))
 
-	# myportfolio.update_portfolio_history(assets_name='assets_history', prices_name='prices_history')
+	myportfolio.update_portfolio_history(assets_name='assets_history', prices_name='prices_history')
 	print(myportfolio.assets_history)
 	print(myportfolio.prices_history)
 
