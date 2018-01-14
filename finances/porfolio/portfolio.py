@@ -29,7 +29,7 @@ class PortFolio():
 			print(asset, asset_value, self.assets[asset]*asset_value)
 		self.value = value
 
-	def save_portfolio_prices(self):
+	def add_current_price(self):
 		pd.DataFrame(index=[datetime.now()])
 		temp_df = pd.DataFrame(index=[datetime.now()])
 
@@ -65,11 +65,22 @@ if __name__=='__main__':
 		'ADST': 136.71
 	}
 
+	import pylab as plt
+	from pprint import pprint
+	
 	myportfolio = PortFolio(assets = portfolio_assets, invested = 2270.0)
 	myportfolio.update_value()
 	print(myportfolio.value)
 
-	myportfolio.save_portfolio_prices()
+	# myportfolio.add_current_price()
+	print(myportfolio.historical_value)
 
-	from pprint import pprint
-	pprint(myportfolio)
+	values = myportfolio.historical_value
+	for key in values.columns:
+		values[key]=values[key]*myportfolio.assets[key]
+
+	values['Total_value'] = values.sum(axis=1)
+	print(values)
+	values.plot()
+	plt.show()
+
