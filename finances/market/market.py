@@ -36,14 +36,14 @@ convert_name_dictionary={
 class MarketData():
     data_base_path = os.path.join(cfd, 'data_base')
     crypto_dictionary = convert_name_dictionary
-    crypto_data_base = pd.DataFrame()
+    crypto_eur_price_db = pd.DataFrame()
 
     def __init__(self):
         load_crypto_data()
 
 
     def load_crypto_data(self):
-        crypto_db_path = os.join(data_base_path, 'crypto_currencies', 'crypto_data_base.csv')
+        crypto_db_path = os.join(data_base_path, 'crypto_currencies', 'crypto_eur_price_database.csv')
         f = open(cache_path, 'rb')
         df = pd.read_csv(crypto_db_path, index='time')
         print('Loaded crypto currency database from cache'.format(quandl_id))
@@ -54,25 +54,25 @@ class MarketData():
         value = coin[0]['price_{}'.format(currency)]
         return float(value)
 
-    def update_crypto_data_base(self):
-        data_base = self.crypto_data_base
+    def update_crypto_eur_price_db(self):
+        data_base = self.crypto_eur_price_db
         _temp_df = pd.DataFrame(index=[datetime.now().replace(second=0, microsecond=0)])
 
         for coin in data_base.columns:
             _temp_df[coin] = market.get_coin_value(coin)
-        self.crypto_data_base = self.crypto_data_base.append(__temp_df)
-        return self.crypto_data_base 
+        self.crypto_eur_price_db = self.crypto_eur_price_db.append(__temp_df)
+        return self.crypto_eur_price_db 
 
-    def save_crypto_data_base(self, output_name='crypto_data_base')
-        self.crypto_data_base.to_pickle(os.path.join(self.data_base_path, 'crypto_currencies', output_name+'.pkl'))
-        self.crypto_data_base.to_csv(os.path.join(self.data_base_path, 'crypto_currencies', output_name+'.csv'))
+    def save_crypto_eur_price_db(self, output_name='crypto_eur_price_database')
+        self.crypto_eur_price_db.to_pickle(os.path.join(self.data_base_path, 'crypto_currencies', output_name+'.pkl'))
+        self.crypto_eur_price_db.to_csv(os.path.join(self.data_base_path, 'crypto_currencies', output_name+'.csv'))
         print('Crypto currency data_base saved in ')
 
     def get_crypto_data(self, symbols):
         if isinstance(symbols, str):
-            return self.crypto_data_base[[symbols]]
+            return self.crypto_eur_price_db[[symbols]]
         else:
-            return self.crypto_data_base[symbols]
+            return self.crypto_eur_price_db[symbols]
 
 
 
