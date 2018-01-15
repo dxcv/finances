@@ -98,11 +98,11 @@ if __name__=='__main__':
 
 	myportfolio.update_portfolio_history(assets_name='assets_history', prices_name='prices_history')
 	print(myportfolio.assets_history)
-	print(myportfolio.prices_history)
+	# myportfolio.prices_history.plot()
 
 	print('#################################################################')
 	values_df = myportfolio.create_value_dataframe()
-	values_df.plot()
+	values_df.Total.plot()
 	plt.show()
 
 

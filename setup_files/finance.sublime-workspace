@@ -4,8 +4,80 @@
 		"selected_items":
 		[
 			[
+				"port",
+				"portfolio_path"
+			],
+			[
+				"asset",
+				"assets"
+			],
+			[
+				"value",
+				"value_history"
+			],
+			[
+				"asse",
+				"assets_history"
+			],
+			[
+				"ass",
+				"assets_history"
+			],
+			[
+				"myporto",
+				"myportfolio"
+			],
+			[
+				"prices",
+				"prices_history"
+			],
+			[
+				"prices_",
+				"prices_name"
+			],
+			[
+				"assets",
+				"assets_history"
+			],
+			[
+				"his",
+				"assets_history"
+			],
+			[
+				"por",
+				"portfolio_path"
+			],
+			[
+				"portf",
+				"portfolio_assets"
+			],
+			[
+				"portfo",
+				"portfolio"
+			],
+			[
+				"conver",
+				"convert_name_dictionary"
+			],
+			[
+				"crypt",
+				"crypto_name"
+			],
+			[
+				"crypto",
+				"crypto_code"
+			],
+			[
 				"df",
-				"df_stra"
+				"df_btc"
+			],
+			[
+				"polonie",
+				"poloniex_pair"
+			],
+			[
+				"polo",
+				"poloniex_pair"
 			],
 			[
 				"long",
@@ -28,10 +100,6 @@
 				"short_p"
 			],
 			[
-				"port",
-				"portfolio_value"
-			],
-			[
 				"capital",
 				"capital_ls"
 			],
@@ -44,15 +112,6 @@
 	"buffers":
 	[
 		{
-			"file": "/C/Users/Pedro/Dropbox/repository/projects/finances.git/risk_analysis/test_pyfolio.py",
-			"settings":
-			{
-				"buffer_size": 742,
-				"encoding": "UTF-8",
-				"line_ending": "Windows"
-			}
-		},
-		{
 			"file": "/C/Anaconda3/envs/finance/Lib/site-packages/pyfolio/tears.py",
 			"settings":
 			{
@@ -61,37 +120,27 @@
 			}
 		},
 		{
-			"file": "finance.sublime-project",
+			"file": "/C/Users/Pedro/Dropbox/repository/projects/finances.git/finances/crypto_currencies/coin_marketcap.py",
 			"settings":
 			{
-				"buffer_size": 1140,
+				"buffer_size": 724,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
 		},
 		{
-			"file": "/C/Users/Pedro/Dropbox/repository/projects/finances.git/crypto_analysis/test_crypto_data.py",
+			"file": "/C/Users/Pedro/Dropbox/repository/projects/finances.git/finances/crypto_currencies/crypto_data.py",
 			"settings":
 			{
-				"buffer_size": 4172,
-				"encoding": "UTF-8",
+				"buffer_size": 4406,
 				"line_ending": "Windows"
 			}
 		},
 		{
-			"file": "/C/Users/Pedro/Dropbox/repository/projects/finances.git/crypto_analysis/crypto_data.py",
+			"file": "/C/Users/Pedro/Dropbox/repository/projects/finances.git/finances/porfolio/portfolio.py",
 			"settings":
 			{
-				"buffer_size": 1721,
-				"encoding": "UTF-8",
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "/C/Users/Pedro/Dropbox/repository/projects/finances.git/_init_.py",
-			"settings":
-			{
-				"buffer_size": 0,
+				"buffer_size": 3000,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
@@ -112,15 +161,6 @@
 			"settings":
 			{
 				"buffer_size": 130,
-				"encoding": "UTF-8",
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "/C/Users/Pedro/Dropbox/repository/projects/finances.git/crypto_analysis/_init_.py",
-			"settings":
-			{
-				"buffer_size": 0,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
@@ -231,13 +271,20 @@
 	},
 	"expanded_folders":
 	[
-		"/C/Users/Pedro/Dropbox/repository/projects/finances.git",
-		"/C/Users/Pedro/Dropbox/repository/projects/finances.git/risk_analysis"
+		"/C/Users/Pedro/Dropbox/repository/projects/finances.git/finances",
+		"/C/Users/Pedro/Dropbox/repository/projects/finances.git/finances/crypto_currencies",
+		"/C/Anaconda3/envs/finance/Lib/site-packages/coinmarketcap"
 	],
 	"file_history":
 	[
-		"/C/Anaconda3/envs/finance/Lib/site-packages/pyfolio/utils.py",
 		"/C/Users/Pedro/Dropbox/repository/projects/finances.git/setup_files/finance.sublime-project",
+		"/C/Users/Pedro/Dropbox/repository/projects/finances.git/finances/crypto_analysis/test_crypto_data.py",
+		"/C/Users/Pedro/Dropbox/repository/projects/finances.git/crypto_analysis/_init_.py",
+		"/C/Users/Pedro/Dropbox/repository/projects/finances.git/_init_.py",
+		"/C/Users/Pedro/Dropbox/repository/projects/finances.git/crypto_analysis/crypto_data.py",
+		"/C/Users/Pedro/Dropbox/repository/projects/finances.git/crypto_analysis/test_crypto_data.py",
+		"/C/Users/Pedro/Dropbox/repository/projects/finances.git/risk_analysis/test_pyfolio.py",
+		"/C/Anaconda3/envs/finance/Lib/site-packages/pyfolio/utils.py",
 		"/C/Users/Pedro/Dropbox/repository/projects/finances.git/risk_analysis/pyfolio_test.py",
 		"/C/Users/Pedro/Dropbox/repository/projects/finances.git/crypto_analysis/BTC_SC",
 		"/C/Users/Pedro/Dropbox/repository/olamundo.py",
@@ -277,6 +324,30 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"get_crypto_vs_btc_data",
+			"vs_btc",
+			"name+",
+			"name",
+			"set_data_from_path",
+			"data",
+			"self.portfolio_path",
+			"history",
+			"assets",
+			"portfolio_location",
+			"self.portfolio_location",
+			"historical_value",
+			"save_portfolio_prices",
+			"invested_value",
+			"crypto_data",
+			"':'",
+			"get_quandl_data",
+			"allocation",
+			"symbol",
+			"base_polo_url",
+			"btc",
+			"exchange_data",
+			"\\",
+			"finances.git",
 			"create_full_tear_sheet",
 			"\\",
 			"finance.git",
@@ -301,60 +372,11 @@
 	"groups":
 	[
 		{
-			"selected": 1,
+			"selected": 3,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "/C/Users/Pedro/Dropbox/repository/projects/finances.git/risk_analysis/test_pyfolio.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 742,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								632,
-								632
-							]
-						],
-						"settings":
-						{
-							"auto_complete_triggers":
-							[
-								{
-									"characters": ".",
-									"selector": "source.python - string - comment - constant.numeric"
-								},
-								{
-									"characters": ".",
-									"selector": "source.python - string - constant.numeric"
-								},
-								{
-									"characters": ".",
-									"selector": "source.python - string - constant.numeric"
-								},
-								{
-									"characters": ".",
-									"selector": "source.python - string - constant.numeric"
-								}
-							],
-							"syntax": "Packages/Python/Python.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
 					"file": "/C/Anaconda3/envs/finance/Lib/site-packages/pyfolio/tears.py",
 					"semi_transient": false,
 					"settings":
@@ -380,83 +402,24 @@
 						"translation.y": 5237.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 0,
-					"type": "text"
-				},
-				{
-					"buffer": 2,
-					"file": "finance.sublime-project",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 1140,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								994,
-								994
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JSON.sublime-syntax",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 576.0,
-						"zoom_level": 1.0
-					},
 					"stack_index": 3,
 					"type": "text"
 				},
 				{
-					"buffer": 3,
-					"file": "/C/Users/Pedro/Dropbox/repository/projects/finances.git/crypto_analysis/test_crypto_data.py",
+					"buffer": 1,
+					"file": "/C/Users/Pedro/Dropbox/repository/projects/finances.git/finances/crypto_currencies/coin_marketcap.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 4172,
+						"buffer_size": 724,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								879,
-								879
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 4,
-					"type": "text"
-				},
-				{
-					"buffer": 4,
-					"file": "/C/Users/Pedro/Dropbox/repository/projects/finances.git/crypto_analysis/crypto_data.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 1721,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								839,
-								839
+								32,
+								32
 							]
 						],
 						"settings":
@@ -470,6 +433,10 @@
 								{
 									"characters": ".",
 									"selector": "source.python - string - constant.numeric"
+								},
+								{
+									"characters": ".",
+									"selector": "source.python - string - constant.numeric"
 								}
 							],
 							"syntax": "Packages/Python/Python.sublime-syntax",
@@ -477,42 +444,103 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 483.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 2,
 					"type": "text"
 				},
 				{
-					"buffer": 5,
-					"file": "/C/Users/Pedro/Dropbox/repository/projects/finances.git/_init_.py",
+					"buffer": 2,
+					"file": "/C/Users/Pedro/Dropbox/repository/projects/finances.git/finances/crypto_currencies/crypto_data.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 0,
+						"buffer_size": 4406,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								0,
-								0
+								3204,
+								3204
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/Python/Python.sublime-syntax"
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 2247.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 5,
+					"stack_index": 1,
 					"type": "text"
 				},
 				{
-					"buffer": 6,
+					"buffer": 3,
+					"file": "/C/Users/Pedro/Dropbox/repository/projects/finances.git/finances/porfolio/portfolio.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3000,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2998,
+								2998
+							]
+						],
+						"settings":
+						{
+							"auto_complete_triggers":
+							[
+								{
+									"characters": ".",
+									"selector": "source.python - string - comment - constant.numeric"
+								},
+								{
+									"characters": ".",
+									"selector": "source.python - string - constant.numeric"
+								},
+								{
+									"characters": ".",
+									"selector": "source.python - string - constant.numeric"
+								},
+								{
+									"characters": ".",
+									"selector": "source.python - string - constant.numeric"
+								},
+								{
+									"characters": ".",
+									"selector": "source.python - string - constant.numeric"
+								},
+								{
+									"characters": ".",
+									"selector": "source.python - string - constant.numeric"
+								},
+								{
+									"characters": ".",
+									"selector": "source.python - string - constant.numeric"
+								}
+							],
+							"syntax": "Packages/Python/Python.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 1977.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
 					"semi_transient": false,
 					"settings":
 					{
@@ -538,11 +566,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 8,
+					"stack_index": 4,
 					"type": "text"
 				},
 				{
-					"buffer": 7,
+					"buffer": 5,
 					"file": "finance_requirements.yml",
 					"semi_transient": false,
 					"settings":
@@ -566,37 +594,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 7,
-					"type": "text"
-				},
-				{
-					"buffer": 8,
-					"file": "/C/Users/Pedro/Dropbox/repository/projects/finances.git/crypto_analysis/_init_.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 0,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 6,
+					"stack_index": 5,
 					"type": "text"
 				}
 			]
@@ -683,7 +681,7 @@
 	"show_open_files": false,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 319.0,
+	"side_bar_width": 388.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{
