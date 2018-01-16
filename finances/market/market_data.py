@@ -18,6 +18,11 @@ cfd, cfn = os.path.split(os.path.abspath(__file__))
 
 convert_name_dictionary={
     'BTC': 'bitcoin',
+    'DASH': 'dash',
+    'XMR': 'monero',
+    'BCH': 'bitcoincash',
+    'NEO': 'neo',
+    'NEM': 'xem',
     'ETH': 'ethereum',
     'XRP': 'ripple',
     'LTC': 'litecoin',
