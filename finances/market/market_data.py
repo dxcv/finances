@@ -20,9 +20,9 @@ convert_name_dictionary={
     'BTC': 'bitcoin',
     'DASH': 'dash',
     'XMR': 'monero',
-    'BCH': 'bitcoincash',
+    'BCH': 'bitcoin-cash',
     'NEO': 'neo',
-    'NEM': 'xem',
+    'NEM': 'nem',
     'ETH': 'ethereum',
     'XRP': 'ripple',
     'LTC': 'litecoin',
@@ -66,6 +66,7 @@ class MarketData():
 
         for coin in self.crypto_dictionary:
             _temp_df[coin] = self.get_coin_price(coin, currency='eur')
+            print(coin)
         self.crypto_eur_price_db = data_base.append(_temp_df)
         return self.crypto_eur_price_db 
 
