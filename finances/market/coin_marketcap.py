@@ -7,8 +7,15 @@ import coinmarketcap_history
 from crypto_data import get_quandl_data
 import pandas as pd
 
+import os
+
 convert_name_dictionary={
     'BTC': 'bitcoin',
+    'DASH': 'dash',
+    'XMR': 'monero',
+    'BCH': 'bitcoin-cash',
+    'NEO': 'neo',
+    'NEM': 'nem',
     'ETH': 'ethereum',
     'XRP': 'ripple',
     'LTC': 'litecoin',
@@ -59,7 +66,7 @@ def get_coin_historical_data(
         df_history_eur=df_history_eur.drop('Value', axis=1)
         return df_history_eur
 
-def get_single_coin_historical_price(
+def get_single_coin_historical_value(
     crypto_code,
     start_date='2013-01-11',
     end_date=datetime.now(),
@@ -75,7 +82,7 @@ def get_single_coin_historical_price(
 
     return price_df[crypto_code]
 
-def get_coin_historical_price(
+def get_coin_historical_value(
     crypto_code_list,
     start_date='2013-01-11',
     end_date=datetime.now(),
@@ -83,7 +90,7 @@ def get_coin_historical_price(
     ):
     total_df = pd.DataFrame()
     for coin in crypto_code_list:
-        coin_df = get_single_coin_historical_price(
+        coin_df = get_single_coin_historical_value(
             crypto_code=coin,
             start_date='2013-01-11',
             end_date=datetime.now(),
@@ -96,14 +103,15 @@ def get_coin_historical_price(
 
 
 if __name__=='__main__':
-    # for coin_code in convert_name_dictionary:
-    #     print(get_coin_current_value(coin_code))
     import pylab as plt
 
-    df_eur = get_coin_historical_price(['XLM', 'ADST'], currency='eur')
-    # df_usd = get_coin_historical_price('BTC', currency='usd')
+    df_eur = get_coin_historical_value(convert_name_dictionary.keys(), currency='eur')
+    print(df_eur)
 
     df_eur.plot()
-    # df_usd.Close.plot()
-
     plt.show()
+
+
+    # path = 'C:\\Users\\Pedro\\Dropbox\\repository\\projects\\finances.git\\finances\\market\\data_base'
+    # df_eur.to_csv(os.path.join(path, 'crypto_currencies', 'main_crypto_eur_database.csv'))
+    # plt.show()
