@@ -39,6 +39,11 @@ def get_coin_current_value(crypto_code, currency='eur'):
     return float(value)
 
 
+def get_total_market_cap(currency='eur'):
+    total_market = coinmarketcap.stats(convert='EUR')
+    return total_market['total_market_cap_{}'.format(currency)]
+
+
 def get_coin_historical_data(
     crypto_code,
     start_date='2013-01-11',

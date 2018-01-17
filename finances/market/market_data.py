@@ -41,10 +41,10 @@ convert_name_dictionary={
 class MarketData():
     data_base_path = os.path.join(cfd, 'data_base')
     crypto_dictionary = convert_name_dictionary
-    crypto_eur_price_db = pd.DataFrame()
+    crypto_eur_db = pd.DataFrame()
 
     def __init__(self):
-        self.crypto_eur_price_db = self.load_crypto_data(currency='eur')
+        self.crypto_eur_db = self.load_crypto_data(currency='eur')
 
 
     def load_crypto_data(self, currency='eur'):
@@ -60,32 +60,43 @@ class MarketData():
         value = coin[0]['price_{}'.format(currency)]
         return float(value)
 
-    def update_crypto_eur_price(self):
-        data_base = self.crypto_eur_price_db
+    def get_total_market_cap(self, currency='eur'):
+        total_market = COINMARKETCAP.stats(convert='EUR')
+        return total_market['total_market_cap_{}'.format(currency)]
+
+    def update_market_eur_price(self):
+        data_base = self.crypto_eur_db
         _temp_df = pd.DataFrame(index=[datetime.now().replace(second=0, microsecond=0)])
 
+        # add the data for all the crypto currencies
         for coin in self.crypto_dictionary:
             _temp_df[coin] = self.get_coin_price(coin, currency='eur')
             print('{} price data updated'.format(coin))
-        self.crypto_eur_price_db = data_base.append(_temp_df)
-        return self.crypto_eur_price_db 
 
-    def save_crypto_eur_price_db(self, output_name='main_crypto_eur_database'):
-        self.crypto_eur_price_db.to_pickle(os.path.join(self.data_base_path, 'crypto_currencies', output_name+'.pkl'))
-        self.crypto_eur_price_db.to_csv(os.path.join(self.data_base_path, 'crypto_currencies', output_name+'.csv'))
+        # add the total market capitalization data
+        _temp_df['TotalMarketCap'] = self.get_total_market_cap(currency='eur')
+        print('TotalMarketCap value data updated')
+
+        # append this to the current database
+        self.crypto_eur_db = data_base.append(_temp_df)
+        return self.crypto_eur_db 
+
+    def save_crypto_eur_db(self, output_name='main_crypto_eur_database'):
+        self.crypto_eur_db.to_pickle(os.path.join(self.data_base_path, 'crypto_currencies', output_name+'.pkl'))
+        self.crypto_eur_db.to_csv(os.path.join(self.data_base_path, 'crypto_currencies', output_name+'.csv'))
         print('Crypto currency data base saved in {}\crypto_currencies'.format(self.data_base_path))
 
     def get_crypto_price_history(self, symbols):
         if isinstance(symbols, str):
-            return self.crypto_eur_price_db[[symbols]]
+            return self.crypto_eur_db[[symbols]]
         else:
-            return self.crypto_eur_price_db[symbols]
+            return self.crypto_eur_db[symbols]
 
     def get_crypto_returns_history(self, symbols, offset='D'):
         """
         offset definition in http://pandas.pydata.org/pandas-docs/stable/timeseries.html#offset-aliases
         """
-        daily_data = self.crypto_eur_price_db[symbols].resample(offset).mean()
+        daily_data = self.crypto_eur_db[symbols].resample(offset).mean()
         return daily_data.pct_change()
 
 if __name__=='__main__':
@@ -93,12 +104,13 @@ if __name__=='__main__':
 
     mkt = MarketData()
 
-    # mkt.update_crypto_eur_price()
+    mkt.update_market_eur_price()
 
+    print(mkt.crypto_eur_db)
     db = mkt.get_crypto_returns_history(list(convert_name_dictionary.keys()))
     db.dropna(how='any').boxplot()
 
-    # mkt.save_crypto_eur_price_db()
+    mkt.save_crypto_eur_db()
 
     plt.show()
 
