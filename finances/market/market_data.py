@@ -51,7 +51,7 @@ class MarketData():
         db_name_csv = 'main_crypto_{}_database.csv'.format(currency)
         crypto_db_path = os.path.join(self.data_base_path, 'crypto_currencies', db_name_csv)
         print('Loaded crypto currency database from {}'.format(crypto_db_path))
-        return pd.read_csv(crypto_db_path, index_col=0)
+        return pd.read_csv(crypto_db_path, index_col=0, parse_dates=True, infer_datetime_format=True)
         
 
     def get_coin_price(self, crypto_code, currency='eur'):
@@ -81,23 +81,24 @@ class MarketData():
         else:
             return self.crypto_eur_price_db[symbols]
 
-    def get_crypto_returns_history(self, symbols):
-        if isinstance(symbols, str):
-            return self.crypto_eur_price_db[[symbols]].pct_change()
-        else:
-            return self.crypto_eur_price_db[symbols].pct_change()
+    def get_crypto_returns_history(self, symbols, offset='D'):
+        """
+        offset definition in http://pandas.pydata.org/pandas-docs/stable/timeseries.html#offset-aliases
+        """
+        daily_data = self.crypto_eur_price_db[symbols].resample(offset).mean()
+        return daily_data.pct_change()
 
 if __name__=='__main__':
     import pylab as plt
 
     mkt = MarketData()
 
-    mkt.update_crypto_eur_price()
+    # mkt.update_crypto_eur_price()
 
     db = mkt.get_crypto_returns_history(list(convert_name_dictionary.keys()))
     db.dropna(how='any').boxplot()
 
-    mkt.save_crypto_eur_price_db()
+    # mkt.save_crypto_eur_price_db()
 
     plt.show()
 
