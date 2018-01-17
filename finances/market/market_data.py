@@ -87,10 +87,7 @@ class MarketData():
         print('Crypto currency data base saved in {}\crypto_currencies'.format(self.data_base_path))
 
     def get_crypto_price_history(self, symbols):
-        if isinstance(symbols, str):
-            return self.crypto_eur_db[[symbols]]
-        else:
-            return self.crypto_eur_db[symbols]
+        return self.crypto_eur_db[symbols]
 
     def get_crypto_returns_history(self, symbols, offset='D'):
         """
