@@ -75,18 +75,25 @@ class MarketData():
         self.crypto_eur_price_db.to_csv(os.path.join(self.data_base_path, 'crypto_currencies', output_name+'.csv'))
         print('Crypto currency data base saved in {}\crypto_currencies'.format(self.data_base_path))
 
-    def get_crypto_price(self, symbols):
+    def get_crypto_price_history(self, symbols):
         if isinstance(symbols, str):
             return self.crypto_eur_price_db[[symbols]]
         else:
             return self.crypto_eur_price_db[symbols]
 
+    def get_crypto_returns_history(self, symbols):
+        if isinstance(symbols, str):
+            return self.crypto_eur_price_db[[symbols]].pct_change()
+        else:
+            return self.crypto_eur_price_db[symbols].pct_change()
 
 if __name__=='__main__':
+    import pylab as plt
 
     mkt = MarketData()
 
-    mkt.update_crypto_eur_price()
-    print(mkt.crypto_eur_price_db)
+    db = mkt.get_crypto_returns_history(list(convert_name_dictionary.keys()))
+    db.dropna(how='any').boxplot()
 
-    mkt.save_crypto_eur_price_db()
+    plt.show()
+
