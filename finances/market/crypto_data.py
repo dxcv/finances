@@ -18,7 +18,7 @@ import pylab as plt
 
 cfd, cfn = os.path.split(os.path.abspath(__file__))
 
-data_path = 'C:\\Users\\Pedro\\Dropbox\\repository\\projects\\finances.git\\finances\\crypto_currencies\\data'
+data_path = 'C:\\Users\\Pedro\\Dropbox\\repository\\projects\\finances.git\\finances\\market\\data_base\\crypto_currencies\\other_data'
 
 def get_quandl_data(quandl_id):
     '''Download and cache Quandl dataseries'''
@@ -68,7 +68,7 @@ def get_btc_exchanges_data(column):
     return pd.DataFrame(full_exchange_data)
 
 
-def get_btc_price(column='Close'):
+def get_btc_price_usd(column='Close'):
     full_exchange_data = get_btc_exchanges_data(column=column)
     full_exchange_data['Average'] = full_exchange_data.mean(axis=1)
     return full_exchange_data['Average'].dropna()
@@ -91,11 +91,23 @@ def get_crypto_vs_btc_data(
     data_df = data_df.set_index('date')
     return data_df
 
-def get_crypto_vs_usd_data(
+def get_btc_price_eur(column='Close'):
+    eur_df = get_quandl_data('ECB/EURUSD')
+    btc_usd_df = get_btc_price_usd(column=column)
+    full_btceur_df = pd.concat([eur_df, btc_usd_df], axis=1).fillna(method='ffill').dropna()
+    return full_btceur_df['Average']/full_btceur_df['Value']
+
+def get_crypto_price_data(
     crypto_code,
+    currency='eur',
     start_date=datetime.strptime('2014-01-01', '%Y-%m-%d'),
     end_date=datetime.now()
     ):
+    
+    if currency=='eur':
+        get_btc_price = get_btc_price_eur
+    else:
+        get_btc_price = get_btc_price_usd
 
     if crypto_code=='BTC':
         df = pd.DataFrame()
@@ -113,39 +125,57 @@ def get_crypto_vs_usd_data(
 
     return vs_btc_df
 
+
+
+
 def create_multi_crypto_df(
     crypto_code_list,
-    start_date=datetime.strptime('2015-01-01', '%Y-%m-%d'),
+    currency='eur',
+    start_date=datetime.strptime('2010-01-01', '%Y-%m-%d'),
     end_date=datetime.now(),
     ):
     df = pd.DataFrame()
-    for code in crypto_code_list:
-        single_crypto_df = get_crypto_vs_usd_data(
-            crypto_code=code,
-            start_date=start_date,
-            end_date=end_date
-        )
-        df[code]=single_crypto_df['close']
+    crypto_list = []
 
-    return df
+    for code in crypto_code_list:
+        try:
+            single_crypto_df = get_crypto_price_data(
+                crypto_code=code,
+                currency=currency,
+                start_date=start_date,
+                end_date=end_date
+            )
+            single_crypto_df[code]=single_crypto_df['close']
+            crypto_list.append(single_crypto_df[code])
+        except ValueError:
+            print(code, 'is not available')
+            continue
+
+    return pd.concat(crypto_list, axis=1)
 
 
 
 if __name__=='__main__':
-    fig, ax = plt.subplots(1,1)
-    df_eth = get_crypto_vs_btc_data('ETH').close
-    df_btc = get_btc_price()
-
-    df_eth['ETH']=df_eth*df_btc
-    # df_btc.plot(ax=ax)
-    df_eth.ETH.plot(ax=ax)
-
-    # function
-    a = get_crypto_vs_usd_data('ETH')
-    a.close.plot(ax=ax)
-    plt.show()
-
-    a = create_multi_crypto_df(['BTC', 'ETH','XRP'])
+    a = create_multi_crypto_df(['BTC', 'ETH', 'XRP', 'LTC', 'TRX','UBQ', 'BIS', 'ADA', 'IOTA', 'FUN', 'XLM'])
+    a.to_csv(os.path.join(cfd, 'MAIN_DATA.csv'))
     print(a)
     a.plot()
     plt.show()
+
+    # fig, ax = plt.subplots(1,1)
+    # df_eth = get_crypto_vs_btc_data('ETH').close
+    # df_btc = get_btc_price()
+
+    # df_eth['ETH']=df_eth*df_btc
+    # # df_btc.plot(ax=ax)
+    # df_eth.ETH.plot(ax=ax)
+
+    # # function
+    # a = get_crypto_vs_usd_data('ETH')
+    # a.close.plot(ax=ax)
+    # plt.show()
+
+    # a = create_multi_crypto_df(['BTC', 'ETH','XRP'])
+    # print(a)
+    # a.plot()
+    # plt.show()
