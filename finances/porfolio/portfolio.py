@@ -18,10 +18,11 @@ class PortFolio():
     def __init__(self, name, assets):
         self.name = name
         self.assets = assets
-        self.portfolio_directory = self.set_portfolio_directory()
+        self.set_portfolio_directory()
 
     def set_portfolio_directory(self):
         directory = os.path.join(PORTFOLIOS_DIRECTORY, self.name)
+        print(directory)
         if not os.path.exists(directory):
             os.makedirs(directory)
         self.portfolio_directory = directory
@@ -53,12 +54,12 @@ class PortFolio():
     def save_assets_db(self, output_name='assets_allocation_data'):
         self.assets_db.to_pickle(os.path.join(self.portfolio_directory, output_name+'.pkl'))
         self.assets_db.to_csv(os.path.join(self.portfolio_directory, output_name+'.csv'))
-        print('Assets data base saved in {}\crypto_currencies'.format(self.data_base_path))
+        print('Assets data base saved in {}\crypto_currencies'.format(self.portfolio_directory))
 
     def save_values_db(self, output_name='portfolio_value_data'):
         self.value_db.to_pickle(os.path.join(self.portfolio_directory, output_name+'.pkl'))
         self.value_db.to_csv(os.path.join(self.portfolio_directory, output_name+'.csv'))
-        print('Portfolio value data saved in {}\crypto_currencies'.format(self.data_base_path))
+        print('Portfolio value data saved in {}\crypto_currencies'.format(self.portfolio_directory))
 
     def get_full_asset_vs_price_df(self):
         asset_list = list(self.assets.keys())
@@ -84,9 +85,10 @@ class PortFolio():
         return value_db
 
     def update_and_save_portfolio(self):
-        self.update_portfolio_value()
+        updated_value = self.update_portfolio_value(save_market=True)
         self.save_assets_db()
         self.save_values_db()
+        return updated_value
 
 if __name__=='__main__':
     portfolio_assets = {
@@ -116,6 +118,8 @@ if __name__=='__main__':
 
     myportfolio.assets_db = pd.DataFrame(data=portfolio_assets, index = [date])
 
-    result = myportfolio.update_portfolio_value(save_market=True)
+    result = myportfolio.update_and_save_portfolio()
     print(result)
+    result.plot()
+    plt.show()
 
