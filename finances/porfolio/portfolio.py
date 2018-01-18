@@ -19,6 +19,7 @@ class PortFolio():
         self.name = name
         self.assets = assets
         self.set_portfolio_directory()
+        self.load_portfolio_assets_data()
 
     def set_portfolio_directory(self):
         directory = os.path.join(PORTFOLIOS_DIRECTORY, self.name)
@@ -28,7 +29,7 @@ class PortFolio():
         self.portfolio_directory = directory
 
     def load_portfolio_assets_data(self):
-        data_csv = '{}_portfolio_data.csv'.format(self.name)
+        data_csv = 'assets_allocation_data.csv'
         portfolio_data_path = os.path.join(self.portfolio_directory, data_csv)
         df = pd.read_csv(portfolio_data_path, index_col=0, parse_dates=True, infer_datetime_format=True)
         print('Loaded portfolio database from {}'.format(portfolio_data_path))
@@ -90,6 +91,14 @@ class PortFolio():
         self.save_values_db()
         return updated_value
 
+    def get_crypto_returns_history(self, symbols='TOTAL', offset='D'):
+        """
+        offset definition in http://pandas.pydata.org/pandas-docs/stable/timeseries.html#offset-aliases
+        """
+        portfolio_data = self.get_portfolio_value_df()
+        daily_data = portfolio_data.resample(offset).mean()
+        return daily_data.pct_change()
+
 if __name__=='__main__':
     portfolio_assets = {
         'BTC': 0.007,
@@ -107,7 +116,6 @@ if __name__=='__main__':
         'ADST': 136.71
     }
 
-    date = datetime.strptime('01 Jan 2018', '%d %b %Y')
     import pylab as plt
     from pprint import pprint
     
@@ -115,8 +123,6 @@ if __name__=='__main__':
         assets = portfolio_assets,
         name= 'PedroPortfolio'
         )
-
-    myportfolio.assets_db = pd.DataFrame(data=portfolio_assets, index = [date])
 
     result = myportfolio.update_and_save_portfolio()
     print(result)
