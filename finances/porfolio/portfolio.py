@@ -72,7 +72,7 @@ class PortFolio():
         value_df = pd.DataFrame()
         for asset in self.assets:
             value_df[asset] = prices_assets_df[asset+'_quantity']*prices_assets_df[asset+'_price']
-        value_df['total'] = value_df.sum(axis=1)
+        value_df['TOTAL'] = value_df.sum(axis=1)
         return value_df
 
     def update_portfolio_value(self, save_market=False):
@@ -113,7 +113,7 @@ if __name__=='__main__':
     
     myportfolio = PortFolio(
         assets = portfolio_assets,
-        name= 'TestPortfolio'
+        name= 'PedroPortfolio'
         )
 
     myportfolio.assets_db = pd.DataFrame(data=portfolio_assets, index = [date])
