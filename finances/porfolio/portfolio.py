@@ -13,6 +13,7 @@ class PortFolio():
     assets = {}
     assets_db = pd.DataFrame()
     value_db = pd.DataFrame()
+    market_data = MarketData()
 
     def __init__(self, name, assets):
         self.name = name
@@ -59,31 +60,33 @@ class PortFolio():
         self.value_db.to_csv(os.path.join(self.portfolio_directory, output_name+'.csv'))
         print('Portfolio value data saved in {}\crypto_currencies'.format(self.data_base_path))
 
-    def get_full_asset_vs_price_df(self, market_data=MarketData()):
+    def get_full_asset_vs_price_df(self):
         asset_list = list(self.assets.keys())
-        prices = market_data.get_crypto_price_history(symbols=asset_list)
+        prices = self.market_data.get_crypto_price_history(symbols=asset_list)
         merged = prices.join(self.assets_db, lsuffix='_price', rsuffix='_quantity', how='outer')
         return merged.fillna(method='ffill').dropna()
 
-    def get_portfolio_value_df(self, market_data=MarketData()):
-        prices_assets_df = self.get_full_asset_vs_price_df(market_data=market_data)
-        print(prices_assets_df)
+    def get_portfolio_value_df(self):
+        prices_assets_df = self.get_full_asset_vs_price_df()
         value_df = pd.DataFrame()
         for asset in self.assets:
             value_df[asset] = prices_assets_df[asset+'_quantity']*prices_assets_df[asset+'_price']
         value_df['total'] = value_df.sum(axis=1)
         return value_df
 
-    def update_portfolio_value(self):
-        market_data = MarketData()
-        a = market_data.update_market_eur_price()
-        print(a)
-        # market.save_crypto_eur_db()
+    def update_portfolio_value(self, save_market=False):
+        self.market_data.update_market_eur_price()
+        if save_market:
+            self.market_data.save_crypto_eur_db()
         self.update_portfolio_assets(assets=self.assets)
-        value_db = self.get_portfolio_value_df(market_data=market_data)
+        value_db = self.get_portfolio_value_df()
         self.value_db = value_db
         return value_db
 
+    def update_and_save_portfolio(self):
+        self.update_portfolio_value()
+        self.save_assets_db()
+        self.save_values_db()
 
 if __name__=='__main__':
     portfolio_assets = {
@@ -112,9 +115,7 @@ if __name__=='__main__':
         )
 
     myportfolio.assets_db = pd.DataFrame(data=portfolio_assets, index = [date])
-    assets_db = myportfolio.update_portfolio_assets()[['XRP','BTC']]
-    print(assets_db)
 
-    result = myportfolio.update_portfolio_value()
+    result = myportfolio.update_portfolio_value(save_market=True)
     print(result)
 
