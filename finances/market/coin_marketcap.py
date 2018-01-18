@@ -79,8 +79,8 @@ def get_single_coin_historical_value(
     ):
     price_df = get_coin_historical_data(
         crypto_code=crypto_code,
-        start_date='2013-01-11',
-        end_date=datetime.now(),
+        start_date=start_date,
+        end_date=end_date,
         currency=currency
         )
     price_df = price_df.rename(columns={'Close': crypto_code})
@@ -97,9 +97,9 @@ def get_coin_historical_value(
     for coin in crypto_code_list:
         coin_df = get_single_coin_historical_value(
             crypto_code=coin,
-            start_date='2013-01-11',
-            end_date=datetime.now(),
-            currency='eur'
+            start_date=start_date,
+            end_date=end_date,
+            currency=currency
             )
 
         total_df=pd.concat([total_df, coin_df], axis=1).fillna(method='ffill').dropna(how='all')
