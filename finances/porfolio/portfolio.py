@@ -1,5 +1,5 @@
 import pandas as pd
-from datetime import datetime
+import datetime
 import pickle
 import os
 
@@ -31,10 +31,14 @@ class PortFolio():
     def load_portfolio_assets_data(self):
         data_csv = 'assets_allocation_data.csv'
         portfolio_data_path = os.path.join(self.portfolio_directory, data_csv)
-        df = pd.read_csv(portfolio_data_path, index_col=0, parse_dates=True, infer_datetime_format=True)
-        print('Loaded portfolio database from {}'.format(portfolio_data_path))
-        self.assets_db = df
-        return df
+        try:
+            df = pd.read_csv(portfolio_data_path, index_col=0, parse_dates=True, infer_datetime_format=True)
+            print('Loaded portfolio database from {}'.format(portfolio_data_path))
+            self.assets_db = df
+            return df
+        except FileNotFoundError:
+            print('Unable to load database from file')
+            return
 
     def update_portfolio_assets(self, assets=None):
         assets_data = self.assets_db
@@ -44,7 +48,7 @@ class PortFolio():
             current_assets = assets
         _temp_df = pd.DataFrame(
             data=current_assets,
-            index=[datetime.now().replace(second=0, microsecond=0)]
+            index=[datetime.datetime.now().replace(second=0, microsecond=0)]
         )
 
         # append this to the current database
@@ -98,6 +102,12 @@ class PortFolio():
         portfolio_data = self.get_portfolio_value_df()
         daily_data = portfolio_data.resample(offset).mean()
         return daily_data.pct_change()
+
+    def get_assets_value_since(self, date):
+        self.assets_db = pd.DataFrame(data=self.assets, index=[date])
+        full_db = self.update_portfolio_value()
+        return full_db
+
 
 if __name__=='__main__':
     portfolio_assets = {
