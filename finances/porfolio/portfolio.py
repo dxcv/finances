@@ -3,106 +3,118 @@ from datetime import datetime
 import pickle
 import os
 
-import crypto_currencies.coin_marketcap as market
+from market.market_data import MarketData
 
 cfd, cfn = os.path.split(os.path.abspath(__file__))
 
+PORTFOLIOS_DIRECTORY = cfd
+
 class PortFolio():
-	name = 'MyPortfolio'
-	assets = {}
-	value = 0
-	invest = 0
-	prices_history = pd.DataFrame()
-	assets_history = pd.DataFrame()
-	value_history = pd.DataFrame()
+    assets = {}
+    assets_db = pd.DataFrame()
+    value_db = pd.DataFrame()
 
-	def __init__(self, name, assets, invested):
-		self.assets = assets
-		self.invested = invested
-		self.name = name
-		self.set_portfolio_path()
+    def __init__(self, name, assets):
+        self.name = name
+        self.assets = assets
+        self.portfolio_directory = self.set_portfolio_directory()
 
-	def set_portfolio_path(self):
-		directory = os.path.join(cfd, self.name)
-		if not os.path.exists(directory):
-			os.makedirs(directory)
+    def set_portfolio_directory(self):
+        directory = os.path.join(PORTFOLIOS_DIRECTORY, self.name)
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+        self.portfolio_directory = directory
 
-		self.portfolio_path = directory
+    def load_portfolio_assets_data(self):
+        data_csv = '{}_portfolio_data.csv'.format(self.name)
+        portfolio_data_path = os.path.join(self.portfolio_directory, data_csv)
+        df = pd.read_csv(portfolio_data_path, index_col=0, parse_dates=True, infer_datetime_format=True)
+        print('Loaded portfolio database from {}'.format(portfolio_data_path))
+        self.assets_db = df
+        return df
 
+    def update_portfolio_assets(self, assets=None):
+        assets_data = self.assets_db
+        if assets is None:
+            current_assets = self.assets
+        else:
+            current_assets = assets
+        _temp_df = pd.DataFrame(
+            data=current_assets,
+            index=[datetime.now().replace(second=0, microsecond=0)]
+        )
 
-	def set_historic_data_from_path(self, path):
-		f = open(os.path.join(path, 'prices_history.pk'), 'rb')
-		self.prices_history = pickle.load(f)
+        # append this to the current database
+        self.assets_db = assets_data.append(_temp_df)
+        print('Portfolio assets updated')
+        return self.assets_db
 
-		f = open(os.path.join(path, 'assets_history.pk'), 'rb')
-		self.assets_history = pickle.load(f)
+    def save_assets_db(self, output_name='assets_allocation_data'):
+        self.assets_db.to_pickle(os.path.join(self.portfolio_directory, output_name+'.pkl'))
+        self.assets_db.to_csv(os.path.join(self.portfolio_directory, output_name+'.csv'))
+        print('Assets data base saved in {}\crypto_currencies'.format(self.data_base_path))
 
+    def save_values_db(self, output_name='portfolio_value_data'):
+        self.value_db.to_pickle(os.path.join(self.portfolio_directory, output_name+'.pkl'))
+        self.value_db.to_csv(os.path.join(self.portfolio_directory, output_name+'.csv'))
+        print('Portfolio value data saved in {}\crypto_currencies'.format(self.data_base_path))
 
-	def update_prices_history(self, output_name='prices_history'):
-		temp_df = pd.DataFrame(index=[datetime.now().replace(second=0, microsecond=0)])
+    def get_full_asset_vs_price_df(self, market_data=MarketData()):
+        asset_list = list(self.assets.keys())
+        prices = market_data.get_crypto_price_history(symbols=asset_list)
+        merged = prices.join(self.assets_db, lsuffix='_price', rsuffix='_quantity', how='outer')
+        return merged.fillna(method='ffill').dropna()
 
-		for asset in self.assets:
-			temp_df[asset] = market.get_coin_value(asset)
+    def get_portfolio_value_df(self, market_data=MarketData()):
+        prices_assets_df = self.get_full_asset_vs_price_df(market_data=market_data)
+        print(prices_assets_df)
+        value_df = pd.DataFrame()
+        for asset in self.assets:
+            value_df[asset] = prices_assets_df[asset+'_quantity']*prices_assets_df[asset+'_price']
+        value_df['total'] = value_df.sum(axis=1)
+        return value_df
 
-		self.prices_history = self.prices_history.append(temp_df)
-		self.prices_history.to_pickle(os.path.join(self.portfolio_path, output_name+'.pk'))
-		self.prices_history.to_csv(os.path.join(self.portfolio_path, output_name+'.csv'))
-
-	def update_assets_history(self, output_name='assets_history'):
-		temp_df = pd.DataFrame(self.assets, index=[datetime.now().replace(second=0, microsecond=0)])
-		self.assets_history = self.assets_history.append(temp_df)
-
-		self.assets_history.to_pickle(os.path.join(self.portfolio_path, output_name+'.pk'))
-		self.assets_history.to_csv(os.path.join(self.portfolio_path, output_name+'.csv'))
-
-	def update_portfolio_history(self, assets_name, prices_name):
-		self.update_prices_history(output_name=prices_name)
-		self.update_assets_history(output_name=assets_name)
-
-	def create_value_dataframe(self):
-		for asset in self.assets_history.columns:
-			self.value_history[asset] = self.prices_history[asset]*self.assets_history[asset]
-		self.value_history['Total'] = self.value_history.sum(axis=1)
-		return self.value_history
-
-
-
+    def update_portfolio_value(self):
+        market_data = MarketData()
+        a = market_data.update_market_eur_price()
+        print(a)
+        # market.save_crypto_eur_db()
+        self.update_portfolio_assets(assets=self.assets)
+        value_db = self.get_portfolio_value_df(market_data=market_data)
+        self.value_db = value_db
+        return value_db
 
 
 if __name__=='__main__':
-	portfolio_assets = {
-		'BTC': 0.007,
-		'ETH': 2.14081,
-		'XRP': 922.5,
-		'ADA': 926,
-		'XLM': 929.07,
-		'LTC': 1.0,
-		'TRX': 2760,
-		'UBQ': 18.222,
-		'BIS': 36.6,
-		'IOTA': 47.553,
-		'EMC2': 45,
-		'FUN': 633.366,
-		'ADST': 136.71
-	}
+    portfolio_assets = {
+        'BTC': 0.007,
+        'ETH': 2.14081,
+        'XRP': 922.5,
+        'ADA': 926,
+        'XLM': 929.07,
+        'LTC': 1.0,
+        'TRX': 2760,
+        'UBQ': 18.222,
+        'BIS': 36.6,
+        'IOTA': 47.553,
+        'EMC2': 45,
+        'FUN': 633.366,
+        'ADST': 136.71
+    }
 
-	import pylab as plt
-	from pprint import pprint
-	
-	myportfolio = PortFolio(
-		name= 'MyPortfolio',
-		assets = portfolio_assets,
-		invested = 2270.0)
+    date = datetime.strptime('01 Jan 2018', '%d %b %Y')
+    import pylab as plt
+    from pprint import pprint
+    
+    myportfolio = PortFolio(
+        assets = portfolio_assets,
+        name= 'TestPortfolio'
+        )
 
-	myportfolio.set_historic_data_from_path(myportfolio.portfolio_path)
+    myportfolio.assets_db = pd.DataFrame(data=portfolio_assets, index = [date])
+    assets_db = myportfolio.update_portfolio_assets()[['XRP','BTC']]
+    print(assets_db)
 
-	myportfolio.update_portfolio_history(assets_name='assets_history', prices_name='prices_history')
-	print(myportfolio.assets_history)
-	# myportfolio.prices_history.plot()
-
-	print('#################################################################')
-	values_df = myportfolio.create_value_dataframe()
-	values_df.Total.plot()
-	plt.show()
-
+    result = myportfolio.update_portfolio_value()
+    print(result)
 
