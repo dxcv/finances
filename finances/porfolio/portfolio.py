@@ -37,7 +37,7 @@ class PortFolio():
             self.assets_db = df
             return df
         except FileNotFoundError:
-            print('Unable to load database from file')
+            print('Data base not existent yet.')
             return
 
     def update_portfolio_assets(self, assets=None):
@@ -105,7 +105,7 @@ class PortFolio():
 
     def get_assets_value_since(self, date):
         self.assets_db = pd.DataFrame(data=self.assets, index=[date])
-        full_db = self.update_portfolio_value()
+        full_db = self.get_portfolio_value_df()
         return full_db
 
 
