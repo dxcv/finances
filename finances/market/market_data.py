@@ -8,7 +8,7 @@ import numpy as np
 import pandas as pd
 import pickle
 import quandl
-from datetime import datetime
+import datetime
 
 from coinmarketcap import Market
 
@@ -66,7 +66,7 @@ class MarketData():
 
     def update_market_eur_price(self):
         data_base = self.crypto_eur_db
-        _temp_df = pd.DataFrame(index=[datetime.now().replace(second=0, microsecond=0)])
+        _temp_df = pd.DataFrame(index=[datetime.datetime.now().replace(second=0, microsecond=0)])
 
         # add the data for all the crypto currencies
         for coin in self.crypto_dictionary:
@@ -98,10 +98,29 @@ class MarketData():
         daily_data = self.crypto_eur_db[symbols].resample(offset).mean()
         return daily_data.pct_change()
 
-    def cummulative_variation(self, symbols=None, days=0):
-        df = self.crypto_returns_history(symbols=symbols)[-days:]
-        df.iloc[0] = 0
-        return df.cumsum()
+    def cummulative_variation(self,
+        symbols=None,
+        n_days=0,
+        start_date=None,
+        time_scale=None,
+        end_date=datetime.datetime.today()
+        ):
+
+        if start_date is None:
+            start_date = datetime.datetime.today() - datetime.timedelta(days=n_days)
+
+        if symbols is None:
+            symbols = list(self.crypto_dictionary.keys())
+
+        df = self.get_crypto_price_history(symbols=symbols)
+
+        if time_scale is not None:
+            df = df.resample(time_scale).mean()
+        
+        select_dates_df=df.ix[start_date:end_date]
+        relative_change=select_dates_df.apply(lambda x: (x-x[0])/x[0])
+        return relative_change
+
 
 if __name__=='__main__':
     import pylab as plt
@@ -113,10 +132,11 @@ if __name__=='__main__':
     mkt = MarketData()
 
     mkt.update_market_eur_price()
-    df = mkt.cummulative_variation(days=10)
+    df = mkt.cummulative_variation(n_days=10)
     df.plot()
 
     mkt.save_crypto_eur_db()
+    print(mkt.crypto_eur_db)
 
     plt.show()
 
