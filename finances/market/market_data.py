@@ -89,23 +89,32 @@ class MarketData():
     def get_crypto_price_history(self, symbols):
         return self.crypto_eur_db[symbols]
 
-    def get_crypto_returns_history(self, symbols, offset='D'):
+    def crypto_returns_history(self, symbols=None, offset='D'):
         """
         offset definition in http://pandas.pydata.org/pandas-docs/stable/timeseries.html#offset-aliases
         """
+        if symbols is None:
+            symbols = list(self.crypto_dictionary.keys())
         daily_data = self.crypto_eur_db[symbols].resample(offset).mean()
         return daily_data.pct_change()
+
+    def cummulative_variation(self, symbols=None, days=0):
+        df = self.crypto_returns_history(symbols=symbols)[-days:]
+        df.iloc[0] = 0
+        return df.cumsum()
 
 if __name__=='__main__':
     import pylab as plt
 
+    import seaborn as sns
+
+    sns.set()
+
     mkt = MarketData()
 
     mkt.update_market_eur_price()
-
-    print(mkt.crypto_eur_db)
-    db = mkt.get_crypto_returns_history(list(convert_name_dictionary.keys()))
-    db.dropna(how='any').boxplot()
+    df = mkt.cummulative_variation(days=10)
+    df.plot()
 
     mkt.save_crypto_eur_db()
 
