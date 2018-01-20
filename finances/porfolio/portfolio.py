@@ -103,10 +103,29 @@ class PortFolio():
         daily_data = portfolio_data.resample(offset).mean()
         return daily_data.pct_change()
 
-    def get_assets_value_since(self, date):
+    def extend_assets_value_from(self, date):
         self.assets_db = pd.DataFrame(data=self.assets, index=[date])
         full_db = self.get_portfolio_value_df()
         return full_db
+
+    def cummulative_variation(self,
+        n_days,
+        start_date=None,
+        time_scale=None,
+        end_date=datetime.datetime.today()
+        ):
+
+        if start_date is None:
+            start_date = datetime.datetime.today() - datetime.timedelta(days=n_days)
+
+        df = self.get_portfolio_value_df()
+
+        if time_scale is not None:
+            df = df.resample(time_scale).mean()
+        
+        select_dates_df=df.ix[start_date:end_date]
+        relative_change=select_dates_df.apply(lambda x: (x-x[0])/x[0])
+        return relative_change
 
 
 if __name__=='__main__':
@@ -134,7 +153,7 @@ if __name__=='__main__':
         name= 'PedroPortfolio'
         )
 
-    result = myportfolio.update_and_save_portfolio()
+    result = myportfolio.cummulative_variation(n_days=10)
     print(result)
     result.plot()
     plt.show()
