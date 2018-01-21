@@ -15,9 +15,8 @@ class PortFolio():
     value_db = pd.DataFrame()
     market_data = MarketData()
 
-    def __init__(self, name, assets):
+    def __init__(self, name):
         self.name = name
-        self.assets = assets
         self.set_portfolio_directory()
         self.load_portfolio_assets_data()
 
@@ -35,6 +34,7 @@ class PortFolio():
             df = pd.read_csv(portfolio_data_path, index_col=0, parse_dates=True, infer_datetime_format=True)
             print('Loaded portfolio database from {}'.format(portfolio_data_path))
             self.assets_db = df
+            self.assets = self.assets_db.iloc[-1].to_dict()
             return df
         except FileNotFoundError:
             print('Data base not existent yet.')
@@ -80,11 +80,11 @@ class PortFolio():
         value_df['TOTAL'] = value_df.sum(axis=1)
         return value_df
 
-    def update_portfolio_value(self, save_market=False):
-        self.market_data.update_market_eur_price()
-        if save_market:
-            self.market_data.save_crypto_eur_db()
-        self.update_portfolio_assets(assets=self.assets)
+    def update_value_data(self, save_market=False):
+        # self.market_data.update_market_eur_price()
+        # if save_market:
+        #     self.market_data.save_crypto_eur_db()
+        # self.update_portfolio_assets(assets=self.assets)
         value_db = self.get_portfolio_value_df()
         self.value_db = value_db
         return value_db
@@ -95,7 +95,7 @@ class PortFolio():
         self.save_values_db()
         return updated_value
 
-    def get_crypto_returns_history(self, symbols='TOTAL', offset='D'):
+    def get_returns_data(self, symbols='TOTAL', offset='D'):
         """
         offset definition in http://pandas.pydata.org/pandas-docs/stable/timeseries.html#offset-aliases
         """
@@ -103,12 +103,13 @@ class PortFolio():
         daily_data = portfolio_data.resample(offset).mean()
         return daily_data.pct_change()
 
-    def extend_assets_value_from(self, date):
-        self.assets_db = pd.DataFrame(data=self.assets, index=[date])
-        full_db = self.get_portfolio_value_df()
-        return full_db
+    def insert_assets_at_date(self, assets, date):
+        _temp_df = pd.DataFrame(data=assets, index=[date])
+        new_df = pd.concat([_temp_df, self.assets_db]).sort_index()
+        self.assets_db = new_df
+        return self.assets_db
 
-    def cummulative_variation(self,
+    def relative_variation_since(self,
         n_days,
         start_date=None,
         time_scale=None,
