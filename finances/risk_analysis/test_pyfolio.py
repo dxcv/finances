@@ -8,26 +8,20 @@ import numpy as np
 import pandas as pd
 import pickle
 import quandl
-from datetime import datetime
+import datetime
 
 import pyfolio as pf
+import pylab as plt
 
+from market.market_data import MarketData
 
-from crypto_analysis.crypto_data import get_quandl_data
+mkt = MarketData()
 
-def cal_returns(array):
-    return array[-1]/array[0]
+btc_returns = mkt.crypto_returns_history(symbols='BTC').dropna()
+eth_returns = mkt.crypto_returns_history(symbols='XRP').dropna()
 
-btc_usd = pd.read_csv('C:\\Users\\Pedro\\Dropbox\\repository\\projects\\finances.git\\data\\btc_usd.csv')
-
-print(btc_usd.dropna())
-
-btc_returns = btc_usd.rolling(window=2).apply(cal_returns).dropna()['avg_btc_price_usd']
-
-out_of_sample = btc_returns.index[-40]
-
-pf.create_returns_tear_sheet(
-    returns=btc_returns,
+pf.create_full_tear_sheet(
+    returns=eth_returns,
     benchmark_rets=btc_returns,
-    live_start_date=out_of_sample
+    live_start_date=btc_returns.index[-30]
 )
