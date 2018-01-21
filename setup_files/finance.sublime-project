@@ -21,22 +21,12 @@
 				{
 					"cmd":
 					[
-						"C:\\Anaconda3\\envs\\finance27\\python.exe",
-						"-u",
-						"$file",
-						"${file/\\.py/}"
-					],
-					"name": "pyalgotrade: 2.7"
-				},
-				{
-					"cmd":
-					[
 						"start",
-						"C:\\Users\\Pedro\\Dropbox\\repository\\projects\\finances.git\\finances",
+						"/D",
+						"C:\\Users\\Pedro\\Dropbox\\repository\\projects\\finances.git\\finances\\",
 						"cmd",
 						"/k",
-						"C:\\Anaconda3\\envs\\finance\\Scripts\\jupyter",
-						"notebook"
+						"C:\\Anaconda3\\envs\\finance\\Scripts\\jupyter-notebook",
 					],
 					"name": "start ipython 3.5"
 				}
