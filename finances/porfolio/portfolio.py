@@ -150,12 +150,12 @@ if __name__=='__main__':
     from pprint import pprint
     
     myportfolio = PortFolio(
-        assets = portfolio_assets,
         name= 'PedroPortfolio'
         )
 
-    result = myportfolio.cummulative_variation(n_days=10)
-    print(result)
-    result.plot()
+    result = myportfolio.update_value_data()
+    # variation = .value_db.plot()
+    myportfolio.relative_variation_since(n_days=10).TOTAL.plot()
+    # variation.plot()
     plt.show()
 
