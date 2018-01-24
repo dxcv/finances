@@ -147,15 +147,16 @@ if __name__=='__main__':
     }
 
     import pylab as plt
+    import seaborn as sns
     from pprint import pprint
+
+    sns.set()
     
     myportfolio = PortFolio(
         name= 'PedroPortfolio'
         )
 
     result = myportfolio.update_value_data()
-    # variation = .value_db.plot()
-    myportfolio.relative_variation_since(n_days=10).TOTAL.plot()
-    # variation.plot()
+    myportfolio.relative_variation_since(n_days=14).plot(style={'TOTAL':'--k'})
     plt.show()
 
