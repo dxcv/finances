@@ -52,7 +52,6 @@ class MarketData():
         crypto_db_path = os.path.join(self.data_base_path, 'crypto_currencies', db_name_csv)
         print('Loaded crypto currency database from {}'.format(crypto_db_path))
         return pd.read_csv(crypto_db_path, index_col=0, parse_dates=True, infer_datetime_format=True)
-        
 
     def get_coin_price(self, crypto_code, currency='eur'):
         crypto_name = self.crypto_dictionary[crypto_code]
@@ -60,9 +59,33 @@ class MarketData():
         value = coin[0]['price_{}'.format(currency)]
         return float(value)
 
+    def get_coin_full_data(self, crypto_code):
+        crypto_name = self.crypto_dictionary[crypto_code]
+        coin = COINMARKETCAP.ticker(crypto_name, convert='eur')
+        return coin[0]
+
     def get_total_market_cap(self, currency='eur'):
         total_market = COINMARKETCAP.stats(convert='EUR')
         return total_market['total_market_cap_{}'.format(currency)]
+
+    def update_coin_full_data(self, crypto_code):
+        coin_path = os.path.join(self.data_base_path, 'crypto_currencies', '{}_full_data.csv'.format(crypto_code))
+        try:
+            data_coin_df = pd.read_csv(
+                coin_path,
+                index_col=0,
+                parse_dates=True,
+                infer_datetime_format=True)
+        except FileNotFoundError:
+            data_coin_df = pd.DataFrame()
+
+        coin_full_data = self.get_coin_full_data(crypto_code)
+        _temp_df = pd.DataFrame(
+            data=coin_full_data,
+            index=[datetime.datetime.now().replace(second=0, microsecond=0)])
+        data_coin_df = data_coin_df.append(_temp_df)
+        data_coin_df.to_csv(coin_path)
+
 
     def update_market_eur_price(self):
         data_base = self.crypto_eur_db
@@ -79,7 +102,23 @@ class MarketData():
 
         # append this to the current database
         self.crypto_eur_db = data_base.append(_temp_df)
-        return self.crypto_eur_db 
+        return self.crypto_eur_db
+
+    def update_complete_data_base(self):
+        self.update_market_eur_price()
+
+        for coin in self.crypto_dictionary:
+            self.update_coin_full_data(crypto_code=coin)
+
+
+    def load_coin_data_base(self, crypto_code):
+        coin_path = os.path.join(self.data_base_path, 'crypto_currencies', '{}_full_data.csv'.format(crypto_code))
+        data_coin_df = pd.read_csv(
+            coin_path,
+            index_col=0,
+            parse_dates=True,
+            infer_datetime_format=True)
+        return data_coin_df
 
     def save_crypto_eur_db(self, output_name='main_crypto_eur_database'):
         self.crypto_eur_db.to_pickle(os.path.join(self.data_base_path, 'crypto_currencies', output_name+'.pkl'))
@@ -98,7 +137,8 @@ class MarketData():
         daily_data = self.crypto_eur_db[symbols].resample(offset).mean()
         return daily_data.pct_change()
 
-    def cummulative_variation(self,
+    def cummulative_variation(
+        self,
         symbols=None,
         n_days=0,
         start_date=None,
@@ -131,7 +171,7 @@ if __name__=='__main__':
 
     mkt = MarketData()
 
-    mkt.update_market_eur_price()
+    mkt.update_complete_data_base()
     df = mkt.cummulative_variation(n_days=10)
     df.plot()
 
