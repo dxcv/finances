@@ -32,7 +32,7 @@ convert_name_dictionary={
 
 if __name__=='__main__':
     mkt = MarketData()
-    mkt.update_market_eur_price()
+    mkt.update_complete_data_base()
     mkt.save_crypto_eur_db()
 
 
