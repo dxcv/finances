@@ -11,7 +11,7 @@
 			],
 			"env":
 			{
-				"PYTHONPATH": "C:\\Users\\Pedro\\Dropbox\\repository\\projects\\finances.git\\finances"
+				"PYTHONPATH": "C:\\projects\\finances.git\\finances"
 			},
 			"name": "python",
 			"selector": "source.python",
@@ -23,10 +23,10 @@
 					[
 						"start",
 						"/D",
-						"C:\\Users\\Pedro\\Dropbox\\repository\\projects\\finances.git\\finances\\",
+						"C:\\projects\\finances.git\\finances\\",
 						"cmd",
 						"/k",
-						"C:\\Anaconda3\\envs\\finance\\Scripts\\jupyter-notebook",
+						"C:\\Anaconda3\\envs\\finance\\Scripts\\jupyter-notebook"
 					],
 					"name": "start ipython 3.5"
 				}
@@ -42,15 +42,13 @@
 	"folders":
 	[
 		{
-			"path": "C:\\Users\\Pedro\\Dropbox\\repository\\projects\\finances.git\\finances"
+			"path": "C:\\projects\\finances.git"
 		},
 		{
-
 			"path": "C:\\Anaconda3\\envs\\finance\\Lib\\site-packages\\pyfolio"
 		},
 		{
-
 			"path": "C:\\Anaconda3\\envs\\finance\\Lib\\site-packages\\coinmarketcap"
-		},
+		}
 	]
 }
