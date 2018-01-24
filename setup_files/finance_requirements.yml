@@ -4,13 +4,13 @@ dependencies:
 - python=3.5
 - anaconda
 - pip
-# - pandas
+# - cvxopt (conda install -c conda-forge cvxopt)
 # - quandl
-# - jupyter
-
 # - pip:
 #   - pyfolio
 #   - theano
 #   - pymc3
 #   - coinmarketcap
-#   - cvxopt (conda install -c conda-forge cvxopt)
+#   
+# - jupyter
+
