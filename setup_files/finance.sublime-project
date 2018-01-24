@@ -28,7 +28,35 @@
 						"/k",
 						"C:\\Anaconda3\\envs\\finance\\Scripts\\jupyter-notebook"
 					],
+					"name": "start ipython 3.6"
+				},
+				{
+					"cmd":
+					[
+						"start",
+						"/D",
+						"C:\\projects\\finances.git\\finances\\",
+						"cmd",
+						"/k",
+						"C:\\Anaconda3\\envs\\finances\\Scripts\\jupyter-notebook"
+					],
 					"name": "start ipython 3.5"
+				},
+				{
+					"cmd":
+					[
+						"C:\\Anaconda3\\envs\\finances\\python.exe",
+						"-u",
+						"$file",
+						"${file/\\.py/}"
+					],
+					"env":
+					{
+						"PYTHONPATH": "C:\\projects\\finances.git\\finances"
+					},
+					"name": "python 3.5 - for cvxopt",
+					"selector": "source.python",
+					"shell": true,
 				}
 			]
 		},
