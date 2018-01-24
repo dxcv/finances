@@ -1,0 +1,3 @@
+,24h_volume_eur,24h_volume_usd,available_supply,cached,id,last_updated,market_cap_eur,market_cap_usd,max_supply,name,percent_change_1h,percent_change_24h,percent_change_7d,price_btc,price_eur,price_usd,rank,symbol,total_supply
+2018-01-24 22:56:00,389453656.60800004,482528000.0,16929650.0,True,bitcoin-cash,1516830858,22456276224.0,27823033293.0,21000000.0,Bitcoin Cash,0.13,-0.81,-1.34,0.146445,1326.44657295,1643.45,4,BCH,16929650.0
+2018-01-24 22:58:00,389453656.608,482528000.0,16929650.0,True,bitcoin-cash,1516830858,22456276224.0,27823033293.0,21000000.0,Bitcoin Cash,0.13,-0.81,-1.34,0.146445,1326.44657295,1643.45,4,BCH,16929650.0
