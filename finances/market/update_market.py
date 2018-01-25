@@ -5,9 +5,11 @@ import pickle
 import quandl
 import datetime
 
-from market.market_data import MarketData
-
+import sys
 cfd, cfn = os.path.split(os.path.abspath(__file__))
+sys.path.append(cfd)
+
+from market_data import MarketData
 
 convert_name_dictionary={
     'BTC': 'bitcoin',
