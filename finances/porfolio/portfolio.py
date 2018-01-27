@@ -11,12 +11,15 @@ PORTFOLIOS_DIRECTORY = cfd
 
 class PortFolio():
     assets = {}
+    assets_prices = {}
     assets_db = pd.DataFrame()
-    value_db = pd.DataFrame()
+    values_data = pd.DataFrame()
     market_data = MarketData()
+    profits_data = pd.DataFrame()
 
-    def __init__(self, name):
+    def __init__(self, name, assets_prices):
         self.name = name
+        self.assets_prices = assets_prices
         self.set_portfolio_directory()
         self.load_portfolio_assets_data()
 
@@ -62,8 +65,8 @@ class PortFolio():
         print('Assets data base saved in {}\crypto_currencies'.format(self.portfolio_directory))
 
     def save_values_db(self, output_name='portfolio_value_data'):
-        self.value_db.to_pickle(os.path.join(self.portfolio_directory, output_name+'.pkl'))
-        self.value_db.to_csv(os.path.join(self.portfolio_directory, output_name+'.csv'))
+        self.values_data.to_pickle(os.path.join(self.portfolio_directory, output_name+'.pkl'))
+        self.values_data.to_csv(os.path.join(self.portfolio_directory, output_name+'.csv'))
         print('Portfolio value data saved in {}\crypto_currencies'.format(self.portfolio_directory))
 
     def get_full_asset_vs_price_df(self):
@@ -72,7 +75,7 @@ class PortFolio():
         merged = prices.join(self.assets_db, lsuffix='_price', rsuffix='_quantity', how='outer')
         return merged.fillna(method='ffill').dropna()
 
-    def get_portfolio_value_df(self):
+    def get_values_data(self):
         prices_assets_df = self.get_full_asset_vs_price_df()
         value_df = pd.DataFrame()
         for asset in self.assets:
@@ -80,28 +83,33 @@ class PortFolio():
         value_df['TOTAL'] = value_df.sum(axis=1)
         return value_df
 
-    def update_value_data(self, save_market=False):
-        # self.market_data.update_market_eur_price()
-        # if save_market:
-        #     self.market_data.save_crypto_eur_db()
-        # self.update_portfolio_assets(assets=self.assets)
-        value_db = self.get_portfolio_value_df()
-        self.value_db = value_db
-        return value_db
+    def update_data(self):
+        self.values_data = self.get_values_data()
+        self.profits_data = self.get_profits()
 
-    def update_and_save_portfolio(self):
-        updated_value = self.update_portfolio_value(save_market=True)
+    def save_data(self):
         self.save_assets_db()
         self.save_values_db()
-        return updated_value
 
-    def get_returns_data(self, symbols='TOTAL', offset='D'):
+    def get_profits(self):
+        prices_assets_df = self.get_full_asset_vs_price_df()
+        profits_df = pd.DataFrame()
+        for asset in self.assets:
+            profits_df[asset] = (prices_assets_df[asset+'_price']-self.assets_prices[asset])/self.assets_prices[asset]
+        self.profits_data = profits_df
+        return profits_df
+
+    def returns_data(self, symbols='TOTAL', offset='D'):
         """
         offset definition in http://pandas.pydata.org/pandas-docs/stable/timeseries.html#offset-aliases
         """
-        portfolio_data = self.get_portfolio_value_df()
+        portfolio_data = self.get_values_data()
         daily_data = portfolio_data.resample(offset).mean()
         return daily_data.pct_change()
+
+    def weights_data(self):
+        values =self.get_values_data()
+        return values.multiply(1/values.TOTAL, axis=0)*100
 
     def insert_assets_at_date(self, assets, date):
         _temp_df = pd.DataFrame(data=assets, index=[date])
@@ -119,7 +127,7 @@ class PortFolio():
         if start_date is None:
             start_date = datetime.datetime.today() - datetime.timedelta(days=n_days)
 
-        df = self.get_portfolio_value_df()
+        df = self.get_values_data()
 
         if time_scale is not None:
             df = df.resample(time_scale).mean()
@@ -146,6 +154,22 @@ if __name__=='__main__':
         'ADST': 136.71
     }
 
+    assets_effective_price = {
+        'BTC': 0.1,
+        'ETH': 454.96,
+        'XRP': 0.772,
+        'ADA': 0.404,
+        'XLM': 0.378,
+        'LTC': 208.23,
+        'TRX': 0.0668,
+        'UBQ': 5.7,
+        'BIS': 3.48,
+        'IOTA': 3.08,
+        'EMC2': 0.769,
+        'FUN': 0.0897,
+        'ADST': 0.817   
+    }
+
     import pylab as plt
     import seaborn as sns
     from pprint import pprint
@@ -153,10 +177,13 @@ if __name__=='__main__':
     sns.set()
     
     myportfolio = PortFolio(
-        name= 'PedroPortfolio'
+        name= 'PedroPortfolio',
+        assets_prices = assets_effective_price
         )
 
-    result = myportfolio.update_value_data()
-    myportfolio.relative_variation_since(n_days=14).plot(style={'TOTAL':'--k'})
+    result = myportfolio.update_data()
+    t = myportfolio.get_profits()
+    t.plot(style={'TOTAL':'--k'})
+    plt.ylim([-1,2])
     plt.show()
 
