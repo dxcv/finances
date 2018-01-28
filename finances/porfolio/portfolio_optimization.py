@@ -9,7 +9,7 @@ from market import market_data as mkt_data
 cfd, cfn = os.path.split(os.path.abspath(__file__))
 
 mkt=mkt_data.MarketData()
-returns = mkt.crypto_returns_history(symbols=['BTC', 'ETH', 'XRP', 'XLM', 'ADA', 'TRX', 'ADST', 'BIS', 'IOTA']).dropna()
+returns = mkt.crypto_returns_history(symbols=['ADA', 'ADST', 'BIS', 'BTC', 'EMC2', 'ETH', 'FUN', 'IOTA', 'LTC', 'TRX', 'UBQ', 'XLM', 'XRP'])#.dropna()
 
 avg_rets = returns.mean()
 cov_mat = returns.cov()

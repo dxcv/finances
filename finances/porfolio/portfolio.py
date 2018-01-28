@@ -136,6 +136,25 @@ class PortFolio():
         relative_change=select_dates_df.apply(lambda x: (x-x[0])/x[0])
         return relative_change
 
+    def optimize_allocation(self, how='Sharpe', **kwargs):
+        import portfolioopt as pfopt
+        mkt = MarketData()
+        returns = mkt.crypto_returns_history(symbols=list(self.assets.keys())).dropna(how='any')
+        print(returns)
+
+        if how == 'Sharpe':
+            optimization_function = pfopt.tangency_portfolio
+        
+        elif how == 'Markowitz':
+            optimization_function = pfopt.markowitz_portfolio
+       
+        avg_rets = returns.mean()
+        cov_mat = returns.cov()
+        weights_optimal = optimization_function(cov_mat=cov_mat, exp_rets=avg_rets, **kwargs)
+        weights_optimal = pfopt.truncate_weights(weights=weights_optimal, min_weight=0.01)
+        return weights_optimal
+
+
 
 if __name__=='__main__':
     portfolio_assets = {
@@ -187,3 +206,5 @@ if __name__=='__main__':
     plt.ylim([-1,2])
     plt.show()
 
+    weights = myportfolio.optimize_allocation(how='Sharpe')# target_ret=0.03)
+    print(weights)
