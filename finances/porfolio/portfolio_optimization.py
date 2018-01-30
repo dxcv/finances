@@ -3,13 +3,35 @@ import datetime
 import pickle
 import os
 import portfolioopt as pfopt
+import numpy as np
 
 from market import market_data as mkt_data
+import statsmodels.api as sm
 
 cfd, cfn = os.path.split(os.path.abspath(__file__))
 
 mkt=mkt_data.MarketData()
-returns = mkt.crypto_returns_history(symbols=['ADA', 'ADST', 'BIS', 'BTC', 'EMC2', 'ETH', 'FUN', 'IOTA', 'LTC', 'TRX', 'UBQ', 'XLM', 'XRP'])#.dropna()
+returns = mkt.crypto_returns_history(symbols=['ADA', 'ADST', 'BTC', 'BIS', 'NEO', 'EMC2', 'ETH', 'FUN', 'IOTA', 'LTC', 'TRX', 'UBQ', 'XLM', 'XRP']).dropna()
+
+print(returns)
+month_returns = pd.DataFrame()
+
+for r in returns.columns:
+    print(r)
+    rets = returns[r]
+    kde = sm.nonparametric.KDEUnivariate(rets)
+    kde.fit()
+    ret_value = kde.support
+    pdf = kde.density
+    prob = pdf*(ret_value[-1]-ret_value[0])/(len(pdf)-1)
+    prob[prob < 0] = 0
+    sample = np.random.choice(ret_value, p=prob, size=100000)
+    for k in range(1):
+        sample += np.random.choice(ret_value, p=prob, size=100000)
+    month_returns[r] = sample
+
+returns = month_returns
+print(returns)
 
 avg_rets = returns.mean()
 cov_mat = returns.cov()
@@ -29,3 +51,4 @@ weights_sharpe = pfopt.tangency_portfolio(cov_mat=cov_mat, exp_rets=avg_rets)
 weights_sharpe = pfopt.truncate_weights(weights_sharpe)
 
 print(weights_sharpe)
+
