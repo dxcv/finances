@@ -34,7 +34,15 @@ convert_name_dictionary={
     'TRX': 'tron',
     'FUN': 'funfair',
     'XLM': 'stellar',
-    'ADST': 'adshares'
+    'ADST': 'adshares',
+    #
+    'ICX': 'icon',
+    'QTUM': 'qtum',
+    'VEN': 'vechain',
+    'XRB': 'raiblocks',
+    'STEEM': 'steem',
+    'STRAAT': 'stratis',
+    'XVG': 'verge'
 }
 
 
