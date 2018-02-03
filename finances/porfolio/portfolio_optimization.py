@@ -59,8 +59,6 @@ def return_from_risk(returns_data, N):
 
     risk_function = interp1d(risks, rewards)
     return risk_function
-    # return optimal_allocation
-
 
 
 if __name__=='__main__':
