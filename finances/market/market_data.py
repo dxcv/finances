@@ -136,14 +136,18 @@ class MarketData():
     def get_crypto_price_history(self, symbols):
         return self.crypto_eur_db[symbols]
 
-    def crypto_returns_history(self, symbols=None, offset='D'):
+    def crypto_returns_data(self, symbols=None, time_step='D', start_date=None):
         """
         offset definition in http://pandas.pydata.org/pandas-docs/stable/timeseries.html#offset-aliases
         """
         if symbols is None:
             symbols = list(self.crypto_dictionary.keys())
-        daily_data = self.crypto_eur_db[symbols].resample(offset).mean()
-        return daily_data.pct_change()
+        resampled_data = self.crypto_eur_db[symbols].resample(time_step).mean()
+        
+        if start_date is not None:
+            resampled_data = resampled_data[resampled_data.index>start_date]
+
+        return resampled_data.pct_change().dropna()
 
     def cummulative_variation(
         self,
