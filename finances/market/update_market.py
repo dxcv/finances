@@ -14,6 +14,6 @@ from market_data import MarketData
 if __name__=='__main__':
     mkt = MarketData()
     mkt.update_complete_data_base()
-    #mkt.save_crypto_eur_db()
+    mkt.save_crypto_eur_db()
 
 
