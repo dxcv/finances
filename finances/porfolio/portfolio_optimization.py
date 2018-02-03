@@ -5,6 +5,7 @@ import os
 import portfolioopt as pfopt
 import numpy as np
 import pylab as plt
+from scipy.interpolate import interp1d
 
 from scipy.stats import norm
 from market import market_data as mkt_data
@@ -52,7 +53,20 @@ def markowitz_efficient_frontier(returns_data):
 
     return returns, risks
 
+def return_from_risk(returns_data, N):
+    projected_returns = generate_projected_normal_sample(returns_data, N)
+    rewards, risks = markowitz_efficient_frontier(projected_returns)
+
+    risk_function = interp1d(risks, rewards)
+    return risk_function
+    # return optimal_allocation
+
+
+
 if __name__=='__main__':
+
+    reward = return_from_risk(returns, 60)
+    print(reward(0.22))
     import seaborn as sns
     sns.set()
     sns.set_palette('YlOrRd', 12)
@@ -62,3 +76,5 @@ if __name__=='__main__':
         plt.plot(risks, rewards, label='%i days' % days)
     plt.legend()
     plt.show()
+
+    print(optimal_allocation(returns, 0.2, 30))
