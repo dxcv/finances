@@ -201,10 +201,11 @@ if __name__=='__main__':
         )
 
     result = myportfolio.update_data()
-    t = myportfolio.get_profits()
+    t = myportfolio.relative_variation_since(n_days=10)
+    print(t)
     t.plot(style={'TOTAL':'--k'})
-    plt.ylim([-1,2])
+    # plt.ylim([-1,2])
     plt.show()
 
-    weights = myportfolio.optimize_allocation(how='Sharpe')# target_ret=0.03)
-    print(weights)
+    # weights = myportfolio.optimize_allocation(how='Sharpe')# target_ret=0.03)
+    # print(weights)

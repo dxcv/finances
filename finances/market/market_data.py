@@ -173,6 +173,23 @@ class MarketData():
         relative_change=select_dates_df.apply(lambda x: (x-x[0])/x[0])
         return relative_change
 
+    def normal_fit_returns(
+        self,
+        symbol,
+        time_frame='D',
+        N_steps=1,
+        start_date=datetime.datetime(2000, 1, 1, 1, 1) ,
+        end_date=datetime.datetime.now()):
+
+        from scipy.stats import norm
+        rets = self.crypto_returns_data(symbols=symbol, time_step=time_frame)
+        rets=rets[(rets.index>start_date) & (rets.index<end_date)].dropna()
+        
+        # MLE of the sample for a normal distribution (to be improved) 
+        mu, std = norm.fit(rets)
+        projected_mu, projected_std = N_steps*mu, std*np.sqrt(N_steps)
+        return mu, std
+
 
 if __name__=='__main__':
     import pylab as plt
@@ -183,12 +200,14 @@ if __name__=='__main__':
 
     mkt = MarketData()
 
-    mkt.update_complete_data_base()
+    mu, std = mkt.normal_fit_returns('ETH')
+    print(mu)
+    # mkt.update_complete_data_base()
     df = mkt.cummulative_variation(n_days=10)
     df.plot()
 
-    mkt.save_crypto_eur_db()
-    print(mkt.crypto_eur_db)
+    # mkt.save_crypto_eur_db()
+    # print(mkt.crypto_eur_db)
 
     plt.show()
 
