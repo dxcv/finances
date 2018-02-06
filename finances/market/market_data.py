@@ -147,7 +147,7 @@ class MarketData():
         if start_date is not None:
             resampled_data = resampled_data[resampled_data.index>start_date]
 
-        return resampled_data.pct_change().dropna()
+        return resampled_data.pct_change()#.dropna()
 
     def cummulative_variation(
         self,
