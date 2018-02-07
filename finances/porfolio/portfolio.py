@@ -114,7 +114,7 @@ class PortFolio():
     def insert_assets_at_date(self, assets, date):
         _temp_df = pd.DataFrame(data=assets, index=[date])
         new_df = pd.concat([_temp_df, self.assets_db]).sort_index()
-        self.assets_db = new_df
+        self.assets_db = new_df.fillna(value=0)
         return self.assets_db
 
     def relative_variation_since(self,
@@ -173,6 +173,25 @@ if __name__=='__main__':
         'ADST': 136.71
     }
 
+    new_portfolio_assets = {
+        'BTC': 0.08074255978,
+        'ETH': 2.14081031,
+        'LTC': 1.50000003,
+        'XRP': 130,
+        'DASH': 0.286593,
+        'XMR': 1.32867,
+        'IOTA': 47.553,
+        'ADA': 0.073,
+        'XLM': 279.07,
+        'TRX': 0.237,
+        'BCH': 0,
+        'FUN': 2550.366,
+        'EMC2': 45,
+        'UBQ': 18.22222222,
+        'BIS': 36.59233533,
+        'ADST':   136.71
+    }
+
     assets_effective_price = {
         'BTC': 0.1,
         'ETH': 454.96,
@@ -200,11 +219,18 @@ if __name__=='__main__':
         assets_prices = assets_effective_price
         )
 
-    result = myportfolio.update_data()
-    t = myportfolio.relative_variation_since(n_days=10)
-    print(t)
-    t.plot(style={'TOTAL':'--k'})
-    # plt.ylim([-1,2])
+    myportfolio.insert_assets_at_date(assets=new_portfolio_assets, date=datetime.datetime(2018,2,6))
+    print(myportfolio.assets_db)
+
+
+    p = myportfolio.get_full_asset_vs_price_df()
+    print(p)
+    p.plot()
+    # result = myportfolio.update_data()
+    # t = myportfolio.relative_variation_since(n_days=10)
+    # print(t)
+    # t.plot(style={'TOTAL':'--k'})
+    # # plt.ylim([-1,2])
     plt.show()
 
     # weights = myportfolio.optimize_allocation(how='Sharpe')# target_ret=0.03)
