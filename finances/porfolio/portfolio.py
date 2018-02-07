@@ -12,7 +12,7 @@ PORTFOLIOS_DIRECTORY = cfd
 class PortFolio():
     assets = {}
     assets_prices = {}
-    assets_db = pd.DataFrame()
+    assets_data = pd.DataFrame()
     values_data = pd.DataFrame()
     market_data = MarketData()
     profits_data = pd.DataFrame()
@@ -36,15 +36,18 @@ class PortFolio():
         try:
             df = pd.read_csv(portfolio_data_path, index_col=0, parse_dates=True, infer_datetime_format=True)
             print('Loaded portfolio database from {}'.format(portfolio_data_path))
-            self.assets_db = df
-            self.assets = self.assets_db.iloc[-1].to_dict()
+            self.assets_data = df
+            self.assets = self.assets_data.iloc[-1].to_dict()
+            self.values_data = self.get_values_data()
+            # self.profits_data = self.get_profits()
             return df
+
         except FileNotFoundError:
             print('Data base not existent yet.')
             return
 
     def update_portfolio_assets(self, assets=None):
-        assets_data = self.assets_db
+        assets_data = self.assets_data
         if assets is None:
             current_assets = self.assets
         else:
@@ -55,13 +58,13 @@ class PortFolio():
         )
 
         # append this to the current database
-        self.assets_db = assets_data.append(_temp_df)
+        self.assets_data = assets_data.append(_temp_df)
         print('Portfolio assets updated')
-        return self.assets_db
+        return self.assets_data
 
-    def save_assets_db(self, output_name='assets_allocation_data'):
-        self.assets_db.to_pickle(os.path.join(self.portfolio_directory, output_name+'.pkl'))
-        self.assets_db.to_csv(os.path.join(self.portfolio_directory, output_name+'.csv'))
+    def save_assets_data(self, output_name='assets_allocation_data'):
+        self.assets_data.to_pickle(os.path.join(self.portfolio_directory, output_name+'.pkl'))
+        self.assets_data.to_csv(os.path.join(self.portfolio_directory, output_name+'.csv'))
         print('Assets data base saved in {}\crypto_currencies'.format(self.portfolio_directory))
 
     def save_values_db(self, output_name='portfolio_value_data'):
@@ -72,7 +75,7 @@ class PortFolio():
     def get_full_asset_vs_price_df(self):
         asset_list = list(self.assets.keys())
         prices = self.market_data.get_crypto_price_history(symbols=asset_list)
-        merged = prices.join(self.assets_db, lsuffix='_price', rsuffix='_quantity', how='outer')
+        merged = prices.join(self.assets_data, lsuffix='_price', rsuffix='_quantity', how='outer')
         return merged.fillna(method='ffill').dropna()
 
     def get_values_data(self):
@@ -88,7 +91,7 @@ class PortFolio():
         self.profits_data = self.get_profits()
 
     def save_data(self):
-        self.save_assets_db()
+        self.save_assets_data()
         self.save_values_db()
 
     def get_profits(self):
@@ -113,9 +116,9 @@ class PortFolio():
 
     def insert_assets_at_date(self, assets, date):
         _temp_df = pd.DataFrame(data=assets, index=[date])
-        new_df = pd.concat([_temp_df, self.assets_db]).sort_index()
-        self.assets_db = new_df.fillna(value=0)
-        return self.assets_db
+        new_df = pd.concat([_temp_df, self.assets_data]).sort_index()
+        self.assets_data = new_df.fillna(value=0)
+        return self.assets_data
 
     def relative_variation_since(self,
         n_days,
@@ -220,12 +223,13 @@ if __name__=='__main__':
         )
 
     myportfolio.insert_assets_at_date(assets=new_portfolio_assets, date=datetime.datetime(2018,2,6))
-    print(myportfolio.assets_db)
+    print(myportfolio.assets_data)
 
 
-    p = myportfolio.get_full_asset_vs_price_df()
+    p = myportfolio.get_values_data()
     print(p)
     p.plot()
+    myportfolio.save_data()
     # result = myportfolio.update_data()
     # t = myportfolio.relative_variation_since(n_days=10)
     # print(t)
