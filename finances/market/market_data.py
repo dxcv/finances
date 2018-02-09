@@ -61,7 +61,7 @@ class MarketData():
         print('Loaded crypto currency database from {}'.format(crypto_db_path))
         return pd.read_csv(crypto_db_path, index_col=0, parse_dates=True, infer_datetime_format=True)
 
-    def get_coin_price(self, crypto_code, currency='eur'):
+    def get_current_coin_price(self, crypto_code, currency='eur'):
         crypto_name = self.crypto_dictionary[crypto_code]
         coin = COINMARKETCAP.ticker(crypto_name, convert='eur')
         value = coin[0]['price_{}'.format(currency)]
@@ -101,7 +101,7 @@ class MarketData():
 
         # add the data for all the crypto currencies
         for coin in self.crypto_dictionary:
-            _temp_df[coin] = self.get_coin_price(coin, currency='eur')
+            _temp_df[coin] = self.get_current_coin_price(coin, currency='eur')
             print('{} price data updated'.format(coin))
 
         # add the total market capitalization data
@@ -119,7 +119,7 @@ class MarketData():
             self.update_coin_full_data(crypto_code=coin)
 
 
-    def load_coin_data_base(self, crypto_code):
+    def load_coin_full_data_base(self, crypto_code):
         coin_path = os.path.join(self.data_base_path, 'crypto_currencies', '{}_full_data.csv'.format(crypto_code))
         data_coin_df = pd.read_csv(
             coin_path,
@@ -136,7 +136,11 @@ class MarketData():
     def get_crypto_price_history(self, symbols):
         return self.crypto_eur_db[symbols]
 
-    def crypto_returns_data(self, symbols=None, time_step='D', start_date=None):
+    def get_price_at_date(self, symbols, date):
+        crypto_data = self.crypto_eur_db[symbols]
+        return crypto_data[crypto_data.index == date]
+
+    def crypto_returns_data(self, symbols=None, time_step='D', start_date=None, end_date=datetime.datetime.now()):
         """
         offset definition in http://pandas.pydata.org/pandas-docs/stable/timeseries.html#offset-aliases
         """
@@ -145,7 +149,7 @@ class MarketData():
         resampled_data = self.crypto_eur_db[symbols].resample(time_step).mean()
         
         if start_date is not None:
-            resampled_data = resampled_data[resampled_data.index>start_date]
+            resampled_data = resampled_data[resampled_data.index>start_date & resampled_data.index<end_date]
 
         return resampled_data.pct_change()#.dropna()
 

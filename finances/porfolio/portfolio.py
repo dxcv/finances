@@ -17,11 +17,11 @@ class PortFolio():
     market_data = MarketData()
     profits_data = pd.DataFrame()
 
-    def __init__(self, name, assets_prices):
+    def __init__(self, name=None):
         self.name = name
-        self.assets_prices = assets_prices
-        self.set_portfolio_directory()
-        self.load_portfolio_assets_data()
+        if self.name is not None:
+            self.set_portfolio_directory()
+            self.load_portfolio_assets_data()
 
     def set_portfolio_directory(self):
         directory = os.path.join(PORTFOLIOS_DIRECTORY, self.name)
@@ -88,7 +88,7 @@ class PortFolio():
 
     def update_data(self):
         self.values_data = self.get_values_data()
-        self.profits_data = self.get_profits()
+        #self.profits_data = self.get_profits()
 
     def save_data(self):
         self.save_assets_data()
@@ -121,7 +121,7 @@ class PortFolio():
         return self.assets_data
 
     def relative_variation_since(self,
-        n_days,
+        n_days=None,
         start_date=None,
         time_scale=None,
         end_date=datetime.datetime.today()
@@ -139,23 +139,23 @@ class PortFolio():
         relative_change=select_dates_df.apply(lambda x: (x-x[0])/x[0])
         return relative_change
 
-    def optimize_allocation(self, how='Sharpe', **kwargs):
+    def optimize_allocation(self, target_return, projection_steps=30, time_frame='D', **kwargs):
         import portfolioopt as pfopt
-        mkt = MarketData()
-        returns = mkt.crypto_returns_history(symbols=list(self.assets.keys())).dropna(how='any')
-        print(returns)
+        from porfolio.portfolio_optimization import generate_projected_normal_sample
 
-        if how == 'Sharpe':
-            optimization_function = pfopt.tangency_portfolio
-        
-        elif how == 'Markowitz':
-            optimization_function = pfopt.markowitz_portfolio
-       
-        avg_rets = returns.mean()
-        cov_mat = returns.cov()
-        weights_optimal = optimization_function(cov_mat=cov_mat, exp_rets=avg_rets, **kwargs)
-        weights_optimal = pfopt.truncate_weights(weights=weights_optimal, min_weight=0.01)
-        return weights_optimal
+        rets_data = self.market_data.crypto_returns_data(
+            symbols=list(self.assets.keys()),
+            time_step=time_frame,
+            **kwargs
+            ).dropna()
+        rets_data=rets_data.dropna()
+        projected_returns = generate_projected_normal_sample(rets_data, N=projection_steps, sample_size=10000)
+
+        avg_rets = projected_returns.mean()
+        cov_mat = projected_returns.cov()
+        optimal_weights = pfopt.markowitz_portfolio(cov_mat=cov_mat, exp_rets=avg_rets, target_ret=target_return)
+
+        return optimal_weights
 
 
 
