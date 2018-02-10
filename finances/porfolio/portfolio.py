@@ -202,7 +202,8 @@ if __name__=='__main__':
         'EMC2': 45,
         'UBQ': 18.22222222,
         'BIS': 36.59233533,
-        'ADST':   136.71
+        'ADST': 136.71,
+        'NEO': 2.04
     }
 
     assets_effective_price = {
@@ -232,21 +233,9 @@ if __name__=='__main__':
         # assets_prices = assets_effective_price
         )
 
-    print(myportfolio.assets_data)
+    start_date = datetime.datetime(2018,2,4,2)
 
-    # start_date = datetime.datetime(2018,2,5,23)
-    # end_date = datetime.datetime(2018,2,6,1)
-
-    p = myportfolio.relative_variation_since()#start_date=start_date, end_date=end_date)
-    # p = myportfolio.get_values_data().ix[start_date:end_date]
+    p = myportfolio.relative_variation_since(start_date=start_date)
     print(p)
-    p.TOTAL.plot()
-    # result = myportfolio.update_data()
-    # t = myportfolio.relative_variation_since(n_days=10)
-    # print(t)
-    # t.plot(style={'TOTAL':'--k'})
-    # # plt.ylim([-1,2])
+    p.plot(style={'TOTAL':'--k'})
     plt.show()
-
-    # weights = myportfolio.optimize_allocation(how='Sharpe')# target_ret=0.03)
-    # print(weights)
