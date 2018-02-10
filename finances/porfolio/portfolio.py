@@ -229,17 +229,18 @@ if __name__=='__main__':
     
     myportfolio = PortFolio(
         name= 'PedroPortfolio',
-        assets_prices = assets_effective_price
+        # assets_prices = assets_effective_price
         )
 
-    myportfolio.insert_assets_at_date(assets=new_portfolio_assets, date=datetime.datetime(2018,2,6))
     print(myportfolio.assets_data)
 
+    # start_date = datetime.datetime(2018,2,5,23)
+    # end_date = datetime.datetime(2018,2,6,1)
 
-    p = myportfolio.get_values_data()
+    p = myportfolio.relative_variation_since()#start_date=start_date, end_date=end_date)
+    # p = myportfolio.get_values_data().ix[start_date:end_date]
     print(p)
-    p.plot()
-    myportfolio.save_data()
+    p.TOTAL.plot()
     # result = myportfolio.update_data()
     # t = myportfolio.relative_variation_since(n_days=10)
     # print(t)
