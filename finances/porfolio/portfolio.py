@@ -12,18 +12,20 @@ PORTFOLIOS_DIRECTORY = cfd
 class PortFolio():
     assets = {}
     assets_prices = {}
-    assets_db = pd.DataFrame()
+    assets_data = pd.DataFrame()
     values_data = pd.DataFrame()
     market_data = MarketData()
     profits_data = pd.DataFrame()
 
-    def __init__(self, name, assets_prices):
+    def __init__(self, name=None):
         self.name = name
-        self.assets_prices = assets_prices
-        self.set_portfolio_directory()
-        self.load_portfolio_assets_data()
+        if self.name is not None:
+            directory = os.path.join(PORTFOLIOS_DIRECTORY, self.name)
+            self.portfolio_directory = directory
+        if os.path.exists(self.portfolio_directory):
+            self.load_portfolio_assets_data()
 
-    def set_portfolio_directory(self):
+    def create_portfolio_directory(self):
         directory = os.path.join(PORTFOLIOS_DIRECTORY, self.name)
         print(directory)
         if not os.path.exists(directory):
@@ -36,15 +38,17 @@ class PortFolio():
         try:
             df = pd.read_csv(portfolio_data_path, index_col=0, parse_dates=True, infer_datetime_format=True)
             print('Loaded portfolio database from {}'.format(portfolio_data_path))
-            self.assets_db = df
-            self.assets = self.assets_db.iloc[-1].to_dict()
+            self.assets_data = df
+            self.assets = self.assets_data.iloc[-1].to_dict()
+            self.values_data = self.get_values_data()
             return df
+
         except FileNotFoundError:
             print('Data base not existent yet.')
             return
 
     def update_portfolio_assets(self, assets=None):
-        assets_data = self.assets_db
+        assets_data = self.assets_data
         if assets is None:
             current_assets = self.assets
         else:
@@ -55,24 +59,37 @@ class PortFolio():
         )
 
         # append this to the current database
-        self.assets_db = assets_data.append(_temp_df)
+        self.assets_data = assets_data.append(_temp_df)
         print('Portfolio assets updated')
-        return self.assets_db
+        return self.assets_data
 
-    def save_assets_db(self, output_name='assets_allocation_data'):
-        self.assets_db.to_pickle(os.path.join(self.portfolio_directory, output_name+'.pkl'))
-        self.assets_db.to_csv(os.path.join(self.portfolio_directory, output_name+'.csv'))
+    def save_assets_data(self, output_name='assets_allocation_data'):
+        self.assets_data.to_pickle(os.path.join(self.portfolio_directory, output_name+'.pkl'))
+        self.assets_data.to_csv(os.path.join(self.portfolio_directory, output_name+'.csv'))
         print('Assets data base saved in {}\crypto_currencies'.format(self.portfolio_directory))
 
     def save_values_db(self, output_name='portfolio_value_data'):
+
         self.values_data.to_pickle(os.path.join(self.portfolio_directory, output_name+'.pkl'))
         self.values_data.to_csv(os.path.join(self.portfolio_directory, output_name+'.csv'))
         print('Portfolio value data saved in {}\crypto_currencies'.format(self.portfolio_directory))
 
+    def save_portfolio_data(self):
+        self.create_portfolio_directory()
+        self.save_values_db()
+        self.save_assets_data()
+
+
+    def insert_assets_at_date(self, assets, date):
+        _temp_df = pd.DataFrame(data=assets, index=[date])
+        new_df = pd.concat([_temp_df, self.assets_data]).sort_index()
+        self.assets_data = new_df.fillna(value=0)
+        return self.assets_data
+
     def get_full_asset_vs_price_df(self):
         asset_list = list(self.assets.keys())
         prices = self.market_data.get_crypto_price_history(symbols=asset_list)
-        merged = prices.join(self.assets_db, lsuffix='_price', rsuffix='_quantity', how='outer')
+        merged = prices.join(self.assets_data, lsuffix='_price', rsuffix='_quantity', how='outer')
         return merged.fillna(method='ffill').dropna()
 
     def get_values_data(self):
@@ -85,10 +102,9 @@ class PortFolio():
 
     def update_data(self):
         self.values_data = self.get_values_data()
-        self.profits_data = self.get_profits()
 
     def save_data(self):
-        self.save_assets_db()
+        self.save_assets_data()
         self.save_values_db()
 
     def get_profits(self):
@@ -108,23 +124,20 @@ class PortFolio():
         return daily_data.pct_change()
 
     def weights_data(self):
+        """
+        Returns the data of the allocation weight of each particular asset.
+        """
         values =self.get_values_data()
         return values.multiply(1/values.TOTAL, axis=0)*100
 
-    def insert_assets_at_date(self, assets, date):
-        _temp_df = pd.DataFrame(data=assets, index=[date])
-        new_df = pd.concat([_temp_df, self.assets_db]).sort_index()
-        self.assets_db = new_df
-        return self.assets_db
-
     def relative_variation_since(self,
-        n_days,
-        start_date=None,
+        start_date=datetime.datetime(2010,1,1),
+        n_days=None,
         time_scale=None,
         end_date=datetime.datetime.today()
         ):
 
-        if start_date is None:
+        if n_days is not None:
             start_date = datetime.datetime.today() - datetime.timedelta(days=n_days)
 
         df = self.get_values_data()
@@ -136,23 +149,23 @@ class PortFolio():
         relative_change=select_dates_df.apply(lambda x: (x-x[0])/x[0])
         return relative_change
 
-    def optimize_allocation(self, how='Sharpe', **kwargs):
+    def optimize_allocation(self, target_return, projection_steps=30, time_frame='D', **kwargs):
         import portfolioopt as pfopt
-        mkt = MarketData()
-        returns = mkt.crypto_returns_history(symbols=list(self.assets.keys())).dropna(how='any')
-        print(returns)
+        from porfolio.portfolio_optimization import generate_projected_normal_sample
 
-        if how == 'Sharpe':
-            optimization_function = pfopt.tangency_portfolio
-        
-        elif how == 'Markowitz':
-            optimization_function = pfopt.markowitz_portfolio
-       
-        avg_rets = returns.mean()
-        cov_mat = returns.cov()
-        weights_optimal = optimization_function(cov_mat=cov_mat, exp_rets=avg_rets, **kwargs)
-        weights_optimal = pfopt.truncate_weights(weights=weights_optimal, min_weight=0.01)
-        return weights_optimal
+        rets_data = self.market_data.crypto_returns_data(
+            symbols=list(self.assets.keys()),
+            time_step=time_frame,
+            **kwargs
+            ).dropna()
+        rets_data=rets_data.dropna()
+        projected_returns = generate_projected_normal_sample(rets_data, N=projection_steps, sample_size=10000)
+
+        avg_rets = projected_returns.mean()
+        cov_mat = projected_returns.cov()
+        optimal_weights = pfopt.markowitz_portfolio(cov_mat=cov_mat, exp_rets=avg_rets, target_ret=target_return)
+
+        return optimal_weights
 
 
 
@@ -171,6 +184,25 @@ if __name__=='__main__':
         'EMC2': 45,
         'FUN': 633.366,
         'ADST': 136.71
+    }
+
+    new_portfolio_assets = {
+        'BTC': 0.08074255978,
+        'ETH': 2.14081031,
+        'LTC': 1.50000003,
+        'XRP': 130,
+        'DASH': 0.286593,
+        'XMR': 1.32867,
+        'IOTA': 47.553,
+        'ADA': 0.073,
+        'XLM': 279.07,
+        'TRX': 0.237,
+        'BCH': 0,
+        'FUN': 2550.366,
+        'EMC2': 45,
+        'UBQ': 18.22222222,
+        'BIS': 36.59233533,
+        'ADST':   136.71
     }
 
     assets_effective_price = {
@@ -197,14 +229,24 @@ if __name__=='__main__':
     
     myportfolio = PortFolio(
         name= 'PedroPortfolio',
-        assets_prices = assets_effective_price
+        # assets_prices = assets_effective_price
         )
 
-    result = myportfolio.update_data()
-    t = myportfolio.get_profits()
-    t.plot(style={'TOTAL':'--k'})
-    plt.ylim([-1,2])
+    print(myportfolio.assets_data)
+
+    # start_date = datetime.datetime(2018,2,5,23)
+    # end_date = datetime.datetime(2018,2,6,1)
+
+    p = myportfolio.relative_variation_since()#start_date=start_date, end_date=end_date)
+    # p = myportfolio.get_values_data().ix[start_date:end_date]
+    print(p)
+    p.TOTAL.plot()
+    # result = myportfolio.update_data()
+    # t = myportfolio.relative_variation_since(n_days=10)
+    # print(t)
+    # t.plot(style={'TOTAL':'--k'})
+    # # plt.ylim([-1,2])
     plt.show()
 
-    weights = myportfolio.optimize_allocation(how='Sharpe')# target_ret=0.03)
-    print(weights)
+    # weights = myportfolio.optimize_allocation(how='Sharpe')# target_ret=0.03)
+    # print(weights)

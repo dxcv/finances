@@ -61,7 +61,7 @@ class MarketData():
         print('Loaded crypto currency database from {}'.format(crypto_db_path))
         return pd.read_csv(crypto_db_path, index_col=0, parse_dates=True, infer_datetime_format=True)
 
-    def get_coin_price(self, crypto_code, currency='eur'):
+    def get_current_coin_price(self, crypto_code, currency='eur'):
         crypto_name = self.crypto_dictionary[crypto_code]
         coin = COINMARKETCAP.ticker(crypto_name, convert='eur')
         value = coin[0]['price_{}'.format(currency)]
@@ -101,7 +101,7 @@ class MarketData():
 
         # add the data for all the crypto currencies
         for coin in self.crypto_dictionary:
-            _temp_df[coin] = self.get_coin_price(coin, currency='eur')
+            _temp_df[coin] = self.get_current_coin_price(coin, currency='eur')
             print('{} price data updated'.format(coin))
 
         # add the total market capitalization data
@@ -119,7 +119,7 @@ class MarketData():
             self.update_coin_full_data(crypto_code=coin)
 
 
-    def load_coin_data_base(self, crypto_code):
+    def load_coin_full_data_base(self, crypto_code):
         coin_path = os.path.join(self.data_base_path, 'crypto_currencies', '{}_full_data.csv'.format(crypto_code))
         data_coin_df = pd.read_csv(
             coin_path,
@@ -136,7 +136,11 @@ class MarketData():
     def get_crypto_price_history(self, symbols):
         return self.crypto_eur_db[symbols]
 
-    def crypto_returns_data(self, symbols=None, time_step='D', start_date=None):
+    def get_price_at_date(self, symbols, date):
+        crypto_data = self.crypto_eur_db[symbols]
+        return crypto_data[crypto_data.index == date]
+
+    def crypto_returns_data(self, symbols=None, time_step='D', start_date=None, end_date=datetime.datetime.now()):
         """
         offset definition in http://pandas.pydata.org/pandas-docs/stable/timeseries.html#offset-aliases
         """
@@ -145,9 +149,9 @@ class MarketData():
         resampled_data = self.crypto_eur_db[symbols].resample(time_step).mean()
         
         if start_date is not None:
-            resampled_data = resampled_data[resampled_data.index>start_date]
+            resampled_data = resampled_data[resampled_data.index>start_date & resampled_data.index<end_date]
 
-        return resampled_data.pct_change().dropna()
+        return resampled_data.pct_change()#.dropna()
 
     def cummulative_variation(
         self,
@@ -173,6 +177,23 @@ class MarketData():
         relative_change=select_dates_df.apply(lambda x: (x-x[0])/x[0])
         return relative_change
 
+    def normal_fit_returns(
+        self,
+        symbol,
+        time_frame='D',
+        N_steps=1,
+        start_date=datetime.datetime(2000, 1, 1, 1, 1) ,
+        end_date=datetime.datetime.now()):
+
+        from scipy.stats import norm
+        rets = self.crypto_returns_data(symbols=symbol, time_step=time_frame)
+        rets=rets[(rets.index>start_date) & (rets.index<end_date)].dropna()
+        
+        # MLE of the sample for a normal distribution (to be improved) 
+        mu, std = norm.fit(rets)
+        projected_mu, projected_std = N_steps*mu, std*np.sqrt(N_steps)
+        return mu, std
+
 
 if __name__=='__main__':
     import pylab as plt
@@ -183,12 +204,14 @@ if __name__=='__main__':
 
     mkt = MarketData()
 
-    mkt.update_complete_data_base()
+    mu, std = mkt.normal_fit_returns('ETH')
+    print(mu)
+    # mkt.update_complete_data_base()
     df = mkt.cummulative_variation(n_days=10)
     df.plot()
 
-    mkt.save_crypto_eur_db()
-    print(mkt.crypto_eur_db)
+    # mkt.save_crypto_eur_db()
+    # print(mkt.crypto_eur_db)
 
     plt.show()
 

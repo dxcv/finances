@@ -14,11 +14,11 @@ import statsmodels.api as sm
 cfd, cfn = os.path.split(os.path.abspath(__file__))
 
 mkt=mkt_data.MarketData()
-returns = mkt.crypto_returns_history(
-    symbols=['ADA', 'XMR', 'ADST', 'BTC', 'BIS', 'NEO', 'EMC2', 'ETH', 'FUN', 'IOTA', 'LTC', 'TRX', 'UBQ', 'XLM', 'XRP']
+returns_data = mkt.crypto_returns_data(
+    symbols=['ADA', 'XMR', 'ADST', 'BTC', 'BIS', 'NEO', 'EMC2', 'ETH', 'FUN', 'IOTA', 'LTC', 'TRX', 'UBQ', 'XLM', 'XRP', 'DASH']
     ).dropna()
 
-def generate_projected_normal_sample(returns_data, N=30, sample_size=1000):
+def generate_projected_normal_sample(returns_data, N=30, sample_size=10000):
     projected_returns = pd.DataFrame()
     for r in returns_data:
         rets = returns_data[r]
@@ -62,17 +62,31 @@ def return_from_risk(returns_data, N):
 
 
 if __name__=='__main__':
+    n_days = 15
 
-    reward = return_from_risk(returns, 60)
-    print(reward(0.22))
+    reward = return_from_risk(returns_data, n_days)
+    print(reward(0.11))
     import seaborn as sns
     sns.set()
-    sns.set_palette('YlOrRd', 12)
-    for days in range(1,60, 5):
-        monthly_returns = generate_projected_normal_sample(returns, days)
+    # sns.set_palette('YlOrRd', 12)
+    for days in [n_days]:#range(1,30, 5):
+        monthly_returns = generate_projected_normal_sample(returns_data, days)
         rewards, risks = markowitz_efficient_frontier(monthly_returns)
         plt.plot(risks, rewards, label='%i days' % days)
     plt.legend()
-    plt.show()
 
-    print(optimal_allocation(returns, 0.2, 30))
+
+    avg_rets = generate_projected_normal_sample(returns_data, n_days).mean()
+    cov_mat = generate_projected_normal_sample(returns_data, n_days).cov()
+    x = pfopt.markowitz_portfolio(cov_mat=cov_mat, exp_rets=avg_rets, target_ret=0.2)
+    optimal_portfolio = pfopt.truncate_weights(x, min_weight=0.02, rescale=True)
+    print(optimal_portfolio)
+    # plt.show()
+
+    analysis_df = pd.DataFrame()
+    analysis_df['allocation'] = optimal_portfolio
+    prices = [get_coin_price(coin) for coin in analysis_df.index]
+    # analysis_df.prices =
+
+
+    
