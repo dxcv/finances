@@ -20,10 +20,12 @@ class PortFolio():
     def __init__(self, name=None):
         self.name = name
         if self.name is not None:
-            self.set_portfolio_directory()
+            directory = os.path.join(PORTFOLIOS_DIRECTORY, self.name)
+            self.portfolio_directory = directory
+        if os.path.exists(self.portfolio_directory):
             self.load_portfolio_assets_data()
 
-    def set_portfolio_directory(self):
+    def create_portfolio_directory(self):
         directory = os.path.join(PORTFOLIOS_DIRECTORY, self.name)
         print(directory)
         if not os.path.exists(directory):
@@ -39,7 +41,6 @@ class PortFolio():
             self.assets_data = df
             self.assets = self.assets_data.iloc[-1].to_dict()
             self.values_data = self.get_values_data()
-            # self.profits_data = self.get_profits()
             return df
 
         except FileNotFoundError:
@@ -68,9 +69,22 @@ class PortFolio():
         print('Assets data base saved in {}\crypto_currencies'.format(self.portfolio_directory))
 
     def save_values_db(self, output_name='portfolio_value_data'):
+
         self.values_data.to_pickle(os.path.join(self.portfolio_directory, output_name+'.pkl'))
         self.values_data.to_csv(os.path.join(self.portfolio_directory, output_name+'.csv'))
         print('Portfolio value data saved in {}\crypto_currencies'.format(self.portfolio_directory))
+
+    def save_portfolio_data(self):
+        self.create_portfolio_directory()
+        self.save_values_db()
+        self.save_assets_data()
+
+
+    def insert_assets_at_date(self, assets, date):
+        _temp_df = pd.DataFrame(data=assets, index=[date])
+        new_df = pd.concat([_temp_df, self.assets_data]).sort_index()
+        self.assets_data = new_df.fillna(value=0)
+        return self.assets_data
 
     def get_full_asset_vs_price_df(self):
         asset_list = list(self.assets.keys())
@@ -88,7 +102,6 @@ class PortFolio():
 
     def update_data(self):
         self.values_data = self.get_values_data()
-        #self.profits_data = self.get_profits()
 
     def save_data(self):
         self.save_assets_data()
@@ -111,23 +124,20 @@ class PortFolio():
         return daily_data.pct_change()
 
     def weights_data(self):
+        """
+        Returns the data of the allocation weight of each particular asset.
+        """
         values =self.get_values_data()
         return values.multiply(1/values.TOTAL, axis=0)*100
 
-    def insert_assets_at_date(self, assets, date):
-        _temp_df = pd.DataFrame(data=assets, index=[date])
-        new_df = pd.concat([_temp_df, self.assets_data]).sort_index()
-        self.assets_data = new_df.fillna(value=0)
-        return self.assets_data
-
     def relative_variation_since(self,
+        start_date=datetime.datetime(2010,1,1),
         n_days=None,
-        start_date=None,
         time_scale=None,
         end_date=datetime.datetime.today()
         ):
 
-        if start_date is None:
+        if n_days is not None:
             start_date = datetime.datetime.today() - datetime.timedelta(days=n_days)
 
         df = self.get_values_data()
