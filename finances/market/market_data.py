@@ -49,10 +49,10 @@ convert_name_dictionary={
 class MarketData():
     data_base_path = os.path.join(cfd, 'data_base')
     crypto_dictionary = convert_name_dictionary
-    crypto_eur_db = pd.DataFrame()
+    crypto_data = pd.DataFrame()
 
     def __init__(self):
-        self.crypto_eur_db = self.load_crypto_data(currency='eur')
+        self.crypto_data = self.load_crypto_data(currency='eur')
 
 
     def load_crypto_data(self, currency='eur'):
@@ -96,7 +96,7 @@ class MarketData():
 
 
     def update_market_eur_price(self):
-        data_base = self.crypto_eur_db
+        data_base = self.crypto_data
         _temp_df = pd.DataFrame(index=[datetime.datetime.now().replace(second=0, microsecond=0)])
 
         # add the data for all the crypto currencies
@@ -109,8 +109,8 @@ class MarketData():
         print('TotalMarketCap value data updated')
 
         # append this to the current database
-        self.crypto_eur_db = data_base.append(_temp_df)
-        return self.crypto_eur_db
+        self.crypto_data = data_base.append(_temp_df)
+        return self.crypto_data
 
     def update_complete_data_base(self):
         self.update_market_eur_price()
@@ -128,16 +128,16 @@ class MarketData():
             infer_datetime_format=True)
         return data_coin_df
 
-    def save_crypto_eur_db(self, output_name='main_crypto_eur_database'):
-        self.crypto_eur_db.to_pickle(os.path.join(self.data_base_path, 'crypto_currencies', output_name+'.pkl'))
-        self.crypto_eur_db.to_csv(os.path.join(self.data_base_path, 'crypto_currencies', output_name+'.csv'))
+    def save_crypto_data(self, output_name='main_crypto_eur_database'):
+        self.crypto_data.to_pickle(os.path.join(self.data_base_path, 'crypto_currencies', output_name+'.pkl'))
+        self.crypto_data.to_csv(os.path.join(self.data_base_path, 'crypto_currencies', output_name+'.csv'))
         print('Crypto currency data base saved in {}\crypto_currencies'.format(self.data_base_path))
 
-    def get_crypto_price_history(self, symbols):
-        return self.crypto_eur_db[symbols]
+    def get_crypto_price_data(self, symbols, start_date=datetime.datetime(2010,1,1), end_date=datetime.datetime.now()):
+        return self.crypto_data[symbols].loc[start_date:end_date]
 
     def get_price_at_date(self, symbols, date):
-        crypto_data = self.crypto_eur_db[symbols]
+        crypto_data = self.crypto_data[symbols]
         return crypto_data[crypto_data.index == date]
 
     def crypto_returns_data(self, symbols=None, time_step='D', start_date=None, end_date=datetime.datetime.now()):
@@ -146,10 +146,10 @@ class MarketData():
         """
         if symbols is None:
             symbols = list(self.crypto_dictionary.keys())
-        resampled_data = self.crypto_eur_db[symbols].resample(time_step).mean()
+        resampled_data = self.crypto_data[symbols].resample(time_step).mean()
         
         if start_date is not None:
-            resampled_data = resampled_data[resampled_data.index>start_date & resampled_data.index<end_date]
+            resampled_data = resampled_data.loc[start_date:end_date]
 
         return resampled_data.pct_change()#.dropna()
 
@@ -168,7 +168,7 @@ class MarketData():
         if symbols is None:
             symbols = list(self.crypto_dictionary.keys())
 
-        df = self.get_crypto_price_history(symbols=symbols)
+        df = self.get_crypto_price_data(symbols=symbols)
 
         if time_scale is not None:
             df = df.resample(time_scale).mean()
@@ -210,8 +210,8 @@ if __name__=='__main__':
     df = mkt.cummulative_variation(n_days=10)
     df.plot()
 
-    # mkt.save_crypto_eur_db()
-    # print(mkt.crypto_eur_db)
+    # mkt.save_crypto_data()
+    # print(mkt.crypto_data)
 
     plt.show()
 
