@@ -177,22 +177,26 @@ class MarketData():
         relative_change=select_dates_df.apply(lambda x: (x-x[0])/x[0])
         return relative_change
 
-    def normal_fit_returns(
+    def fit_returns_dist(
         self,
         symbol,
         time_frame='D',
         N_steps=1,
+        dist = 't-student',
         start_date=datetime.datetime(2000, 1, 1, 1, 1) ,
         end_date=datetime.datetime.now()):
 
-        from scipy.stats import norm
+        from scipy.stats import norm, t
+        if dist == 't-student':
+            fit_dist = t
+        elif dist == 'normal':
+            fit_dist = norm
         rets = self.crypto_returns_data(symbols=symbol, time_step=time_frame)
-        rets=rets[(rets.index>start_date) & (rets.index<end_date)].dropna()
+        rets=rets.iloc[start_date:rets.index<end_date].dropna()
         
         # MLE of the sample for a normal distribution (to be improved) 
-        mu, std = norm.fit(rets)
-        projected_mu, projected_std = N_steps*mu, std*np.sqrt(N_steps)
-        return mu, std
+        dist_fit_params = fit_dist.fit(rets)
+        return dist_fit_params 
 
 
 if __name__=='__main__':

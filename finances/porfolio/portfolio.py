@@ -151,15 +151,14 @@ class PortFolio():
 
     def optimize_allocation(self, target_return, projection_steps=30, time_frame='D', **kwargs):
         import portfolioopt as pfopt
-        from porfolio.portfolio_optimization import generate_projected_normal_sample
+        from porfolio.portfolio_optimization import generate_projected_sample
 
         rets_data = self.market_data.crypto_returns_data(
             symbols=list(self.assets.keys()),
             time_step=time_frame,
             **kwargs
             ).dropna()
-        rets_data=rets_data.dropna()
-        projected_returns = generate_projected_normal_sample(rets_data, N=projection_steps, sample_size=10000)
+        projected_returns = generate_projected_sample(rets_data, N=projection_steps, sample_size=10000)
 
         avg_rets = projected_returns.mean()
         cov_mat = projected_returns.cov()
