@@ -149,22 +149,41 @@ class PortFolio():
         relative_change=select_dates_df.apply(lambda x: (x-x[0])/x[0])
         return relative_change
 
-    def optimize_allocation(self, target_return, projection_steps=30, time_frame='D', **kwargs):
+    def optimize_allocation(
+        self,
+        target_return,
+        projection_steps=30,
+        time_frame='D',
+        date=datetime.datetime.now(),
+        value_to_invest=100
+        ):
         import portfolioopt as pfopt
         from porfolio.portfolio_optimization import generate_projected_sample
+
+        # select assets:
+        if len(self.assets_data) > 0:
+            assets_selection = self.assets_data.loc[:date].iloc[-1]
+        else:
+            assets_selection = self.assets
 
         rets_data = self.market_data.crypto_returns_data(
             symbols=list(self.assets.keys()),
             time_step=time_frame,
-            **kwargs
+            end_date=date,
             ).dropna()
         projected_returns = generate_projected_sample(rets_data, N=projection_steps, sample_size=10000)
 
         avg_rets = projected_returns.mean()
         cov_mat = projected_returns.cov()
         optimal_weights = pfopt.markowitz_portfolio(cov_mat=cov_mat, exp_rets=avg_rets, target_ret=target_return)
-
-        return optimal_weights
+        optimal_weights = pfopt.truncate_weights(optimal_weights, min_weight=0.03, rescale=True)
+        # now that we have the optimal weigths, we calculate the real ammount of assets
+        analysis_df = pd.DataFrame()
+        analysis_df['weights'] = optimal_weights
+        analysis_df['prices'] = [self.market_data.get_price_at_date(coin, date=date) for coin in analysis_df.index]
+        analysis_df['allocation_euros'] = analysis_df['weights']*value_to_invest
+        analysis_df['coin_quantities']= analysis_df['allocation_euros']/analysis_df['prices']
+        return analysis_df
 
 
 
@@ -232,9 +251,9 @@ if __name__=='__main__':
         # assets_prices = assets_effective_price
         )
 
-    start_date = datetime.datetime(2018,2,4,2)
+    start_date = datetime.datetime(2018,2,9,2)
 
-    p = myportfolio.relative_variation_since(start_date=start_date)
+    p = myportfolio.optimize_allocation(target_return=0.1, date=start_date)
     print(p)
     p.plot(style={'TOTAL':'--k'})
     plt.show()
