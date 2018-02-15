@@ -142,7 +142,7 @@ class MarketData():
 
     def get_price_at_date(self, symbols, date):
         crypto_data = self.crypto_data[symbols]
-        return crypto_data[crypto_data.index == date]
+        return crypto_data.loc[:date].iloc[-1]
 
     def crypto_returns_data(self, symbols=None, time_step='D', start_date=None, end_date=datetime.datetime.now()):
         """

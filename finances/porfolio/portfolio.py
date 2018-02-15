@@ -22,8 +22,8 @@ class PortFolio():
         if self.name is not None:
             directory = os.path.join(PORTFOLIOS_DIRECTORY, self.name)
             self.portfolio_directory = directory
-        if os.path.exists(self.portfolio_directory):
-            self.load_portfolio_assets_data()
+            if os.path.exists(self.portfolio_directory):
+                self.load_portfolio_assets_data()
 
     def create_portfolio_directory(self):
         directory = os.path.join(PORTFOLIOS_DIRECTORY, self.name)
@@ -88,7 +88,7 @@ class PortFolio():
 
     def get_full_asset_vs_price_df(self):
         asset_list = list(self.assets.keys())
-        prices = self.market_data.get_crypto_price_history(symbols=asset_list)
+        prices = self.market_data.get_crypto_price_data(symbols=asset_list)
         merged = prices.join(self.assets_data, lsuffix='_price', rsuffix='_quantity', how='outer')
         return merged.fillna(method='ffill').dropna()
 
