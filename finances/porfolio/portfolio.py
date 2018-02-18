@@ -171,7 +171,7 @@ class PortFolio():
             time_step=time_frame,
             end_date=date,
             ).dropna()
-        projected_returns = generate_projected_sample(rets_data, N=projection_steps, sample_size=10000)
+        projected_returns = generate_projected_sample(rets_data, N=projection_steps, sample_size=100000)
 
         avg_rets = projected_returns.mean()
         cov_mat = projected_returns.cov()
