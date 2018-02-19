@@ -6,7 +6,7 @@ import portfolioopt as pfopt
 import numpy as np
 import pylab as plt
 from scipy.interpolate import interp1d
-
+from random import shuffle
 from scipy.stats import norm, t
 from market import market_data as mkt_data
 import statsmodels.api as sm
@@ -29,6 +29,21 @@ def generate_projected_sample(returns_data, N=30, sample_size=50000, distributio
         
         #add that as new returns for the month
         projected_returns[r] = projected_sample
+    return projected_returns
+
+def generate_shuffled_projected_sample(returns_data, N=30):
+    projected_returns = pd.DataFrame()
+    for r in returns_data:
+        rets = returns_data[r].values
+        
+        projected_sample = np.zeros(len(rets))
+        for k in range(N):
+            shuffle(rets)
+            projected_sample += rets
+        
+        #add that as new returns for the month
+        projected_returns[r] = projected_sample
+
     return projected_returns
 
 
