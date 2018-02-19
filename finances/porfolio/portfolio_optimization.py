@@ -31,6 +31,7 @@ def generate_projected_sample(returns_data, N=30, sample_size=50000, distributio
     return projected_returns
 
 def generate_shuffled_projected_sample(returns_data, N=30):
+    np.random.seed(seed=123)
     projected_returns = pd.DataFrame()
     for r in returns_data:
         rets = returns_data[r].values
