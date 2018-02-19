@@ -26,7 +26,6 @@ def generate_projected_sample(returns_data, N=30, sample_size=50000, distributio
         projected_sample = np.zeros(sample_size)
         for k in range(N):
             projected_sample += distribution.rvs(*dist_fit_params, size=sample_size)
-        
         #add that as new returns for the month
         projected_returns[r] = projected_sample
     return projected_returns

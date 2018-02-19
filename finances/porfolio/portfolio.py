@@ -158,7 +158,7 @@ class PortFolio():
         value_to_invest=100
         ):
         import portfolioopt as pfopt
-        from porfolio.portfolio_optimization import generate_projected_sample
+        from porfolio.portfolio_optimization import generate_shuffled_projected_sample
 
         # select assets:
         if len(self.assets_data) > 0:
@@ -171,11 +171,11 @@ class PortFolio():
             time_step=time_frame,
             end_date=date,
             ).dropna()
-        projected_returns = generate_projected_sample(rets_data, N=projection_steps, sample_size=100000)
+        projected_returns = generate_shuffled_projected_sample(rets_data, N=projection_steps)
 
         avg_rets = projected_returns.mean()
         cov_mat = projected_returns.cov()
-        optimal_weights = pfopt.markowitz_portfolio(cov_mat=cov_mat, exp_rets=avg_rets, target_ret=target_return)
+        optimal_weights = pfopt.tangency_portfolio(cov_mat=cov_mat, exp_rets=avg_rets)#, target_ret=target_return)
         optimal_weights = pfopt.truncate_weights(optimal_weights, min_weight=0.03, rescale=True)
         # now that we have the optimal weigths, we calculate the real ammount of assets
         analysis_df = pd.DataFrame()
