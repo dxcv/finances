@@ -39,7 +39,7 @@ convert_name_dictionary={
     'ICX': 'icon',
     'QTUM': 'qtum',
     'VEN': 'vechain',
-    'XRB': 'raiblocks',
+    # 'XRB': 'raiblocks',
     'STEEM': 'steem',
     'STRAAT': 'stratis',
     'XVG': 'verge'
@@ -63,8 +63,12 @@ class MarketData():
 
     def get_current_coin_price(self, crypto_code, currency='eur'):
         crypto_name = self.crypto_dictionary[crypto_code]
-        coin = COINMARKETCAP.ticker(crypto_name, convert='eur')
-        value = coin[0]['price_{}'.format(currency)]
+        try:
+            coin = COINMARKETCAP.ticker(crypto_name, convert='eur')
+            value = coin[0]['price_{}'.format(currency)]
+        except:
+            value = np.nan
+            print('!!!! {} not working.'.format(crypto_name))
         return float(value)
 
     def get_coin_full_data(self, crypto_code):
