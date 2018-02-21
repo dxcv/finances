@@ -158,7 +158,8 @@ class PortFolio():
         value_to_invest=100
         ):
         import portfolioopt as pfopt
-        from porfolio.portfolio_optimization import generate_shuffled_projected_sample
+        from porfolio.portfolio_optimization import generate_projected_normal_sample
+        import numpy as np
 
         # select assets:
         if len(self.assets_data) > 0:
@@ -166,23 +167,31 @@ class PortFolio():
         else:
             assets_selection = self.assets
 
+
         rets_data = self.market_data.crypto_returns_data(
             symbols=list(self.assets.keys()),
             time_step=time_frame,
             end_date=date,
             ).dropna()
-        projected_returns = generate_shuffled_projected_sample(rets_data, N=projection_steps)
+
+        projected_returns = generate_projected_normal_sample(rets_data, N=projection_steps)
 
         avg_rets = projected_returns.mean()
         cov_mat = projected_returns.cov()
         optimal_weights = pfopt.tangency_portfolio(cov_mat=cov_mat, exp_rets=avg_rets)#, target_ret=target_return)
-        optimal_weights = pfopt.truncate_weights(optimal_weights, min_weight=0.03, rescale=True)
+        optimal_weights = pfopt.truncate_weights(optimal_weights, min_weight=0.05, rescale=True)
         # now that we have the optimal weigths, we calculate the real ammount of assets
         analysis_df = pd.DataFrame()
         analysis_df['weights'] = optimal_weights
         analysis_df['prices'] = [self.market_data.get_price_at_date(coin, date=date) for coin in analysis_df.index]
         analysis_df['allocation_euros'] = analysis_df['weights']*value_to_invest
         analysis_df['coin_quantities']= analysis_df['allocation_euros']/analysis_df['prices']
+
+        # portfolio properties
+        reward = optimal_weights.dot(avg_rets.as_matrix())
+        risk = np.sqrt(optimal_weights.dot(cov_mat.as_matrix().dot(optimal_weights)))
+        print('Expected Reward: {}'.format(reward))
+        print('Expected Risk: {}'.format(risk))
         return analysis_df
 
 
@@ -256,7 +265,7 @@ if __name__=='__main__':
     new_portfolio.assets = new_portfolio_assets
     start_date = datetime.datetime(2018,2,9,2)
 
-    p = new_portfolio.optimize_allocation(target_return=0.1, value_to_invest=4000)
+    p = new_portfolio.optimize_allocation(projection_steps=14, target_return=0.1, value_to_invest=4000)
     print(p)
     # p.plot(style={'TOTAL':'--k'})
     # plt.show()

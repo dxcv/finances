@@ -108,65 +108,21 @@ def return_from_risk(returns_data, N):
 
 
 if __name__=='__main__':
-    # import random
-    # l = [0,1,2,31,4,1]
-    # for k in range(3):
-    #     # np.random.seed(seed=123)
-    #     random.Random(123).shuffle(l)
-    #     print(l)
-
-    # n_days = 15
 
     returns_data = mkt.crypto_returns_data(
         symbols=['ADA', 'XMR', 'ADST', 'BTC', 'BIS', 'NEO', 'EMC2', 'ETH', 'FUN', 'IOTA', 'LTC', 'TRX', 'UBQ', 'XLM', 'XRP', 'DASH']
         ).dropna()
-    print(returns_data)
 
-    for k in range(5):
-        a = generate_shuffled_projected_sample(returns_data, N=5)
-        a.BTC.hist(bins=50, alpha=0.50)
-    plt.show()
-
-
-
-
-
-    # avg_rets = returns_data.mean()
-    # cov_mat = returns_data.cov()
-    # returns_data.boxplot()
-
-    # # calculate the Markowitz optimal allocations for each target return value
-    # optimal_weights = pfopt.tangency_portfolio(cov_mat=cov_mat, exp_rets=avg_rets)
-    # optimal_weights=pfopt.truncate_weights(optimal_weights, min_weight=0.03, rescale=True)
-    # print(optimal_weights)
-    # plt.show()
-
-    # import seaborn as sns
-    # sns.set()
-    # sns.set_palette('YlOrRd', 12)
-    # for days in range(1,30, 5):
-    #     monthly_returns = generate_projected_sample(returns_data, days)
-    #     rewards, risks = markowitz_efficient_frontier(monthly_returns)
-    #     plt.plot(risks, rewards, label='%i days' % days)
-    #     sharpe = market_tangent_point(monthly_returns)
-    #     plt.plot(sharpe[1], sharpe[0], 'ko')
-    # plt.legend()
-
-
-    # # for k in range(5):
-    # #     avg_rets=pd.DataFrame()
-    # #     avg_rets = generate_projected_sample(returns_data, n_days)
-    # #     avg_rets['BTC'].hist(bins=50, alpha=0.5, normed=True)
-    # #     print(avg_rets['BTC'].mean())
-    # #     dist_fit_params = t.fit(avg_rets['BTC'])
-    # #     print(dist_fit_params)
-    # plt.show()
-    # # cov_mat = generate_projected_sample(returns_data, n_days).cov()
-    # # x = pfopt.markowitz_portfolio(cov_mat=cov_mat, exp_rets=avg_rets, target_ret=0.14)
-    # # optimal_portfolio = pfopt.truncate_weights(x, min_weight=0.02, rescale=True)
-    # # print(optimal_portfolio)
-
-    # # reward = return_from_risk(returns_data, n_days)
-    # # print(reward(0.2))
+    import seaborn as sns
+    sns.set()
+    sns.set_palette('YlOrRd', 12)
+    for days in range(1,30, 5):
+        monthly_returns = generate_projected_normal_sample(returns_data, days)
+        rewards, risks = markowitz_efficient_frontier(monthly_returns)
+        plt.plot(risks, rewards, label='%i days' % days)
+        sharpe = market_tangent_point(monthly_returns)
+        print(sharpe[1], sharpe[0])
+        plt.plot(sharpe[1], sharpe[0], 'ko')
+    plt.legend()
     
-    # # plt.show()
+    plt.show()
