@@ -144,16 +144,15 @@ class MarketData():
         crypto_data = self.crypto_data[symbols]
         return crypto_data.loc[:date].iloc[-1]
 
-    def crypto_returns_data(self, symbols=None, time_step='D', start_date=None, end_date=datetime.datetime.now()):
+    def crypto_returns_data(self, symbols=None, time_step='D', start_date=datetime.datetime(2013,1,1), end_date=datetime.datetime.now()):
         """
         offset definition in http://pandas.pydata.org/pandas-docs/stable/timeseries.html#offset-aliases
         """
         if symbols is None:
             symbols = list(self.crypto_dictionary.keys())
         resampled_data = self.crypto_data[symbols].resample(time_step).mean()
-        
-        if start_date is not None:
-            resampled_data = resampled_data.loc[start_date:end_date]
+
+        resampled_data = resampled_data.loc[start_date:end_date]
 
         return resampled_data.pct_change()#.dropna()
 
@@ -212,14 +211,19 @@ if __name__=='__main__':
 
     mkt = MarketData()
 
-    mu, std = mkt.normal_fit_returns('ETH')
-    print(mu)
-    # mkt.update_complete_data_base()
-    df = mkt.cummulative_variation(n_days=10)
-    df.plot()
-
-    # mkt.save_crypto_data()
-    # print(mkt.crypto_data)
-
+    a = mkt.get_crypto_price_data('XMR')
+    a.plot()
+    print(a)
     plt.show()
+
+    # mu, std = mkt.normal_fit_returns('ETH')
+    # print(mu)
+    # # mkt.update_complete_data_base()
+    # df = mkt.cummulative_variation(n_days=10)
+    # df.plot()
+
+    # # mkt.save_crypto_data()
+    # # print(mkt.crypto_data)
+
+    # plt.show()
 

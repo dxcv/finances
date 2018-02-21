@@ -221,7 +221,8 @@ if __name__=='__main__':
         'UBQ': 18.22222222,
         'BIS': 36.59233533,
         'ADST': 136.71,
-        'NEO': 2.04
+        'NEO': 2.04,
+        'NEM': 0,
     }
 
     assets_effective_price = {
@@ -251,9 +252,11 @@ if __name__=='__main__':
         # assets_prices = assets_effective_price
         )
 
+    new_portfolio = PortFolio()
+    new_portfolio.assets = new_portfolio_assets
     start_date = datetime.datetime(2018,2,9,2)
 
-    p = myportfolio.optimize_allocation(target_return=0.1, date=start_date)
+    p = new_portfolio.optimize_allocation(target_return=0.1, value_to_invest=4000)
     print(p)
-    p.plot(style={'TOTAL':'--k'})
-    plt.show()
+    # p.plot(style={'TOTAL':'--k'})
+    # plt.show()
