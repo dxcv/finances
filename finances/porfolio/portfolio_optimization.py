@@ -47,7 +47,7 @@ def generate_shuffled_projected_sample(returns_data, N=30):
     return projected_returns
 
 
-def generate_projected_normal_sample(returns_data, N=30, sample_size=50000):
+def generate_projected_normal_sample(returns_data, N=30, sample_size=5000):
     np.random.seed(seed=123)
     projected_returns = pd.DataFrame()
     for r in returns_data:
@@ -110,13 +110,14 @@ def return_from_risk(returns_data, N):
 if __name__=='__main__':
 
     returns_data = mkt.crypto_returns_data(
-        symbols=['ADA', 'XMR', 'ADST', 'BTC', 'BIS', 'NEO', 'EMC2', 'ETH', 'FUN', 'IOTA', 'LTC', 'TRX', 'UBQ', 'XLM', 'XRP', 'DASH']
+        symbols= ['BTC', 'ETH', 'LTC', 'XRP', 'DASH', 'XMR', 'IOTA', 'ADA', 'XLM', 'TRX', 'BCH', 'FUN', 'EMC2', 'UBQ', 'BIS', 'ADST', 'NEO', 'NEM']
         ).dropna()
+    print(returns_data.tail())
 
     import seaborn as sns
     sns.set()
     sns.set_palette('YlOrRd', 12)
-    for days in range(1,30, 5):
+    for days in [14]:#range(1,30, 5):
         monthly_returns = generate_projected_normal_sample(returns_data, days)
         rewards, risks = markowitz_efficient_frontier(monthly_returns)
         plt.plot(risks, rewards, label='%i days' % days)
@@ -125,4 +126,9 @@ if __name__=='__main__':
         plt.plot(sharpe[1], sharpe[0], 'ko')
     plt.legend()
     
+    plt.show()
+
+    sns.set()
+    f = norm.pdf(np.arange(-1.0, 1.50, 0.001), 0.25, 0.125)
+    plt.plot(np.arange(-1.0, 1.50, 0.001), f)
     plt.show()

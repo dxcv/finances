@@ -101,6 +101,7 @@ class PortFolio():
         return value_df
 
     def update_data(self):
+        self.assets = self.assets_data.iloc[-1].to_dict()
         self.values_data = self.get_values_data()
 
     def save_data(self):
@@ -151,7 +152,7 @@ class PortFolio():
 
     def optimize_allocation(
         self,
-        target_return,
+        target_return=None,
         projection_steps=30,
         time_frame='D',
         date=datetime.datetime.now(),
@@ -167,9 +168,8 @@ class PortFolio():
         else:
             assets_selection = self.assets
 
-
         rets_data = self.market_data.crypto_returns_data(
-            symbols=list(self.assets.keys()),
+            symbols=list(assets_selection.keys()),
             time_step=time_frame,
             end_date=date,
             ).dropna()
@@ -178,8 +178,13 @@ class PortFolio():
 
         avg_rets = projected_returns.mean()
         cov_mat = projected_returns.cov()
-        optimal_weights = pfopt.tangency_portfolio(cov_mat=cov_mat, exp_rets=avg_rets)#, target_ret=target_return)
+        if target_return is None:
+            optimal_weights = pfopt.tangency_portfolio(cov_mat=cov_mat, exp_rets=avg_rets)
+        else:
+            optimal_weights = pfopt.markowitz_portfolio(cov_mat=cov_mat, exp_rets=avg_rets, target_ret=target_return)
+
         optimal_weights = pfopt.truncate_weights(optimal_weights, min_weight=0.05, rescale=True)
+        
         # now that we have the optimal weigths, we calculate the real ammount of assets
         analysis_df = pd.DataFrame()
         analysis_df['weights'] = optimal_weights
@@ -190,8 +195,8 @@ class PortFolio():
         # portfolio properties
         reward = optimal_weights.dot(avg_rets.as_matrix())
         risk = np.sqrt(optimal_weights.dot(cov_mat.as_matrix().dot(optimal_weights)))
-        print('Expected Reward: {}'.format(reward))
-        print('Expected Risk: {}'.format(risk))
+        analysis_df['Reward']=reward
+        analysis_df['Risk']=risk
         return analysis_df
 
 
@@ -265,7 +270,7 @@ if __name__=='__main__':
     new_portfolio.assets = new_portfolio_assets
     start_date = datetime.datetime(2018,2,9,2)
 
-    p = new_portfolio.optimize_allocation(projection_steps=14, target_return=0.1, value_to_invest=4000)
+    p = new_portfolio.optimize_allocation(projection_steps=14, value_to_invest=3500)
     print(p)
     # p.plot(style={'TOTAL':'--k'})
     # plt.show()
