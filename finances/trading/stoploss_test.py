@@ -46,28 +46,62 @@ def stop_loss_strategy(price_series, pct_gap=0.01, fee=0.0025, invested_value=10
     return pd.Series(data=trade_value, index=price_series.index)
 
 
+def back_test_random(price_data, n=10, time_delta_stress_test=datetime.timedelta(days=60)):
 
-mkt=mkt_data.MarketData()
+    compare_dic = {'hold':[], 'strategy':[], 'diff':[]}
+    date_list=[]
+    for k in range(n):
+        start_test = random.choice(price_data.index)
+        end_test=start_test+time_delta_stress_test
+        date_list.append(start_test)
+        
+        prices_test_data = price_data.loc[start_test:end_test]
+        backtest_df = pd.DataFrame()
 
-price_data = mkt.crypto_data['BTC'].dropna().loc[datetime.datetime(2018,1,27):]
+        backtest_df['hold'] = prices_test_data*100.0/prices_test_data.iloc[0]
 
-df = pd.DataFrame()
-df['price'] = price_data
-df['hold'] = price_data*100.0/price_data.iloc[0]
+        strategy=stop_loss_strategy(price_series=prices_test_data)
 
-strategy=stop_loss_strategy(price_series=price_data)
+        backtest_df['strategy'] = strategy
 
-df['strategy'] = strategy
+        fig, ax = plt.subplots(2,1, sharex=True)
+        backtest_df[['strategy', 'hold']].plot(ax=ax[0])
+        prices_test_data.plot(ax=ax[1])
 
-stoploss_value = price_data.iloc[0]
-print(df.index[0])
+        for t in ['hold', 'strategy']:
+            compare_dic[t].append(backtest_df[t].iloc[-1])
 
-fig, ax = plt.subplots(2,1, sharex=True)
-df[['strategy', 'hold']].plot(ax=ax[0])
-df[['price']].plot(ax=ax[1])
-ax[1].plot([df.index[0],df.index[-1]],[stoploss_value,stoploss_value], 'k--')
-ax[1].plot([price_data.index[0],price_data.index[-1]],[stoploss_value*(1+0.01),stoploss_value*(1+0.01)], 'g--')
-ax[1].plot([price_data.index[0],price_data.index[-1]],[stoploss_value*(1-0.01),stoploss_value*(1-0.01)], 'r--')
+        compare_dic['diff']=backtest_df['strategy'].iloc[-1]-backtest_df['hold'].iloc[-1]
 
-# print(df)
-plt.show()
+    return pd.DataFrame(data=compare_dic, index=date_list)
+
+
+if __name__=='__main__':
+
+    mkt=mkt_data.MarketData()
+
+    price_data = mkt.crypto_data['BTC'].dropna().loc[datetime.datetime(2017,1,27):]
+    df = back_test_random(price_data)
+    df.boxplot()
+
+    plt.show()
+    # df = pd.DataFrame()
+    # df['price'] = price_data
+    # df['hold'] = price_data*100.0/price_data.iloc[0]
+
+    # strategy=stop_loss_strategy(price_series=price_data)
+
+    # df['strategy'] = strategy
+
+    # stoploss_value = price_data.iloc[0]
+    # print(df.index[0])
+
+    # fig, ax = plt.subplots(2,1, sharex=True)
+    # df[['strategy', 'hold']].plot(ax=ax[0])
+    # df[['price']].plot(ax=ax[1])
+    # ax[1].plot([df.index[0],df.index[-1]],[stoploss_value,stoploss_value], 'k--')
+    # ax[1].plot([price_data.index[0],price_data.index[-1]],[stoploss_value*(1+0.01),stoploss_value*(1+0.01)], 'g--')
+    # ax[1].plot([price_data.index[0],price_data.index[-1]],[stoploss_value*(1-0.01),stoploss_value*(1-0.01)], 'r--')
+
+    # # print(df)
+    # plt.show()
