@@ -11,14 +11,16 @@ import statsmodels.api as sm
 
 cfd, cfn = os.path.split(os.path.abspath(__file__))
 
+pct_gap = 0.01
 
-def stop_loss_strategy(price_series, pct_gap=0.0, fee=0.0025, invested_value=100):
+def stop_loss_strategy(price_series, pct_gap=pct_gap, fee=0.0025, invested_value=100):
     stoploss_value = price_series.iloc[0]
 
     coin_amount = invested_value/price_series.iloc[0]
     cash = 0
 
     trade_value = [invested_value]
+    stoploss=[stoploss_value]
     state = 0
     for k in range(1,len(price_series)):
         current_price = price_series.iloc[k]
@@ -27,7 +29,7 @@ def stop_loss_strategy(price_series, pct_gap=0.0, fee=0.0025, invested_value=100
             if current_price < stoploss_value*(1-pct_gap) and state == 0:
                 cash = coin_amount*stoploss_value*(1-pct_gap)*(1-fee)
                 coin_amount = 0
-                # stoploss_value=stoploss_value*(1-pct_gap)
+                stoploss_value=stoploss_value*(1-pct_gap)
 
             elif current_price < stoploss_value*(1+pct_gap) and state == 1:
                 cash = coin_amount*stoploss_value*(1+pct_gap)*(1-fee)
@@ -35,12 +37,12 @@ def stop_loss_strategy(price_series, pct_gap=0.0, fee=0.0025, invested_value=100
 
         elif coin_amount==0 and cash>0:
             if current_price > stoploss_value*(1+pct_gap) and state==0:
-                coin_amount = cash/stoploss_value*(1+pct_gap)*(1-fee)
+                coin_amount = cash/(stoploss_value*(1+pct_gap))*(1-fee)
                 cash = 0
-                # stoploss_value=stoploss_value*(1+pct_gap)
+                stoploss_value=stoploss_value*(1+pct_gap)
 
             elif current_price > stoploss_value*(1-pct_gap) and state == -1:
-                coin_amount = cash/stoploss_value*(1-pct_gap)*(1-fee)
+                coin_amount = cash/(stoploss_value*(1-pct_gap))*(1-fee)
                 cash = 0
 
         # check state
@@ -56,11 +58,12 @@ def stop_loss_strategy(price_series, pct_gap=0.0, fee=0.0025, invested_value=100
 
         value = coin_amount*current_price+cash
         trade_value.append(value)
+        stoploss.append(stoploss_value)
 
-    return pd.Series(data=trade_value, index=price_series.index)
+    return pd.Series(data=trade_value, index=price_series.index), pd.Series(data=stoploss, index=price_series.index)
 
 
-def back_test_random(price_data, n=350, time_delta_stress_test=datetime.timedelta(days=30)):
+def back_test_random(price_data, n=100, time_delta_stress_test=datetime.timedelta(days=30)):
 
     compare_dic = {'hold':[], 'strategy':[], 'diff':[]}
     date_list=[]
@@ -74,16 +77,24 @@ def back_test_random(price_data, n=350, time_delta_stress_test=datetime.timedelt
 
         backtest_df['hold'] = prices_test_data*100.0/prices_test_data.iloc[0]
 
-        strategy=stop_loss_strategy(price_series=prices_test_data)
+        strategy, stop=stop_loss_strategy(price_series=prices_test_data)
 
         backtest_df['strategy'] = strategy
+
+        #
+        backtest_df['stop'] = stop
+        backtest_df['stop_+'] = stop*(1+pct_gap)
+        backtest_df['stop_-'] = stop*(1-pct_gap)
 
         # fig, ax = plt.subplots(2,1, sharex=True)
         # backtest_df[['strategy', 'hold']].plot(ax=ax[0])
         # prices_test_data.plot(ax=ax[1])
+        # backtest_df['stop'].plot(ax=ax[1], style='k')
+        # backtest_df['stop_+'].plot(ax=ax[1], style='g')
+        # backtest_df['stop_-'].plot(ax=ax[1], style='r')
 
         for t in ['hold', 'strategy']:
-            compare_dic[t].append(backtest_df[t].iloc[-1])
+            compare_dic[t].append(backtest_df[t].iloc[-1]-100.0)
 
         compare_dic['diff'].append(backtest_df['strategy'].iloc[-1]-backtest_df['hold'].iloc[-1])
 
@@ -94,9 +105,13 @@ if __name__=='__main__':
 
     mkt=mkt_data.MarketData()
 
-    price_data = mkt.crypto_data['BTC'].dropna().loc[datetime.datetime(2017,1,27):]
+    price_data = mkt.crypto_data['XLM'].dropna()
     df = back_test_random(price_data)
     df.boxplot()
+
+    for c in ['hold', 'strategy']:
+        sharpe = df[c].mean()/df[c].std()
+        print(c, sharpe)
 
     plt.show()
     # df = pd.DataFrame()
