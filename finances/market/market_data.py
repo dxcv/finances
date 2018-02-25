@@ -98,7 +98,6 @@ class MarketData():
         data_coin_df = data_coin_df.append(_temp_df)
         data_coin_df.to_csv(coin_path)
 
-
     def update_market_eur_price(self):
         data_base = self.crypto_data
         _temp_df = pd.DataFrame(index=[datetime.datetime.now().replace(second=0, microsecond=0)])
