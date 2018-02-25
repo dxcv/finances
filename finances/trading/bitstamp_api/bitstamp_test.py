@@ -5,19 +5,19 @@ Created on Sun Oct 15 19:30:18 2017
 @author: Pedro
 """
  
-import bitstamp.client
+import bitstamp.client as bts
 from pprint import pprint
 import time
 import pandas as pd
 
-public_client = bitstamp.client.Public()
+public_client = bts.Public()
 
 import time
  
 # Wait for 5 seconds
 time.sleep(5)
  
-trading_client = bitstamp.client.Trading(
+trading_client = bts.Trading(
        username='769101',
        key='jVoPUWeXacIrjzYIs99d9pe8jxEbv3U6',
        secret='m9DEG4zucVxMVp0vWyROpkJUBXKvkL0F'
