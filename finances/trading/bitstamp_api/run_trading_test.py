@@ -4,7 +4,10 @@ Created on Sun Oct 15 19:30:18 2017
  
 @author: Pedro
 """
- 
+import sys
+import os
+sys.path.append('C:\\projects\\finances.git\\finances')
+
 import bitstamp.client as bts
 from pprint import pprint
 import time
@@ -26,40 +29,43 @@ def stoploss_strategy(trading_client, reinvest_gap=0.2, pct_gap=0.025, fee=0.002
     state = 0
 
     while True:
-        current_price = float(trading_client.ticker(base='btc', quote='eur')['last'])
-        print('CURRENT PRICE: {}'.format(current_price))
-        if cash==0 and coin_amount>0:
-            if current_price < stoploss_value*(1-pct_gap) and state == 0:
-                cash = coin_amount*current_price*(1-fee)
-                coin_amount = 0
-                stoploss_value=current_price
-                print('sold for {}'.format(current_price))
+        try:
+            current_price = float(trading_client.ticker(base='btc', quote='eur')['last'])
+            print('CURRENT PRICE: {}'.format(current_price))
+            if cash==0 and coin_amount>0:
+                if current_price < stoploss_value*(1-pct_gap) and state == 0:
+                    cash = coin_amount*current_price*(1-fee)
+                    coin_amount = 0
+                    stoploss_value=current_price
+                    print('sold for {}'.format(current_price))
 
-            elif current_price < stoploss_value*(1+pct_gap) and state == 1:
-                cash = coin_amount*current_price*(1-fee)
-                coin_amount = 0
-                print('sold for {}'.format(current_price))
+                elif current_price < stoploss_value*(1+pct_gap) and state == 1:
+                    cash = coin_amount*current_price*(1-fee)
+                    coin_amount = 0
+                    print('sold for {}'.format(current_price))
 
-            elif current_price>stoploss_value*(1+reinvest_gap) and state==1:
-                stoploss_value=stoploss_value*(1+reinvest_gap)
+                elif current_price>stoploss_value*(1+reinvest_gap) and state==1:
+                    stoploss_value=stoploss_value*(1+reinvest_gap)
 
-        elif coin_amount==0 and cash>0:
-            if current_price > stoploss_value*(1+pct_gap) and state==0:
-                coin_amount = cash/(current_price)*(1-fee)
-                cash = 0
-                stoploss_value=current_price
-                print('bought for {}'.format(current_price))
+            elif coin_amount==0 and cash>0:
+                if current_price > stoploss_value*(1+pct_gap) and state==0:
+                    coin_amount = cash/(current_price)*(1-fee)
+                    cash = 0
+                    stoploss_value=current_price
+                    print('bought for {}'.format(current_price))
 
-            elif current_price > stoploss_value*(1-pct_gap) and state == -1:
-                coin_amount = cash/(current_price)*(1-fee)
-                cash = 0
-                print('bought for {}'.format(current_price))
+                elif current_price > stoploss_value*(1-pct_gap) and state == -1:
+                    coin_amount = cash/(current_price)*(1-fee)
+                    cash = 0
+                    print('bought for {}'.format(current_price))
 
-            elif current_price<stoploss_value*(1-reinvest_gap) and state==-1:
-                coin_amount = cash/(stoploss_value*(1-reinvest_gap))*(1-fee)
-                cash = 0
-                stoploss_value=stoploss_value*(1-reinvest_gap)
-                print('bought for {}'.format(current_price))
+                elif current_price<stoploss_value*(1-reinvest_gap) and state==-1:
+                    coin_amount = cash/(stoploss_value*(1-reinvest_gap))*(1-fee)
+                    cash = 0
+                    stoploss_value=stoploss_value*(1-reinvest_gap)
+                    print('bought for {}'.format(current_price))
+        except:
+            pass
 
         if current_price >= stoploss_value*(1+pct_gap):
             state=1
