@@ -80,6 +80,9 @@
 		},
 		{
 			"path": "C:\\Anaconda3\\envs\\finance\\Lib\\site-packages\\portfolioopt"
+		},
+		{
+			"path": "C:\\Anaconda3\\envs\\finance\\Lib\\site-packages\\bitstamp"
 		}
 	]
 }
