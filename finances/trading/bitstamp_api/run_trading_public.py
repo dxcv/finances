@@ -4,19 +4,19 @@ Created on Sun Oct 15 19:30:18 2017
  
 @author: Pedro
 """
-import sys
-import os
-sys.path.append('C:\\projects\\finances.git\\finances')
 
 import bitstamp.client as bts
 from pprint import pprint
 import time
 import pandas as pd
-
-public_client = bts.Public()
+import datetime
 
 import time
+import os
 
+cfd = os.path.dirname(os.path.realpath(__file__))
+
+public_client = bts.Public()
 def strategy_decision(
     current_price,
     stoploss_value,
@@ -69,8 +69,11 @@ def stoploss_strategy(trading_client, reinvest_gap=0.2, pct_gap=0.025, fee=0.002
     cash = 0
     state = 0
 
+    save_data = 0
     trade_value = [invested_value]
     stoploss=[stoploss_value]
+    time_index=[datetime.datetime.now()]
+    hold=[float(trading_client.ticker(base='btc', quote='eur')['last'])/invested_value]
 
     while True:
         try:
@@ -99,10 +102,18 @@ def stoploss_strategy(trading_client, reinvest_gap=0.2, pct_gap=0.025, fee=0.002
             state=0
 
         value = coin_amount*current_price+cash
-        trade_value.append(value)
-        stoploss.append(stoploss_value)
-        print(value)
         time.sleep(10)
+        save_data+=1
+
+        # save_data:
+        if save_data>=60:
+            trade_value.append(value)
+            stoploss.append(stoploss_value)
+            time_index.append(datetime.datetime.now())
+            hold.append(current_price/invested_value)
+            df = pd.DataFrame(index=time_index, data={'Value': trade_value, 'StopLoss': stoploss, 'Hold':hold})
+            df.to_csv(os.path.join(cfd, 'trade_results.csv'))
+            save_data=0
 
  
 trading_client = bts.Trading(
@@ -111,5 +122,5 @@ trading_client = bts.Trading(
        secret='Z4yacXGzh7LrBcIUqdDjkOfvH5lEcyQZ'
        )
 
-print(trading_client.account_balance())
-# stoploss_strategy(trading_client)
+# print(trading_client.account_balance(base="bch", quote="eur"))
+stoploss_strategy(trading_client)
