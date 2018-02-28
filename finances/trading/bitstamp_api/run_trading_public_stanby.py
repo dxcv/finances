@@ -6,12 +6,10 @@ Created on Sun Oct 15 19:30:18 2017
 """
 
 import bitstamp.client as bts
-from pprint import pprint
 import time
 import pandas as pd
 import datetime
 
-import time
 import os
 
 cfd = os.path.dirname(os.path.realpath(__file__))
@@ -71,16 +69,17 @@ def stoploss_strategy(trading_client, reinvest_gap=0.2, pct_gap=0.01, fee=0.0025
     state = 0
 
     save_data = 0
+    standby_count=0
+    standby=False
     trade_value = [invested_value]
     stoploss=[stoploss_value]
     time_index=[datetime.datetime.now()]
     hold=[float(trading_client.ticker(base='btc', quote='eur')['last'])/invested_value]
-    count_standby = 0
 
     while True:
         try:
             current_price = float(trading_client.ticker(base='btc', quote='eur')['last'])
-            print('CURRENT PRICE: {} | STATE: {} | STOPLOSS: {}'.format(current_price, state, stoploss_value))
+            print('CURRENT PRICE: {} | STATE: {} | STOPLOSS: {} | STANDBY: {}'.format(current_price, state, stoploss_value, standby))
         except:
             pass
 
@@ -109,6 +108,8 @@ def stoploss_strategy(trading_client, reinvest_gap=0.2, pct_gap=0.01, fee=0.0025
 
         value = coin_amount*current_price+cash
         time.sleep(10)
+
+        # additional code to control algorithm
         save_data+=1
 
         # save_data:
@@ -121,8 +122,13 @@ def stoploss_strategy(trading_client, reinvest_gap=0.2, pct_gap=0.01, fee=0.0025
             df.to_csv(os.path.join(cfd, 'trade_results.csv'))
             save_data=0
 
+        if standby==True:
+            standby_count+=1
 
-        if standby=True:
+            if standby_count>=30:
+                standby=False
+                standby_count=0
+
 
 
 
