@@ -77,12 +77,12 @@ def adv_stop_loss_strategy(price_series, reinvest_gap=0.2, pct_gap=pct_gap, fee=
 
         if cash==0 and coin_amount>0:
             if current_price < stoploss_value*(1-pct_gap) and state == 0:
-                cash = coin_amount*stoploss_value*(1-pct_gap)*(1-fee)
+                cash = coin_amount*current_price*(1-fee)
                 coin_amount = 0
-                stoploss_value=stoploss_value*(1-pct_gap)
+                stoploss_value=current_price
 
             elif current_price < stoploss_value*(1+pct_gap) and state == 1:
-                cash = coin_amount*stoploss_value*(1+pct_gap)*(1-fee)
+                cash = coin_amount*current_price*(1-fee)
                 coin_amount = 0
 
             elif current_price>stoploss_value*(1+reinvest_gap) and state==1:
@@ -90,12 +90,12 @@ def adv_stop_loss_strategy(price_series, reinvest_gap=0.2, pct_gap=pct_gap, fee=
 
         elif coin_amount==0 and cash>0:
             if current_price > stoploss_value*(1+pct_gap) and state==0:
-                coin_amount = cash/(stoploss_value*(1+pct_gap))*(1-fee)
+                coin_amount = cash/(current_price)*(1-fee)
                 cash = 0
-                stoploss_value=stoploss_value*(1+pct_gap)
+                stoploss_value=current_price
 
             elif current_price > stoploss_value*(1-pct_gap) and state == -1:
-                coin_amount = cash/(stoploss_value*(1-pct_gap))*(1-fee)
+                coin_amount = cash/(current_price)*(1-fee)
                 cash = 0
 
             elif current_price<stoploss_value*(1-reinvest_gap) and state==-1:
