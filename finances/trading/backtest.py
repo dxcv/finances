@@ -20,10 +20,12 @@ def back_test_stop_loss_strategy(
     view_result=False
     ):
 
+    np.random.seed(seed=1234)
+
     compare_dic = {'hold':[], 'strategy':[], 'diff':[]}
     date_list=[]
-    for k in range(n):
-        start_test = random.choice(price_data.index)
+    for k in [np.random.randint(len(price_data.index)) for i in range(n)]:
+        start_test = price_data.index[k]
         end_test=start_test+time_delta_stress_test
         date_list.append(start_test)
         
@@ -67,10 +69,11 @@ def back_test_random(
     view_result=False
     ):
 
+    np.random.seed(seed=1234)
     compare_dic = {'hold':[], 'strategy':[], 'diff':[]}
     date_list=[]
-    for k in range(n):
-        start_test = random.choice(price_data.index)
+    for k in [np.random.randint(len(price_data.index)) for i in range(n)]:
+        start_test = price_data.index[k]
         end_test=start_test+time_delta_stress_test
         date_list.append(start_test)
         
@@ -104,7 +107,7 @@ if __name__=='__main__':
     mkt=mkt_data.MarketData()
 
     price_data = mkt.crypto_data['XLM'].loc[datetime.datetime(2018,1,27):].dropna()
-    df = back_test_stop_loss_strategy(price_data, n=10, view_result=True)
+    df = back_test_stop_loss_strategy(price_data, n=200, view_result=False)
     df.boxplot()
 
     for c in ['hold', 'strategy']:
