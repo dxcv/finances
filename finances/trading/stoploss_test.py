@@ -6,7 +6,7 @@ import portfolioopt as pfopt
 import numpy as np
 import pylab as plt
 import random
-from market import market_data as mkt_data
+from finances.market import market_data as mkt_data
 import statsmodels.api as sm
 
 cfd, cfn = os.path.split(os.path.abspath(__file__))
