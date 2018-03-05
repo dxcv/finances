@@ -9,7 +9,7 @@ import sys
 cfd, cfn = os.path.split(os.path.abspath(__file__))
 sys.path.append(cfd)
 
-from finances.market_data import MarketData
+from market_data import MarketData
 
 if __name__=='__main__':
     mkt = MarketData()
