@@ -8,7 +8,7 @@ import pylab as plt
 from scipy.interpolate import interp1d
 import random
 from scipy.stats import norm, t
-from market import market_data as mkt_data
+from finances.market import market_data as mkt_data
 import statsmodels.api as sm
 
 cfd, cfn = os.path.split(os.path.abspath(__file__))

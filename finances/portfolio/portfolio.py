@@ -3,7 +3,7 @@ import datetime
 import pickle
 import os
 
-from market.market_data import MarketData
+from finances.market.market_data import MarketData
 
 cfd, cfn = os.path.split(os.path.abspath(__file__))
 
