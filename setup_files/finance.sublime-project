@@ -11,7 +11,7 @@
 			],
 			"env":
 			{
-				"PYTHONPATH": "C:\\projects\\finances.git\\finances"
+				"PYTHONPATH": "C:\\projects\\finances.git"
 			},
 			"name": "python",
 			"selector": "source.python",
@@ -52,7 +52,7 @@
 				// 	],
 				// 	"env":
 				// 	{
-				// 		"PYTHONPATH": "C:\\projects\\finances.git\\finances"
+				// 		"PYTHONPATH": "C:\\projects\\finances.git"
 				// 	},
 				// 	"name": "python 3.5 - for cvxopt",
 				// 	"selector": "source.python",
