@@ -202,57 +202,25 @@ class PortFolio():
 
 
 if __name__=='__main__':
-    portfolio_assets = {
-        'BTC': 0.007,
-        'ETH': 2.14081,
-        'XRP': 922.5,
-        'ADA': 926,
-        'XLM': 929.07,
-        'LTC': 1.0,
-        'TRX': 2760,
-        'UBQ': 18.222,
-        'BIS': 36.6,
-        'IOTA': 47.553,
-        'EMC2': 45,
-        'FUN': 633.366,
-        'ADST': 136.71
-    }
 
     new_portfolio_assets = {
-        'BTC': 0.08074255978,
+        'BTC': 0.06233633479,
         'ETH': 2.14081031,
-        'LTC': 1.50000003,
-        'XRP': 130,
+        'LTC': 2.22000003,
+        'XRP': 326.6,
         'DASH': 0.286593,
         'XMR': 1.32867,
         'IOTA': 47.553,
         'ADA': 0.073,
         'XLM': 279.07,
         'TRX': 0.237,
-        'BCH': 0,
-        'FUN': 2550.366,
+        'BCH': 0.12,
+        'FUN': 0.447,
         'EMC2': 45,
         'UBQ': 18.22222222,
         'BIS': 36.59233533,
         'ADST': 136.71,
-        'NEO': 2.04,
-        'NEM': 0,
-    }
-
-    assets_effective_price = {
-        'BTC': 0.1,
-        'ETH': 454.96,
-        'XRP': 0.772,
-        'ADA': 0.404,
-        'XLM': 0.378,
-        'LTC': 208.23,
-        'TRX': 0.0668,
-        'UBQ': 5.7,
-        'BIS': 3.48,
-        'IOTA': 3.08,
-        'EMC2': 0.769,
-        'FUN': 0.0897,
-        'ADST': 0.817   
+        'NEO': 3.147627,
     }
 
     import pylab as plt
@@ -266,11 +234,16 @@ if __name__=='__main__':
         # assets_prices = assets_effective_price
         )
 
-    new_portfolio = PortFolio()
-    new_portfolio.assets = new_portfolio_assets
-    start_date = datetime.datetime(2018,2,9,2)
+    print(myportfolio.assets_data)
+    # myportfolio.save_data()
 
-    p = new_portfolio.optimize_allocation(projection_steps=14, value_to_invest=3500)
-    print(p)
-    # p.plot(style={'TOTAL':'--k'})
-    # plt.show()
+    myportfolio.values_data['TOTAL'].plot(style='k')
+    plt.show()
+    # new_portfolio = PortFolio()
+    # new_portfolio.assets = new_portfolio_assets
+    # start_date = datetime.datetime(2018,2,9,2)
+
+    # p = new_portfolio.optimize_allocation(projection_steps=14, value_to_invest=3500)
+    # print(p)
+    # # p.plot(style={'TOTAL':'--k'})
+    # # plt.show()
