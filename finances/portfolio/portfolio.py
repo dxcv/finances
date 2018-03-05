@@ -159,7 +159,7 @@ class PortFolio():
         value_to_invest=100
         ):
         import portfolioopt as pfopt
-        from portfolio.portfolio_optimization import generate_projected_normal_sample
+        from finances.portfolio.portfolio_optimization import generate_projected_normal_sample
         import numpy as np
 
         # select assets:
