@@ -234,16 +234,23 @@ if __name__=='__main__':
         # assets_prices = assets_effective_price
         )
 
-    print(myportfolio.assets_data)
-    # myportfolio.save_data()
+    full_ad = myportfolio.assets_data
 
-    myportfolio.values_data['TOTAL'].plot(style='k')
+    for k in range(1,5):
+        myportfolio.assets_data = full_ad.iloc[:k]
+        myportfolio.update_data()
+
+        myportfolio.values_data['TOTAL'].plot(label=k)
+    plt.legend()
+    # plt.show()
+
+    bitstamp_assets = {'BTC': 0, 'XRP':0, 'BCH':0 , 'LTC':0, 'ETH':0,
+    'ADA':0, 'NEO':0, 'XLM':0, 'XMR':0, 'DASH':0}
+    new_portfolio = PortFolio()
+    new_portfolio.assets = bitstamp_assets
+    start_date = datetime.datetime(2018,2,9,2)
+
+    p = new_portfolio.optimize_allocation(projection_steps=30, value_to_invest=2600)
+    print(p)
+    # p.plot(style={'TOTAL':'--k'})
     plt.show()
-    # new_portfolio = PortFolio()
-    # new_portfolio.assets = new_portfolio_assets
-    # start_date = datetime.datetime(2018,2,9,2)
-
-    # p = new_portfolio.optimize_allocation(projection_steps=14, value_to_invest=3500)
-    # print(p)
-    # # p.plot(style={'TOTAL':'--k'})
-    # # plt.show()
