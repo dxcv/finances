@@ -10,7 +10,7 @@ import statsmodels.api as sm
 
 from finances.trading.strategies.stoploss import adv_stop_loss_strategy
 
-pct_gap = 0.02
+pct_gap = 0.01
 
 def back_test_stop_loss_strategy(
     price_data,
@@ -55,7 +55,7 @@ def back_test_stop_loss_strategy(
             backtest_df['stop'].plot(ax=ax[1], style='k')
             backtest_df['stop_+'].plot(ax=ax[1], style='g')
             backtest_df['stop_-'].plot(ax=ax[1], style='r')
-            prices_test_data.rolling(window=3).mean().plot(ax=ax[1], style='-y')
+            prices_test_data.rolling(window=4).mean().plot(ax=ax[1], style='-y')
 
         for t in ['hold', 'strategy']:
             compare_dic[t].append(backtest_df[t].iloc[-1]-100.0)
@@ -112,7 +112,7 @@ if __name__=='__main__':
 
     price_data = mkt.crypto_data['BTC'].loc[datetime.datetime(2018,1,27):].dropna()
     price_data = price_data.resample('H').last()
-    df = back_test_stop_loss_strategy(price_data, n=20, view_result=True)
+    df = back_test_stop_loss_strategy(price_data, n=200, view_result=False)
     df.boxplot()
 
     for c in ['hold', 'strategy']:
