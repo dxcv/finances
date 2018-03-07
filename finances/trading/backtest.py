@@ -5,12 +5,12 @@ import os
 import numpy as np
 import pylab as plt
 import random
-from market import market_data as mkt_data
+from finances.market import market_data as mkt_data
 import statsmodels.api as sm
 
-from trading.strategies.stoploss import adv_stop_loss_strategy
+from finances.trading.strategies.stoploss import adv_stop_loss_strategy
 
-pct_gap = 0.01
+pct_gap = 0.02
 
 def back_test_stop_loss_strategy(
     price_data,
@@ -20,16 +20,19 @@ def back_test_stop_loss_strategy(
     view_result=False
     ):
 
-    np.random.seed(seed=1234)
+    np.random.seed(seed=123)
 
     compare_dic = {'hold':[], 'strategy':[], 'diff':[]}
     date_list=[]
     for k in [np.random.randint(len(price_data.index)) for i in range(n)]:
         start_test = price_data.index[k]
         end_test=start_test+time_delta_stress_test
-        date_list.append(start_test)
         
         prices_test_data = price_data.loc[start_test:end_test]
+        if prices_test_data.index[-1]-prices_test_data.index[0]<time_delta_stress_test:
+            continue
+
+        date_list.append(start_test)
         backtest_df = pd.DataFrame()
 
         backtest_df['hold'] = prices_test_data*100.0/prices_test_data.iloc[0]
@@ -48,10 +51,11 @@ def back_test_stop_loss_strategy(
                 raise('Sample too big. Reduce number of tests')
             fig, ax = plt.subplots(2,1, sharex=True)
             backtest_df[['strategy', 'hold']].plot(ax=ax[0])
-            prices_test_data.plot(ax=ax[1])
+            prices_test_data.plot(ax=ax[1], style='-o')
             backtest_df['stop'].plot(ax=ax[1], style='k')
             backtest_df['stop_+'].plot(ax=ax[1], style='g')
             backtest_df['stop_-'].plot(ax=ax[1], style='r')
+            prices_test_data.rolling(window=3).mean().plot(ax=ax[1], style='-y')
 
         for t in ['hold', 'strategy']:
             compare_dic[t].append(backtest_df[t].iloc[-1]-100.0)
@@ -106,8 +110,9 @@ if __name__=='__main__':
 
     mkt=mkt_data.MarketData()
 
-    price_data = mkt.crypto_data['XLM'].loc[datetime.datetime(2018,1,27):].dropna()
-    df = back_test_stop_loss_strategy(price_data, n=200, view_result=False)
+    price_data = mkt.crypto_data['BTC'].loc[datetime.datetime(2018,1,27):].dropna()
+    price_data = price_data.resample('H').last()
+    df = back_test_stop_loss_strategy(price_data, n=20, view_result=True)
     df.boxplot()
 
     for c in ['hold', 'strategy']:

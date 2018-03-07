@@ -32,6 +32,7 @@ def strategy_decision(
         elif current_price < stoploss_value*(1+pct_gap) and state == 1:
             cash = coin_amount*current_price*(1-fee)
             coin_amount = 0
+            # stoploss_value=current_price
 
 
         elif current_price>stoploss_value*(1+reinvest_gap) and state==1:
@@ -46,6 +47,7 @@ def strategy_decision(
         elif current_price > stoploss_value*(1-pct_gap) and state == -1:
             coin_amount = cash/(current_price)*(1-fee)
             cash = 0
+            stoploss_value=current_price
 
         elif current_price<stoploss_value*(1-reinvest_gap) and state==-1:
             coin_amount = cash/(stoploss_value*(1-reinvest_gap))*(1-fee)
