@@ -58,63 +58,6 @@ def strategy_decision(
     return cash, coin_amount, stoploss_value
 
 
-def ideal_adv_stop_loss_strategy(price_series, reinvest_gap=0.2, pct_gap=pct_gap, fee=0.0025, invested_value=100):
-    stoploss_value = price_series.iloc[0]
-
-    coin_amount = invested_value/price_series.iloc[0]
-    cash = 0
-
-    trade_value = [invested_value]
-    stoploss=[stoploss_value]
-    state = 0
-    for k in range(1,len(price_series)):
-        current_price = price_series.iloc[k]
-
-        if cash==0 and coin_amount>0:
-            if current_price < stoploss_value*(1-pct_gap) and state == 0:
-                cash = coin_amount*stoploss_value*(1-pct_gap)*(1-fee)
-                coin_amount = 0
-                stoploss_value=stoploss_value*(1-pct_gap)
-
-            elif current_price < stoploss_value*(1+pct_gap) and state == 1:
-                cash = coin_amount*stoploss_value*(1+pct_gap)*(1-fee)
-                coin_amount = 0
-
-            elif current_price>stoploss_value*(1+reinvest_gap) and state==1:
-                stoploss_value=stoploss_value*(1+reinvest_gap)
-
-        elif coin_amount==0 and cash>0:
-            if current_price > stoploss_value*(1+pct_gap) and state==0:
-                coin_amount = cash/(stoploss_value*(1+pct_gap))*(1-fee)
-                cash = 0
-                stoploss_value=stoploss_value*(1+pct_gap)
-
-            elif current_price > stoploss_value*(1-pct_gap) and state == -1:
-                coin_amount = cash/(stoploss_value*(1-pct_gap))*(1-fee)
-                cash = 0
-
-            elif current_price<stoploss_value*(1-reinvest_gap) and state==-1:
-                coin_amount = cash/(stoploss_value*(1-reinvest_gap))*(1-fee)
-                cash = 0
-                stoploss_value=stoploss_value*(1-reinvest_gap)
-
-        # check state
-
-        if current_price >= stoploss_value*(1+pct_gap):
-            state=1
-
-        elif current_price <= stoploss_value*(1-pct_gap):
-            state=-1
-
-        else:
-            state=0
-
-        value = coin_amount*current_price+cash
-        trade_value.append(value)
-        stoploss.append(stoploss_value)
-
-    return pd.Series(data=trade_value, index=price_series.index), pd.Series(data=stoploss, index=price_series.index)
-
 
 def stop_loss_strategy(price_series, pct_gap=pct_gap, fee=0.0025, invested_value=100):
     stoploss_value = price_series.iloc[0]
