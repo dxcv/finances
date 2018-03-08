@@ -13,7 +13,7 @@ cfd, cfn = os.path.split(os.path.abspath(__file__))
 
 pct_gap = 0.01
 
-def strategy_decision(
+def fixed_stoploss_decision(
     current_price,
     decision_price,
     stoploss_value,
@@ -25,30 +25,72 @@ def strategy_decision(
     fee=0.0025):
 
     if cash==0 and coin_amount>0:
-        if decision_price < stoploss_value*(1-pct_gap) and state == 0:
+        if decision_price < stoploss_value*(1-pct_gap) and (state==0 or state==-1):
             cash = coin_amount*current_price*(1-fee)
             coin_amount = 0
-            stoploss_value=current_price
+            # stoploss_value=decision_price
 
-        elif decision < stoploss_value*(1+pct_gap) and state == 1:
+        elif decision_price < stoploss_value*(1+pct_gap) and state == 1:
             cash = coin_amount*current_price*(1-fee)
             coin_amount = 0
-            # stoploss_value=current_price
-
+            # stoploss_value=decision_price
 
         elif decision_price>stoploss_value*(1+reinvest_gap) and state==1:
             stoploss_value=stoploss_value*(1+reinvest_gap)
 
     elif coin_amount==0 and cash>0:
-        if decision_price > stoploss_value*(1+pct_gap) and state==0:
+        if decision_price > stoploss_value*(1+pct_gap) and (state==0 or state==1):
             coin_amount = cash/(current_price)*(1-fee)
             cash = 0
-            stoploss_value=current_price
+            # stoploss_value=decision_price
 
         elif decision_price > stoploss_value*(1-pct_gap) and state == -1:
             coin_amount = cash/(current_price)*(1-fee)
             cash = 0
-            stoploss_value=current_price
+            # stoploss_value=decision_price
+
+        elif decision_price<stoploss_value*(1-reinvest_gap) and state==-1:
+            coin_amount = cash/(stoploss_value*(1-reinvest_gap))*(1-fee)
+            cash = 0
+            stoploss_value=stoploss_value*(1-reinvest_gap)
+    
+    return cash, coin_amount, stoploss_value
+
+def moving_stoploss_decision(
+    current_price,
+    decision_price,
+    stoploss_value,
+    cash,
+    coin_amount,
+    state,
+    reinvest_gap=0.3,
+    pct_gap=0.025,
+    fee=0.0025):
+
+    if cash==0 and coin_amount>0:
+        if decision_price < stoploss_value*(1-pct_gap) and (state==0 or state==-1):
+            cash = coin_amount*current_price*(1-fee)
+            coin_amount = 0
+            # stoploss_value=decision_price
+
+        elif decision_price < stoploss_value*(1+pct_gap) and state == 1:
+            cash = coin_amount*current_price*(1-fee)
+            coin_amount = 0
+            # stoploss_value=decision_price
+
+        elif decision_price>stoploss_value*(1+reinvest_gap) and state==1:
+            stoploss_value=stoploss_value*(1+reinvest_gap)
+
+    elif coin_amount==0 and cash>0:
+        if decision_price > stoploss_value*(1+pct_gap) and (state==0 or state==1):
+            coin_amount = cash/(current_price)*(1-fee)
+            cash = 0
+            # stoploss_value=decision_price
+
+        elif decision_price > stoploss_value*(1-pct_gap) and state == -1:
+            coin_amount = cash/(current_price)*(1-fee)
+            cash = 0
+            # stoploss_value=decision_price
 
         elif decision_price<stoploss_value*(1-reinvest_gap) and state==-1:
             coin_amount = cash/(stoploss_value*(1-reinvest_gap))*(1-fee)
@@ -71,7 +113,7 @@ def stop_loss_strategy(price_series, pct_gap=pct_gap, fee=0.0025, invested_value
     for k in range(1,len(price_series)):
         current_price = price_series.iloc[k]
 
-        cash, coin_amount, stoploss_value = strategy_decision(
+        cash, coin_amount, stoploss_value = fixed_stoploss_decision(
             current_price=current_price,
             cash=cash,
             stoploss_value=stoploss_value,
@@ -107,11 +149,14 @@ def adv_stop_loss_strategy(price_series, reinvest_gap=0.2, pct_gap=pct_gap, fee=
     stoploss=[stoploss_value]
     state = 0
     for k in range(1,len(price_series)):
-        current_price = price_series.iloc[k]
+        date = price_series.index[k]
+        datefinal = date-datetime.timedelta(hours=4)
+        current_price = price_series.loc[date]
+        decision_price = price_series.loc[datefinal:date].mean()
 
-        cash, coin_amount, stoploss_value = strategy_decision(
+        cash, coin_amount, stoploss_value = fixed_stoploss_decision(
             current_price=current_price,
-            decision_price=current_price,
+            decision_price=decision_price,
             cash=cash,
             stoploss_value=stoploss_value,
             coin_amount=coin_amount,
