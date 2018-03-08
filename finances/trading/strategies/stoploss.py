@@ -15,41 +15,42 @@ pct_gap = 0.01
 
 def strategy_decision(
     current_price,
+    decision_price,
     stoploss_value,
     cash,
     coin_amount,
     state,
-    reinvest_gap=0.2,
+    reinvest_gap=0.3,
     pct_gap=0.025,
     fee=0.0025):
 
     if cash==0 and coin_amount>0:
-        if current_price < stoploss_value*(1-pct_gap) and state == 0:
+        if decision_price < stoploss_value*(1-pct_gap) and state == 0:
             cash = coin_amount*current_price*(1-fee)
             coin_amount = 0
             stoploss_value=current_price
 
-        elif current_price < stoploss_value*(1+pct_gap) and state == 1:
+        elif decision < stoploss_value*(1+pct_gap) and state == 1:
             cash = coin_amount*current_price*(1-fee)
             coin_amount = 0
             # stoploss_value=current_price
 
 
-        elif current_price>stoploss_value*(1+reinvest_gap) and state==1:
+        elif decision_price>stoploss_value*(1+reinvest_gap) and state==1:
             stoploss_value=stoploss_value*(1+reinvest_gap)
 
     elif coin_amount==0 and cash>0:
-        if current_price > stoploss_value*(1+pct_gap) and state==0:
+        if decision_price > stoploss_value*(1+pct_gap) and state==0:
             coin_amount = cash/(current_price)*(1-fee)
             cash = 0
             stoploss_value=current_price
 
-        elif current_price > stoploss_value*(1-pct_gap) and state == -1:
+        elif decision_price > stoploss_value*(1-pct_gap) and state == -1:
             coin_amount = cash/(current_price)*(1-fee)
             cash = 0
             stoploss_value=current_price
 
-        elif current_price<stoploss_value*(1-reinvest_gap) and state==-1:
+        elif decision_price<stoploss_value*(1-reinvest_gap) and state==-1:
             coin_amount = cash/(stoploss_value*(1-reinvest_gap))*(1-fee)
             cash = 0
             stoploss_value=stoploss_value*(1-reinvest_gap)
@@ -167,6 +168,7 @@ def adv_stop_loss_strategy(price_series, reinvest_gap=0.2, pct_gap=pct_gap, fee=
 
         cash, coin_amount, stoploss_value = strategy_decision(
             current_price=current_price,
+            decision_price=current_price,
             cash=cash,
             stoploss_value=stoploss_value,
             coin_amount=coin_amount,
@@ -177,10 +179,10 @@ def adv_stop_loss_strategy(price_series, reinvest_gap=0.2, pct_gap=pct_gap, fee=
 
         # check state
 
-        if current_price >= stoploss_value*(1+pct_gap):
+        if decision_price >= stoploss_value*(1+pct_gap):
             state=1
 
-        elif current_price <= stoploss_value*(1-pct_gap):
+        elif decision_price <= stoploss_value*(1-pct_gap):
             state=-1
 
         else:
