@@ -11,7 +11,9 @@ import statsmodels.api as sm
 
 cfd, cfn = os.path.split(os.path.abspath(__file__))
 
-pct_gap = 0.01
+pct_gap = 0.025
+top_price=0
+bot_price=0
 
 def decision_short(
     reference_price,
@@ -28,10 +30,10 @@ def decision_short(
     elif current_price<bot_price:
         bot_price=current_price
 
-    elif current_price>(reference_price+bot_price)*0.5 and current_price<reference_price*(1-0.025):
+    elif current_price>(reference_price+bot_price)*0.5 and current_price<reference_price*(1-0.0025):
         decision='buy'
 
-    return decision
+    return decision, top_price, bot_price
 
 
 def decision_long(
@@ -43,20 +45,16 @@ def decision_long(
 
     decision='hold'
 
-    print('current', current_price)
-    print('reference', bot_price)
-    
     if current_price<bot_price:
         decision='sell'
 
     elif current_price>top_price:
         top_price=current_price
 
-    elif current_price<(reference_price+top_price)*0.5 and current_price>reference_price*(1+0.025):
-            decision='sell'
-    print(decision)
+    elif current_price<(reference_price+top_price)*0.5 and current_price>reference_price*(1+0.0025):
+        decision='sell'
 
-    return decision
+    return decision, top_price, bot_price
 
 
 def asymmetric_decision(
@@ -73,18 +71,17 @@ def asymmetric_decision(
     else:
         decision_strategy = decision_short
 
-    position = decision_strategy(
+    position, top_price, bot_price = decision_strategy(
         reference_price,
         current_price,
         top_price,
         bot_price,
         )
-    print('position', position)
     
-    return position
+    return position, top_price, bot_price
 
 
-def adv_stop_loss_strategy(
+def dynamic_stoploss_strategy(
     price_series,
     pct_gap=pct_gap,
     fee=0.0025,
@@ -105,16 +102,16 @@ def adv_stop_loss_strategy(
 
     for k in range(1,len(price_series)):
         date = price_series.index[k]
+        # print(date)
 
         current_price = price_series.loc[date]
 
-        print(price_series.iloc[:k])
-        plt.plot(price_series.index[:k], price_series.iloc[:k], '-o')
-        if len(buy_points['index'])>0:
-            plt.plot(buy_points['index'], buy_points['data'])
-        plt.show()
 
-        position = asymmetric_decision(
+        # plt.plot(price_series.index[:k+1], price_series.iloc[:k+1], '-o')
+        # if len(buy_points['index'])>0:
+        #     plt.plot(buy_points['index'], buy_points['data'])
+
+        position, top_price, bot_price = asymmetric_decision(
             reference_price,
             current_price,
             top_price,
@@ -123,8 +120,14 @@ def adv_stop_loss_strategy(
             coin_amount,
             fee
             )
-        print('cash', cash)
-        print('coin_amount', coin_amount)
+        # print('POSITION', position)
+        # print('current', current_price)
+        # print('reference', reference_price)
+        # print('TOP', top_price)
+        # print('BOT', bot_price)
+        # # plt.plot(date, top_price, 'g')
+        # # plt.plot(date, bot_price, 'r')
+
 
         if position == 'buy':
             coin_amount = cash/(current_price)*(1-fee)
@@ -137,7 +140,6 @@ def adv_stop_loss_strategy(
             buy_points['data'].append(current_price)        
 
         elif position == 'sell':
-            print('OLA')
             cash = coin_amount*current_price*(1-fee)
             coin_amount = 0
             reference_price=current_price
@@ -145,13 +147,20 @@ def adv_stop_loss_strategy(
             top_price=reference_price*(1+pct_gap)
 
             sell_points['index'].append(date)
-            sell_points['data'].append(current_price) 
+            sell_points['data'].append(current_price)
+
+        # print('cash', cash)
+        # print('coin_amount', coin_amount)
+        # print('########################################')
+        # plt.show()
 
         value = coin_amount*current_price+cash
         trading_value.append(value)
 
 
-    return pd.Series(data=trading_value, index=price_series.index), pd.Series(buy_points), pd.Series(sell_points)
+    buy_data = pd.Series(index=buy_points['index'], data=buy_points['data'])
+    sell_data = pd.Series(index=sell_points['index'], data=sell_points['data'])
+    return pd.Series(data=trading_value, index=price_series.index), buy_data, sell_data
 
 
 
@@ -159,13 +168,13 @@ if __name__=='__main__':
 
     mkt=mkt_data.MarketData()
 
-    price_data = mkt.crypto_data['BTC'].loc[datetime.datetime(2018,1,27):].resample('30T').last()
+    price_data = mkt.crypto_data['BTC'].loc[datetime.datetime(2018,2,13):].resample('30T').last()
 
     backtest_df = pd.DataFrame()
     backtest_df['price'] = price_data
     backtest_df['hold'] = price_data*100.0/price_data.iloc[0]
 
-    strategy_result, buy, sell = adv_stop_loss_strategy(price_series=price_data)
+    strategy_result, buy, sell = dynamic_stoploss_strategy(price_series=price_data)
 
     backtest_df['strategy'] = strategy_result
 
