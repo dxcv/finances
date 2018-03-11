@@ -11,7 +11,7 @@ import statsmodels.api as sm
 
 cfd, cfn = os.path.split(os.path.abspath(__file__))
 
-pct_gap = 0.0025
+pct_gap = 0.005
 top_price=0
 bot_price=0
 
@@ -30,7 +30,7 @@ def decision_short(
     elif current_price<bot_price:
         bot_price=current_price
 
-    elif current_price>(reference_price+bot_price)*0.5 and current_price<reference_price*(1-0.0025):
+    elif current_price>(reference_price+bot_price)*0.5 and current_price<reference_price*(1-2*0.0025):
         decision='buy'
 
     return decision, top_price, bot_price
@@ -51,7 +51,7 @@ def decision_long(
     elif current_price>top_price:
         top_price=current_price
 
-    elif current_price<(reference_price+top_price)*0.5 and current_price>reference_price*(1+0.0025):
+    elif current_price<(reference_price+top_price)*0.5 and current_price>reference_price*(1+2*0.0025):
         decision='sell'
 
     return decision, top_price, bot_price
@@ -152,9 +152,9 @@ def dynamic_stoploss_strategy(
             sell_points['data'].append(current_price)
 
         else:
-            if current_price > reference_price*(1+0.2):
+            if current_price > reference_price*(1+0.25):
                 reference_price=current_price
-            elif current_price < reference_price*(1-0.2):
+            elif current_price < reference_price*(1-0.25):
                 reference_price=current_price
 
         value = coin_amount*current_price+cash
