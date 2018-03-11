@@ -163,7 +163,7 @@ def dynamic_stoploss_strategy(
 
     buy_data = pd.Series(index=buy_points['index'], data=buy_points['data'])
     sell_data = pd.Series(index=sell_points['index'], data=sell_points['data'])
-    return pd.Series(data=trading_value, index=price_series.index), buy_data, sell_data
+    return pd.Series(data=trading_value, index=price_series.index)#, buy_data, sell_data
 
 
 
