@@ -11,7 +11,7 @@ import statsmodels.api as sm
 
 cfd, cfn = os.path.split(os.path.abspath(__file__))
 
-pct_gap = 0.025
+pct_gap = 0.0025
 top_price=0
 bot_price=0
 
@@ -106,11 +106,6 @@ def dynamic_stoploss_strategy(
 
         current_price = price_series.loc[date]
 
-
-        # plt.plot(price_series.index[:k+1], price_series.iloc[:k+1], '-o')
-        # if len(buy_points['index'])>0:
-        #     plt.plot(buy_points['index'], buy_points['data'])
-
         position, top_price, bot_price = asymmetric_decision(
             reference_price,
             current_price,
@@ -120,13 +115,20 @@ def dynamic_stoploss_strategy(
             coin_amount,
             fee
             )
+
+        # price_series.iloc[:k+1].plot(style='-o')
+        # if len(buy_points['index'])>0:
+        #     plt.plot(buy_points['index'], buy_points['data'])
+
         # print('POSITION', position)
         # print('current', current_price)
         # print('reference', reference_price)
         # print('TOP', top_price)
         # print('BOT', bot_price)
-        # # plt.plot(date, top_price, 'g')
-        # # plt.plot(date, bot_price, 'r')
+        # print('########################################')
+        # plt.show()
+        # plt.plot(date, top_price, 'g')
+        # plt.plot(date, bot_price, 'r')
 
 
         if position == 'buy':
@@ -149,10 +151,11 @@ def dynamic_stoploss_strategy(
             sell_points['index'].append(date)
             sell_points['data'].append(current_price)
 
-        # print('cash', cash)
-        # print('coin_amount', coin_amount)
-        # print('########################################')
-        # plt.show()
+        else:
+            if current_price > reference_price*(1+0.2):
+                reference_price=current_price
+            elif current_price < reference_price*(1-0.2):
+                reference_price=current_price
 
         value = coin_amount*current_price+cash
         trading_value.append(value)
@@ -168,7 +171,7 @@ if __name__=='__main__':
 
     mkt=mkt_data.MarketData()
 
-    price_data = mkt.crypto_data['BTC'].loc[datetime.datetime(2018,2,13):].resample('30T').last()
+    price_data = mkt.crypto_data['BTC'].loc[datetime.datetime(2018,1,27):]#.resample('30T').last()
 
     backtest_df = pd.DataFrame()
     backtest_df['price'] = price_data
