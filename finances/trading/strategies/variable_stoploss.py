@@ -11,7 +11,7 @@ import statsmodels.api as sm
 
 cfd, cfn = os.path.split(os.path.abspath(__file__))
 
-pct_gap = 0.005
+pct_gap = 0.01
 top_price=0
 bot_price=0
 
@@ -30,7 +30,7 @@ def decision_short(
     elif current_price<bot_price:
         bot_price=current_price
 
-    elif current_price>(reference_price+bot_price)*0.5 and current_price<reference_price*(1-2*0.0025):
+    elif current_price>(reference_price+bot_price)*0.5 and bot_price<reference_price*(1-2*0.0025):
         decision='buy'
 
     return decision, top_price, bot_price
@@ -51,7 +51,7 @@ def decision_long(
     elif current_price>top_price:
         top_price=current_price
 
-    elif current_price<(reference_price+top_price)*0.5 and current_price>reference_price*(1+2*0.0025):
+    elif current_price<(reference_price+top_price)*0.5 and top_price>reference_price*(1+2*0.0025):
         decision='sell'
 
     return decision, top_price, bot_price
@@ -116,6 +116,7 @@ def dynamic_stoploss_strategy(
             fee
             )
 
+        # # for debugg
         # price_series.iloc[:k+1].plot(style='-o')
         # if len(buy_points['index'])>0:
         #     plt.plot(buy_points['index'], buy_points['data'])
@@ -127,9 +128,6 @@ def dynamic_stoploss_strategy(
         # print('BOT', bot_price)
         # print('########################################')
         # plt.show()
-        # plt.plot(date, top_price, 'g')
-        # plt.plot(date, bot_price, 'r')
-
 
         if position == 'buy':
             coin_amount = cash/(current_price)*(1-fee)
@@ -152,9 +150,9 @@ def dynamic_stoploss_strategy(
             sell_points['data'].append(current_price)
 
         else:
-            if current_price > reference_price*(1+0.25):
+            if current_price > reference_price*(1+0.30):
                 reference_price=current_price
-            elif current_price < reference_price*(1-0.25):
+            elif current_price < reference_price*(1-0.30):
                 reference_price=current_price
 
         value = coin_amount*current_price+cash
@@ -163,7 +161,7 @@ def dynamic_stoploss_strategy(
 
     buy_data = pd.Series(index=buy_points['index'], data=buy_points['data'])
     sell_data = pd.Series(index=sell_points['index'], data=sell_points['data'])
-    return pd.Series(data=trading_value, index=price_series.index)#, buy_data, sell_data
+    return pd.Series(data=trading_value, index=price_series.index), buy_data, sell_data
 
 
 
@@ -171,7 +169,7 @@ if __name__=='__main__':
 
     mkt=mkt_data.MarketData()
 
-    price_data = mkt.crypto_data['BTC'].loc[datetime.datetime(2018,1,27):]#.resample('30T').last()
+    price_data = mkt.crypto_data['BTC'].loc[datetime.datetime(2018,1,31,8):]#.resample('30T').last()
 
     backtest_df = pd.DataFrame()
     backtest_df['price'] = price_data

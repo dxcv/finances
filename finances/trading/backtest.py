@@ -117,7 +117,6 @@ if __name__=='__main__':
     mkt=mkt_data.MarketData()
 
     price_data = mkt.crypto_data['BTC'].loc[datetime.datetime(2018,1,27):].dropna()
-    price_data = price_data#.resample('H').last()
     df = back_test_random(price_data, n=200, view_result=False)
     print(len(df))
     df.boxplot()
