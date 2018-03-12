@@ -22,9 +22,9 @@ trading_client = bts.Trading(
        secret='Z4yacXGzh7LrBcIUqdDjkOfvH5lEcyQZ'
        )
 
-def update_price_data(prices_df)
+def update_price_data(prices_df):
 
-    _new_data = {'btc': [], 'eth': [], 'ltc': [], 'xrp':[]}
+    _new_data = {'btc': 0, 'eth': 0, 'ltc': 0, 'xrp':0, 'bch':0}
 
     for coin in list(_new_data.keys()):
         try:
@@ -33,15 +33,15 @@ def update_price_data(prices_df)
             print('Coin {} raised error'.format(coin))
 
     _temp_df = pd.DataFrame(
-        data=current_price,
+        data=_new_data,
         index=[datetime.datetime.now()])
     prices_df = prices_df.append(_temp_df)
     return prices_df
 
-while (datetime.datetime.now()-start_time)<datetime.time_delta(minutes=30):
+while (datetime.datetime.now()-start_time)<datetime.timedelta(minutes=30):
     pace = 0
     prices_df = pd.read_csv(
-        os.path.join(cfd, 'prices_data_trading.csv'),
+        os.path.join(cfd, 'bitstamp_high_frequency_data.csv'),
         index_col=0,
         parse_dates=True,
         infer_datetime_format=True
@@ -49,11 +49,6 @@ while (datetime.datetime.now()-start_time)<datetime.time_delta(minutes=30):
 
     for pace in range(10):
         prices_df = update_price_data(prices_df)
-        time.sleep(3)
+        time.sleep(30)
 
-    df.to_csv(os.path.join(cfd, 'prices_data_trading.csv'))
-
-    
-
-
-
+    prices_df.to_csv(os.path.join(cfd, 'bitstamp_high_frequency_data.csv'))

@@ -41,11 +41,9 @@ if not is_lock_free():
 # Real code
 ######################
 
-cfd = os.path.dirname(os.path.realpath(__file__))
+start_time = datetime.datetime.now()
 
-price_list = {'btc': [], 'eth': [], 'ltc': [], 'xrp':[], 'bch':[]}
-times = []
-save_data = 0
+cfd = os.path.dirname(os.path.realpath(__file__))
 
 trading_client = bts.Trading(
        username='769101',
@@ -53,26 +51,36 @@ trading_client = bts.Trading(
        secret='Z4yacXGzh7LrBcIUqdDjkOfvH5lEcyQZ'
        )
 
-while True:
-    for coin in list(price_list.keys()):
+def update_price_data(prices_df):
+
+    _new_data = {'btc': 0, 'eth': 0, 'ltc': 0, 'xrp':0, 'bch':0}
+
+    for coin in list(_new_data.keys()):
         try:
-            current_price = float(trading_client.ticker(base=coin, quote='eur')['last'])
+            _new_data[coin] = float(trading_client.ticker(base=coin, quote='eur')['last'])
         except:
             print('Coin {} raised error'.format(coin))
 
-        price_list[coin].append(current_price)
+    _temp_df = pd.DataFrame(
+        data=_new_data,
+        index=[datetime.datetime.now()])
+    prices_df = prices_df.append(_temp_df)
+    return prices_df
 
-    times.append(datetime.datetime.now())
+while (datetime.datetime.now()-start_time)<datetime.timedelta(minutes=30):
+    pace = 0
+    prices_df = pd.read_csv(
+        os.path.join(cfd, 'bitstamp_high_frequency_data.csv'),
+        index_col=0,
+        parse_dates=True,
+        infer_datetime_format=True
+    )
 
-    save_data+=1
+    for pace in range(10):
+        prices_df = update_price_data(prices_df)
+        time.sleep(30)
 
-    # save_data:
-    if save_data>=60:
-        print('Data saved at {}.'.format(datetime.datetime.now()))
-        df = pd.DataFrame(index=times, data=price_list)
-        df.to_csv(os.path.join(cfd, 'bitstamp_data_trading.csv'))
-        save_data=0
-    time.sleep(30)
+    prices_df.to_csv(os.path.join(cfd, 'bitstamp_high_frequency_data.csv'))
 
 
 
