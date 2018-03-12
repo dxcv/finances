@@ -12,11 +12,8 @@ import datetime
 
 import os
 
-cfd = os.path.dirname(os.path.realpath(__file__))
 
-price_list = {'btc': [], 'eth': [], 'ltc': [], 'xrp':[]}
-times = []
-save_data = 0
+cfd = os.path.dirname(os.path.realpath(__file__))
 
 trading_client = bts.Trading(
        username='769101',
@@ -24,26 +21,45 @@ trading_client = bts.Trading(
        secret='Z4yacXGzh7LrBcIUqdDjkOfvH5lEcyQZ'
        )
 
-while True:
-    for coin in list(price_list.keys()):
+def update_price_data(prices_df)
+    prices_df = pd.read_csv(
+        data_path,
+        index_col=0,
+        parse_dates=True,
+        infer_datetime_format=True
+    )
+
+    _new_data = {'btc': [], 'eth': [], 'ltc': [], 'xrp':[]}
+
+    for coin in list(_new_data.keys()):
         try:
             current_price = float(trading_client.ticker(base=coin, quote='eur')['last'])
         except:
             print('Coin {} raised error'.format(coin))
 
-        price_list[coin].append(current_price)
+    _temp_df = pd.DataFrame(
+        data=current_price,
+        index=[datetime.datetime.now()])
+    prices_df = prices_df.append(_temp_df)
+    return prices_df
 
-    times.append(datetime.datetime.now())
 
-    save_data+=1
+while True:
+    pace = 0
+    prices_df = pd.read_csv(
+        os.path.join(cfd, 'prices_data_trading.csv'),
+        index_col=0,
+        parse_dates=True,
+        infer_datetime_format=True
+    )
 
-    # save_data:
-    if save_data>=60:
-        print('Data saved at {}.'.format(datetime.datetime.now()))
-        df = pd.DataFrame(index=times, data=price_list)
-        df.to_csv(os.path.join(cfd, 'prices_data_trading.csv'))
-        save_data=0
-    time.sleep(10)
+    for pace in range(10):
+        prices_df = update_price_data(prices_df)
+        time.sleep(3)
+
+    df.to_csv(os.path.join(cfd, 'prices_data_trading.csv'))
+
+    
 
 
 
