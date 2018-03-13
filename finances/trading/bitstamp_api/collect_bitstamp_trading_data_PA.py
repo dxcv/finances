@@ -39,7 +39,7 @@ while not is_lock_free():
     time.sleep(10)
     n_trials+=1
 
-    if n_trials>15:
+    if n_trials>90:
         sys.exit()
 
 print('Socket Free. Continuing to actual code.')
@@ -49,7 +49,7 @@ print('Socket Free. Continuing to actual code.')
 ######################
 
 start_time = datetime.datetime.now()
-truncated_start_time = start_time.replace(minute=(30*(start_time.minute>30.0)+0))
+truncated_start_time = start_time.replace(minute=(20*(start_time.minute>20.0)+20*(start_time.minute>40.0)+0))
 
 cfd = os.path.dirname(os.path.realpath(__file__))
 
@@ -67,7 +67,7 @@ def update_price_data(prices_df):
         try:
             _new_data[coin] = float(trading_client.ticker(base=coin, quote='eur')['last'])
         except:
-            print('Coin {} raised error'.format(coin))
+            print('Coin {} raised error at time {}'.format(coin, datetime.datetime.now()))
 
     _temp_df = pd.DataFrame(
         data=_new_data,
