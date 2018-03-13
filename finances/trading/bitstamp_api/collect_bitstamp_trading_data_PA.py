@@ -33,15 +33,23 @@ def is_lock_free():
         logging.info("Failed to acquire lock %r" % (lock_id,))
         return False
 
-if not is_lock_free():
-    sys.exit()
+n_trials = 0
+while not is_lock_free():
+    print('Socket busy... Trying again in 10 seconds...')
+    time.sleep(10)
+    n_trials+=1
 
+    if n_trials>15:
+        sys.exit()
+
+print('Socket Free. Continuing to actual code.')
 
 ######################
 # Real code
 ######################
 
 start_time = datetime.datetime.now()
+truncated_start_time = start_time.replace(minute=(30*(start_time.minute>30.0)+0))
 
 cfd = os.path.dirname(os.path.realpath(__file__))
 
@@ -67,7 +75,8 @@ def update_price_data(prices_df):
     prices_df = prices_df.append(_temp_df)
     return prices_df
 
-while (datetime.datetime.now()-start_time)<datetime.timedelta(minutes=31):
+collect = True
+while collect:
     pace = 0
     prices_df = pd.read_csv(
         os.path.join(cfd, 'bitstamp_high_frequency_data.csv'),
@@ -76,11 +85,15 @@ while (datetime.datetime.now()-start_time)<datetime.timedelta(minutes=31):
         infer_datetime_format=True
     )
 
-    for pace in range(10):
+    for pace in range(20):
         prices_df = update_price_data(prices_df)
-        time.sleep(30)
+        if (datetime.datetime.now()-truncated_start_time)>=datetime.timedelta(minutes=30):
+            collect=False
+            break
+        time.sleep(20)
 
     prices_df.to_csv(os.path.join(cfd, 'bitstamp_high_frequency_data.csv'))
+    print('Data saved at {}'.format(datetime.datetime.now()))
 
-
+sys.exit()
 
