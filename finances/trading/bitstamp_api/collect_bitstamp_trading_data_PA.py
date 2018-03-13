@@ -24,7 +24,7 @@ def is_lock_free():
     global lock_socket
     lock_socket = socket.socket(socket.AF_UNIX, socket.SOCK_DGRAM)
     try:
-        lock_id = "my-username.my-task-name"   # this should be unique. using your username as a prefix is a convention
+        lock_id = "hordeus.bitstamp_hf_data"   # this should be unique. using your username as a prefix is a convention
         lock_socket.bind('\0' + lock_id)
         logging.debug("Acquired lock %r" % (lock_id,))
         return True
@@ -67,7 +67,7 @@ def update_price_data(prices_df):
     prices_df = prices_df.append(_temp_df)
     return prices_df
 
-while (datetime.datetime.now()-start_time)<datetime.timedelta(minutes=30):
+while (datetime.datetime.now()-start_time)<datetime.timedelta(minutes=31):
     pace = 0
     prices_df = pd.read_csv(
         os.path.join(cfd, 'bitstamp_high_frequency_data.csv'),
