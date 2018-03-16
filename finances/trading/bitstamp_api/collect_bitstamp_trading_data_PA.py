@@ -49,7 +49,8 @@ print('Socket Free. Continuing to actual code.')
 ######################
 
 start_time = datetime.datetime.now()
-truncated_start_time = start_time.replace(minute=(20*(start_time.minute>20.0)+20*(start_time.minute>40.0)+0))
+truncated_start_time = start_time.replace(minute=(20*(start_time.minute>=20.0)+20*(start_time.minute>=40.0)+0))
+print('Truncated time: {}'.format(truncated_start_time))
 
 cfd = os.path.dirname(os.path.realpath(__file__))
 
@@ -87,7 +88,7 @@ while collect:
 
     for pace in range(20):
         prices_df = update_price_data(prices_df)
-        if (datetime.datetime.now()-truncated_start_time)>=datetime.timedelta(minutes=30):
+        if (datetime.datetime.now()-truncated_start_time)>=datetime.timedelta(minutes=20):
             collect=False
             break
         time.sleep(20)
