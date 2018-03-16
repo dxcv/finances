@@ -12,7 +12,7 @@ from finances.trading.strategies.stoploss import adv_stop_loss_strategy
 from finances.trading.strategies.variable_stoploss import dynamic_stoploss_strategy
 
 
-pct_gap = 0.05
+pct_gap = 0.025
 
 def back_test_stop_loss_strategy(
     price_data,
@@ -71,7 +71,7 @@ def back_test_random(
     price_data,
     strategy=dynamic_stoploss_strategy,
     n=200,
-    time_delta_stress_test=datetime.timedelta(days=10),
+    time_delta_stress_test=datetime.timedelta(days=20),
     view_result=False
     ):
 
@@ -92,7 +92,7 @@ def back_test_random(
 
         backtest_df['hold'] = prices_test_data*100.0/prices_test_data.iloc[0]
 
-        strategy_result=strategy(price_series=prices_test_data)
+        strategy_result=strategy(price_series=prices_test_data, pct_gap=pct_gap)
 
         backtest_df['strategy'] = strategy_result
 
@@ -115,9 +115,9 @@ def back_test_random(
 if __name__=='__main__':
 
     mkt=mkt_data.MarketData()
-
-    price_data = mkt.crypto_data['BTC'].loc[datetime.datetime(2018,1,27):].dropna()
-    df = back_test_random(price_data, n=200, view_result=False)
+    price_data = mkt.crypto_data['BTC'].loc[datetime.datetime(2018,1,26):].resample('4H').last()
+    # price_data = mkt.crypto_data['BTC'].loc[datetime.datetime(2018,1,27):].dropna()
+    df = back_test_random(price_data, n=25, view_result=True)
     print(len(df))
     df.boxplot()
 
