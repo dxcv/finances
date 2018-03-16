@@ -24,7 +24,7 @@ def is_lock_free():
     global lock_socket
     lock_socket = socket.socket(socket.AF_UNIX, socket.SOCK_DGRAM)
     try:
-        lock_id = "my-username.my-task-name"   # this should be unique. using your username as a prefix is a convention
+        lock_id = "hordeus.bitstamp_hf_data"   # this should be unique. using your username as a prefix is a convention
         lock_socket.bind('\0' + lock_id)
         logging.debug("Acquired lock %r" % (lock_id,))
         return True
@@ -33,15 +33,24 @@ def is_lock_free():
         logging.info("Failed to acquire lock %r" % (lock_id,))
         return False
 
-if not is_lock_free():
-    sys.exit()
+n_trials = 0
+while not is_lock_free():
+    print('Socket busy... Trying again in 10 seconds...')
+    time.sleep(10)
+    n_trials+=1
 
+    if n_trials>90:
+        sys.exit()
+
+print('Socket Free. Continuing to actual code.')
 
 ######################
 # Real code
 ######################
 
 start_time = datetime.datetime.now()
+truncated_start_time = start_time.replace(minute=(20*(start_time.minute>=20.0)+20*(start_time.minute>=40.0)+0))
+print('Truncated time: {}'.format(truncated_start_time))
 
 cfd = os.path.dirname(os.path.realpath(__file__))
 
@@ -59,7 +68,7 @@ def update_price_data(prices_df):
         try:
             _new_data[coin] = float(trading_client.ticker(base=coin, quote='eur')['last'])
         except:
-            print('Coin {} raised error'.format(coin))
+            print('Coin {} raised error at time {}'.format(coin, datetime.datetime.now()))
 
     _temp_df = pd.DataFrame(
         data=_new_data,
@@ -67,7 +76,8 @@ def update_price_data(prices_df):
     prices_df = prices_df.append(_temp_df)
     return prices_df
 
-while (datetime.datetime.now()-start_time)<datetime.timedelta(minutes=30):
+collect = True
+while collect:
     pace = 0
     prices_df = pd.read_csv(
         os.path.join(cfd, 'bitstamp_high_frequency_data.csv'),
@@ -76,11 +86,15 @@ while (datetime.datetime.now()-start_time)<datetime.timedelta(minutes=30):
         infer_datetime_format=True
     )
 
-    for pace in range(10):
+    for pace in range(20):
         prices_df = update_price_data(prices_df)
-        time.sleep(30)
+        if (datetime.datetime.now()-truncated_start_time)>=datetime.timedelta(minutes=20):
+            collect=False
+            break
+        time.sleep(20)
 
     prices_df.to_csv(os.path.join(cfd, 'bitstamp_high_frequency_data.csv'))
+    print('Data saved at {}'.format(datetime.datetime.now()))
 
-
+sys.exit()
 
