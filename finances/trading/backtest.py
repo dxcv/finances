@@ -71,7 +71,7 @@ def back_test_random(
     price_data,
     strategy=dynamic_stoploss_strategy,
     n=200,
-    time_delta_stress_test=datetime.timedelta(days=20),
+    time_delta_stress_test=datetime.timedelta(days=40),
     view_result=False
     ):
 
