@@ -150,11 +150,14 @@ def dynamic_stoploss_strategy(
             sell_points['data'].append(current_price)
 
         else:
-            if current_price > reference_price*(1+0.30):
+            if current_price > reference_price*(1+0.25):
                 reference_price=current_price
-            elif current_price < reference_price*(1-0.30):
+                bot_price=reference_price*(1-pct_gap)
+                top_price=reference_price*(1+2*fee)
+            elif current_price < reference_price*(1-0.25):
                 reference_price=current_price
-
+                bot_price=reference_price*(1+pct_gap)
+                top_price=reference_price*(1-2*fee)
         value = coin_amount*current_price+cash
         trading_value.append(value)
 
