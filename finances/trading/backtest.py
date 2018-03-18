@@ -12,13 +12,11 @@ from finances.trading.strategies.stoploss import adv_stop_loss_strategy
 from finances.trading.strategies.variable_stoploss import dynamic_stoploss_strategy
 
 
-pct_gap = 0.025
-
 def back_test_stop_loss_strategy(
     price_data,
     strategy=adv_stop_loss_strategy,
     n=200,
-    time_delta_stress_test=datetime.timedelta(days=30),
+    time_delta_stress_test=datetime.timedelta(days=40),
     view_result=False
     ):
 
@@ -71,7 +69,7 @@ def back_test_random(
     price_data,
     strategy=dynamic_stoploss_strategy,
     n=200,
-    time_delta_stress_test=datetime.timedelta(days=40),
+    time_delta_stress_test=datetime.timedelta(days=30),
     view_result=False
     ):
 
@@ -112,12 +110,58 @@ def back_test_random(
     return pd.DataFrame(data=compare_dic, index=date_list)
 
 
+def back_test_all(
+    price_data,
+    strategy=dynamic_stoploss_strategy,
+    time_delta_stress_test=datetime.timedelta(days=40),
+    view_result=False
+    ):
+
+    np.random.seed(seed=1234)
+    compare_dic = {'hold':[], 'strategy':[], 'diff':[]}
+    date_list=[]
+    n_dates = len(price_data.loc[:(price_data.index[-1]-time_delta_stress_test)])
+
+    for k in range(n_dates):
+        start_test = price_data.index[k]
+        end_test=start_test+time_delta_stress_test
+
+        prices_test_data = price_data.loc[start_test:end_test]
+        if prices_test_data.index[-1]-prices_test_data.index[0]<time_delta_stress_test:
+            continue
+
+        date_list.append(start_test)
+
+        backtest_df = pd.DataFrame()
+
+        backtest_df['hold'] = prices_test_data*100.0/prices_test_data.iloc[0]
+
+        strategy_result=strategy(price_series=prices_test_data, pct_gap=pct_gap)
+
+        backtest_df['strategy'] = strategy_result
+
+
+        if view_result:
+            fig, ax = plt.subplots(2,1, sharex=True)
+            backtest_df[['strategy', 'hold']].plot(ax=ax[0])
+            prices_test_data.plot(ax=ax[1])
+            plt.show()
+
+        for t in ['hold', 'strategy']:
+            compare_dic[t].append(backtest_df[t].iloc[-1]-100.0)
+
+        compare_dic['diff'].append(backtest_df['strategy'].iloc[-1]-backtest_df['hold'].iloc[-1])
+
+    return pd.DataFrame(data=compare_dic, index=date_list)
+
 if __name__=='__main__':
 
+    pct_gap = 0.02
+
     mkt=mkt_data.MarketData()
-    price_data = mkt.crypto_data['BTC'].loc[datetime.datetime(2018,1,26):].resample('4H').last()
+    price_data = mkt.crypto_data['BTC'].loc[datetime.datetime(2018,1,26):].resample('H').last()
     # price_data = mkt.crypto_data['BTC'].loc[datetime.datetime(2018,1,27):].dropna()
-    df = back_test_random(price_data, n=25, view_result=True)
+    df = back_test_all(price_data, view_result=False)
     print(len(df))
     df.boxplot()
 

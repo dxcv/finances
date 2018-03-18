@@ -11,10 +11,6 @@ import statsmodels.api as sm
 
 cfd, cfn = os.path.split(os.path.abspath(__file__))
 
-pct_gap = 0.025
-top_price=0
-bot_price=0
-
 def decision_short(
     reference_price,
     current_price,
@@ -30,7 +26,7 @@ def decision_short(
     elif current_price<bot_price:
         bot_price=current_price
 
-    elif current_price>(reference_price+bot_price)*0.5 and current_price<reference_price*(1-2*0.0025):
+    elif current_price>(reference_price-abs((reference_price-bot_price))*0.5) and current_price<reference_price*(1-2*0.0025):
         decision='buy'
 
     return decision, top_price, bot_price
@@ -51,7 +47,7 @@ def decision_long(
     elif current_price>top_price:
         top_price=current_price
 
-    elif current_price<(reference_price+top_price)*0.5 and current_price>reference_price*(1+2*0.0025):
+    elif current_price<(reference_price+abs((reference_price-top_price))*0.5) and current_price>reference_price*(1+2*0.0025):
         decision='sell'
 
     return decision, top_price, bot_price
@@ -83,7 +79,7 @@ def asymmetric_decision(
 
 def dynamic_stoploss_strategy(
     price_series,
-    pct_gap=pct_gap,
+    pct_gap,
     fee=0.0025,
     invested_value=100):
 
@@ -154,6 +150,7 @@ def dynamic_stoploss_strategy(
                 reference_price=current_price
                 bot_price=reference_price*(1-pct_gap)
                 top_price=reference_price*(1+2*fee)
+
             elif current_price < reference_price*(1-0.25):
                 reference_price=current_price
                 bot_price=reference_price*(1+pct_gap)
@@ -170,15 +167,19 @@ def dynamic_stoploss_strategy(
 
 if __name__=='__main__':
 
+    pct_gap = 0.02
+    top_price=0
+    bot_price=0
+
     mkt=mkt_data.MarketData()
 
-    price_data = mkt.crypto_data['BTC'].loc[datetime.datetime(2018,1,26):].resample('4H').last()
+    price_data = mkt.crypto_data['BTC'].loc[datetime.datetime(2018,2,26):].resample('H').last()
 
     backtest_df = pd.DataFrame()
     backtest_df['price'] = price_data
     backtest_df['hold'] = price_data*100.0/price_data.iloc[0]
 
-    strategy_result, buy, sell = dynamic_stoploss_strategy(price_series=price_data)
+    strategy_result, buy, sell = dynamic_stoploss_strategy(pct_gap=pct_gap, price_series=price_data)
 
     backtest_df['strategy'] = strategy_result
 
