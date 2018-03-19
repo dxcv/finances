@@ -12,6 +12,7 @@ import statsmodels.api as sm
 cfd, cfn = os.path.split(os.path.abspath(__file__))
 
 def decision_short(
+    minimum_gain,
     reference_price,
     current_price,
     top_price,
@@ -26,13 +27,14 @@ def decision_short(
     elif current_price<bot_price:
         bot_price=current_price
 
-    elif current_price>(reference_price-abs((reference_price-bot_price))*0.5) and current_price<reference_price*(1-2*0.0025):
+    elif current_price>(reference_price-abs((reference_price-bot_price))*0.5) and current_price<reference_price*(1-minimum_gain):
         decision='buy'
 
     return decision, top_price, bot_price
 
 
 def decision_long(
+    minimum_gain,
     reference_price,
     current_price,
     top_price,
@@ -47,13 +49,14 @@ def decision_long(
     elif current_price>top_price:
         top_price=current_price
 
-    elif current_price<(reference_price+abs((reference_price-top_price))*0.5) and current_price>reference_price*(1+2*0.0025):
+    elif current_price<(reference_price+abs((reference_price-top_price))*0.5) and current_price>reference_price*(1+minimum_gain):
         decision='sell'
 
     return decision, top_price, bot_price
 
 
 def asymmetric_decision(
+    minimum_gain,
     reference_price,
     current_price,
     top_price,
@@ -68,6 +71,7 @@ def asymmetric_decision(
         decision_strategy = decision_short
 
     position, top_price, bot_price = decision_strategy(
+        minimum_gain,
         reference_price,
         current_price,
         top_price,
@@ -80,6 +84,7 @@ def asymmetric_decision(
 def dynamic_stoploss_strategy(
     price_series,
     pct_gap,
+    minimum_gain=2*0.0025,
     fee=0.0025,
     invested_value=100):
 
@@ -103,6 +108,7 @@ def dynamic_stoploss_strategy(
         current_price = price_series.loc[date]
 
         position, top_price, bot_price = asymmetric_decision(
+            minimum_gain,
             reference_price,
             current_price,
             top_price,
@@ -146,12 +152,12 @@ def dynamic_stoploss_strategy(
             sell_points['data'].append(current_price)
 
         else:
-            if current_price > reference_price*(1+0.25):
+            if current_price > reference_price*(1+0.35):
                 reference_price=current_price
                 bot_price=reference_price*(1-pct_gap)
                 top_price=reference_price*(1+2*fee)
 
-            elif current_price < reference_price*(1-0.25):
+            elif current_price < reference_price*(1-0.35):
                 reference_price=current_price
                 bot_price=reference_price*(1+pct_gap)
                 top_price=reference_price*(1-2*fee)
@@ -167,19 +173,20 @@ def dynamic_stoploss_strategy(
 
 if __name__=='__main__':
 
-    pct_gap = 0.02
+    pct_gap = 0.04
     top_price=0
     bot_price=0
+    min_gain=0.045
 
     mkt=mkt_data.MarketData()
 
-    price_data = mkt.crypto_data['BTC'].loc[datetime.datetime(2018,2,26):].resample('H').last()
+    price_data = mkt.crypto_data['BTC'].loc[datetime.datetime(2018,1,26):].resample('4H').last()
 
     backtest_df = pd.DataFrame()
     backtest_df['price'] = price_data
     backtest_df['hold'] = price_data*100.0/price_data.iloc[0]
 
-    strategy_result, buy, sell = dynamic_stoploss_strategy(pct_gap=pct_gap, price_series=price_data)
+    strategy_result, buy, sell = dynamic_stoploss_strategy(pct_gap=pct_gap, price_series=price_data, minimum_gain=min_gain)
 
     backtest_df['strategy'] = strategy_result
 
