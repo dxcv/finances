@@ -136,7 +136,7 @@ def back_test_all(
 
         backtest_df['hold'] = prices_test_data*100.0/prices_test_data.iloc[0]
 
-        strategy_result=strategy(price_series=prices_test_data, pct_gap=pct_gap)
+        strategy_result=strategy(price_series=prices_test_data)
 
         backtest_df['strategy'] = strategy_result
 
