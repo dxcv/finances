@@ -167,20 +167,20 @@ def dynamic_stoploss_strategy(
 
     buy_data = pd.Series(index=buy_points['index'], data=buy_points['data'])
     sell_data = pd.Series(index=sell_points['index'], data=sell_points['data'])
-    return pd.Series(data=trading_value, index=price_series.index), buy_data, sell_data
+    return pd.Series(data=trading_value, index=price_series.index)#, buy_data, sell_data
 
 
 
 if __name__=='__main__':
 
-    pct_gap = 0.04
+    pct_gap = 0.035
     top_price=0
     bot_price=0
-    min_gain=0.045
+    min_gain=0.025
 
     mkt=mkt_data.MarketData()
 
-    price_data = mkt.crypto_data['BTC'].loc[datetime.datetime(2018,1,26):].resample('4H').last()
+    price_data = mkt.crypto_data['BTC'].loc[datetime.datetime(2018,1,26):].resample('8H').last()
 
     backtest_df = pd.DataFrame()
     backtest_df['price'] = price_data

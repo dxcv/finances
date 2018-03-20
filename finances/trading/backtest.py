@@ -156,12 +156,13 @@ def back_test_all(
 
 if __name__=='__main__':
 
-    pct_gap = 0.02
+    pct_gap = 0.035
+    minimum_gain=0.025
 
     mkt=mkt_data.MarketData()
-    price_data = mkt.crypto_data['BTC'].loc[datetime.datetime(2018,1,26):].resample('H').last()
+    price_data = mkt.crypto_data['BTC'].loc[datetime.datetime(2018,1,26):].resample('8H').last()
     # price_data = mkt.crypto_data['BTC'].loc[datetime.datetime(2018,1,27):].dropna()
-    df = back_test_all(price_data, view_result=False)
+    df = back_test_random(price_data, n=25, view_result=True)
     print(len(df))
     df.boxplot()
 
