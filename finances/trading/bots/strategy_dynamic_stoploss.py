@@ -1,14 +1,4 @@
-import pandas as p
-import datetime
-import pickle
-import os
-import numpy as np
-import pylab as plt
 import json
-from finances.market import market_data as mkt_data
-
-
-cfd, cfn = os.path.split(os.path.abspath(__file__))
 
 def buy_all(trading_client, coin):
     current_price = float(trading_client.ticker(base=coin, quote='eur')['last'])
@@ -66,6 +56,7 @@ def decision_long(
 
 def dynamic_stoploss_strategy(
     trading_client,
+    bot_status_json_path,
     current_price,
     pct_gap,
     minimum_gain,
@@ -73,7 +64,7 @@ def dynamic_stoploss_strategy(
     ):
 
 
-    with open(os.path.join(cfd, 'trade_bot_status.json')) as json_file:
+    with open(bot_status_json_path) as json_file:
         current_bot_status = json.load(json_file)
 
     reference_price = current_bot_status['reference_price']
@@ -82,7 +73,7 @@ def dynamic_stoploss_strategy(
 
     cash = float(trading_client.account_balance(base='btc', quote="eur")['eur_available'])
 
-    if cash < 5:  # less than 1 euro
+    if cash < 5:  # less than 5 euro
         decision_strategy = decision_long
     else:
         decision_strategy = decision_short
@@ -126,12 +117,17 @@ def dynamic_stoploss_strategy(
     current_bot_status['top_price'] = top_price
     current_bot_status['bot_price'] = bot_price
 
-    bot_status_file = os.path.join(cfd, 'trade_bot_status.json')
+    bot_status_file = bot_status_json_path
+
     with open(bot_status_file, 'w') as f:
         json.dump(current_bot_status, f)
 
 if __name__=='__main__':
     import bitstamp.client as bts
+    import os
+    
+    cfd, cfn = os.path.split(os.path.abspath(__file__))
+
     trading_client = bts.Trading(
        username='769101',
        key='mXt0zCJOzL49pGEw25uLneM5gqQ5weL4',
@@ -140,6 +136,7 @@ if __name__=='__main__':
 
     dynamic_stoploss_strategy(
     trading_client,
+    bot_status_json_path=os.path.join(cfd, 'trade_bot_status.json'),
     current_price=float(trading_client.ticker(base='btc', quote='eur')['last']),
     pct_gap=0.035,
     minimum_gain=0.025,
