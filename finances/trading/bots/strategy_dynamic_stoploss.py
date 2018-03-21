@@ -66,7 +66,6 @@ def decision_long(
 
 def dynamic_stoploss_strategy(
     trading_client,
-    current_status_file,
     current_price,
     pct_gap,
     minimum_gain,
@@ -81,13 +80,13 @@ def dynamic_stoploss_strategy(
     top_price = current_bot_status['top_price']
     bot_price = current_bot_status['bot_price']
 
-    cash = float(trading_client.account_balance(base=coin, quote="eur")['eur_available'])
+    cash = float(trading_client.account_balance(base='btc', quote="eur")['eur_available'])
 
     if cash < 5:  # less than 1 euro
         decision_strategy = decision_long
-
     else:
         decision_strategy = decision_short
+
 
     position, top_price, bot_price = decision_strategy(
         current_price=current_price,
@@ -96,18 +95,21 @@ def dynamic_stoploss_strategy(
         top_price=current_bot_status['top_price'],
         bot_price=current_bot_status['bot_price'],
         )
+    print('Current position: {}'.format(position))
 
     if position == 'buy':
-        sell_all(trading_client=trading_client, coin='btc')
+        buy_all(trading_client=trading_client, coin='btc')
         reference_price = current_price
         bot_price = reference_price*(1-pct_gap)
         top_price = reference_price*(1+minimum_gain)
+        print('bougth at {}'.format(current_price))
 
     elif position == 'sell':
-        buy_all(trading_client=trading_client, coin='btc')
+        sell_all(trading_client=trading_client, coin='btc')
         reference_price = current_price
         bot_price = reference_price*(1-minimum_gain)
         top_price = reference_price*(1+pct_gap)
+        print('sold at {}'.format(current_price))
 
     # reinvest?
     elif current_price > reference_price*(1+reinvest_gap):
@@ -135,3 +137,11 @@ if __name__=='__main__':
        key='mXt0zCJOzL49pGEw25uLneM5gqQ5weL4',
        secret='UmBn6XJ28s4Dz7EyjDYd6Fq3aFm9X7uj'
        )
+
+    dynamic_stoploss_strategy(
+    trading_client,
+    current_price=float(trading_client.ticker(base='btc', quote='eur')['last']),
+    pct_gap=0.035,
+    minimum_gain=0.025,
+    reinvest_gap=0.35
+    )
