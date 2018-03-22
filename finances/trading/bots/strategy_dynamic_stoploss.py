@@ -3,12 +3,29 @@ import json
 def buy_all(trading_client, coin):
     current_price = float(trading_client.ticker(base=coin, quote='eur')['last'])
     eur_available = float(trading_client.account_balance(base=coin, quote="eur")['eur_available'])
-    amount_to_buy = eur_available/current_price*0.9975
-    trading_client.buy_market_order(amount=amount_to_buy, base=coin, quote="eur")
+    amount_to_buy = round(eur_available/current_price, 6)
+
+    bought=False
+    while not bought and amount_to_buy>0:
+        try:
+            trading_client.buy_market_order(amount=amount_to_buy, base=coin, quote="eur")
+            bought=True
+            print('Bought {} {}'.format(amount_to_buy, coin))
+        except:
+            amount_to_buy=round(0.9975*amount_to_buy,6)
 
 def sell_all(trading_client, coin):
-    amount_to_sell = float(trading_client.account_balance(base=coin, quote="eur")['{}_available'.format(coin)])
-    trading_client.sell_market_order(amount=amount_to_sell, base=coin, quote="eur")
+    coin_amount = float(trading_client.account_balance(base=coin, quote="eur")['{}_available'.format(coin)])
+    amount_to_sell = round(coin_amount, 6)
+
+    sold=False
+    while not sold and amount_to_sell>0:
+        try:
+            trading_client.sell_market_order(amount=amount_to_sell, base=coin, quote="eur")
+            sold=True
+            print('Sold {} {}'.format(amount_to_sell, coin))
+        except:
+            amount_to_sell=round(amount_to_sell*0.9975, 6)
 
 def decision_short(
     minimum_gain,
@@ -125,20 +142,11 @@ def dynamic_stoploss_strategy(
 if __name__=='__main__':
     import bitstamp.client as bts
     import os
-    
+
     cfd, cfn = os.path.split(os.path.abspath(__file__))
 
     trading_client = bts.Trading(
        username='769101',
-       key='mXt0zCJOzL49pGEw25uLneM5gqQ5weL4',
-       secret='UmBn6XJ28s4Dz7EyjDYd6Fq3aFm9X7uj'
+       key='9JShgcZgw3rlDvcCGVh4mi9QodcPZy82',
+       secret='GRKx4bOkKhDJh4Xex8eC3DtFK3MJwaO1'
        )
-
-    dynamic_stoploss_strategy(
-    trading_client,
-    bot_status_json_path=os.path.join(cfd, 'trade_bot_status.json'),
-    current_price=float(trading_client.ticker(base='btc', quote='eur')['last']),
-    pct_gap=0.035,
-    minimum_gain=0.025,
-    reinvest_gap=0.35
-    )

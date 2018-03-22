@@ -9,8 +9,8 @@ cfd, cfn = os.path.split(os.path.abspath(__file__))
 
 trading_client = bts.Trading(
    username='769101',
-   key='mXt0zCJOzL49pGEw25uLneM5gqQ5weL4',
-   secret='UmBn6XJ28s4Dz7EyjDYd6Fq3aFm9X7uj'
+   key='9JShgcZgw3rlDvcCGVh4mi9QodcPZy82',
+   secret='GRKx4bOkKhDJh4Xex8eC3DtFK3MJwaO1'
    )
 
 dynamic_stoploss_strategy(
