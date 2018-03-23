@@ -3,18 +3,14 @@ import pandas as pd
 import datetime
 import os
 import numpy as np
-import pylab as plt
+# import pylab as plt
 import random
 from finances.market import market_data as mkt_data
-import statsmodels.api as sm
-
-from finances.trading.strategies.stoploss import adv_stop_loss_strategy
-from finances.trading.strategies.variable_stoploss import dynamic_stoploss_strategy
 
 
 def back_test_stop_loss_strategy(
     price_data,
-    strategy=adv_stop_loss_strategy,
+    strategy,
     n=200,
     time_delta_stress_test=datetime.timedelta(days=40),
     view_result=False
@@ -27,7 +23,7 @@ def back_test_stop_loss_strategy(
     for k in [np.random.randint(len(price_data.index)) for i in range(n)]:
         start_test = price_data.index[k]
         end_test=start_test+time_delta_stress_test
-        
+
         prices_test_data = price_data.loc[start_test:end_test]
         if prices_test_data.index[-1]-prices_test_data.index[0]<time_delta_stress_test:
             continue
@@ -67,7 +63,7 @@ def back_test_stop_loss_strategy(
 
 def back_test_random(
     price_data,
-    strategy=dynamic_stoploss_strategy,
+    strategy,
     n=200,
     time_delta_stress_test=datetime.timedelta(days=30),
     view_result=False
@@ -112,7 +108,7 @@ def back_test_random(
 
 def back_test_all(
     price_data,
-    strategy=dynamic_stoploss_strategy,
+    strategy,
     time_delta_stress_test=datetime.timedelta(days=40),
     view_result=False
     ):

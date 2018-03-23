@@ -2,12 +2,9 @@ import pandas as pd
 import datetime
 import pickle
 import os
-import portfolioopt as pfopt
 import numpy as np
-import pylab as plt
 import random
 from finances.market import market_data as mkt_data
-import statsmodels.api as sm
 
 cfd, cfn = os.path.split(os.path.abspath(__file__))
 
@@ -77,7 +74,7 @@ def asymmetric_decision(
         top_price,
         bot_price,
         )
-    
+
     return position, top_price, bot_price
 
 
@@ -93,7 +90,7 @@ def dynamic_stoploss_strategy(
     position = 'hold'
 
     trading_value = [invested_value]
-    
+
     reference_price = price_series.iloc[0]
     bot_price=reference_price*(1-pct_gap)
     top_price=reference_price*(1+2*fee)
@@ -139,7 +136,7 @@ def dynamic_stoploss_strategy(
             top_price=reference_price*(1+2*fee)
 
             buy_points['index'].append(date)
-            buy_points['data'].append(current_price)        
+            buy_points['data'].append(current_price)
 
         elif position == 'sell':
             cash = coin_amount*current_price*(1-fee)
