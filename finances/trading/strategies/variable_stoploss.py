@@ -6,6 +6,7 @@ import numpy as np
 import random
 from finances.market import market_data as mkt_data
 
+
 cfd, cfn = os.path.split(os.path.abspath(__file__))
 
 def decision_short(
@@ -164,20 +165,21 @@ def dynamic_stoploss_strategy(
 
     buy_data = pd.Series(index=buy_points['index'], data=buy_points['data'])
     sell_data = pd.Series(index=sell_points['index'], data=sell_points['data'])
-    return pd.Series(data=trading_value, index=price_series.index)#, buy_data, sell_data
+    return pd.Series(data=trading_value, index=price_series.index), buy_data, sell_data
 
 
 
 if __name__=='__main__':
+    import pylab as plt
 
     pct_gap = 0.035
     top_price=0
     bot_price=0
-    min_gain=0.025
+    min_gain=0.0475
 
     mkt=mkt_data.MarketData()
 
-    price_data = mkt.crypto_data['BTC'].loc[datetime.datetime(2018,1,26):].resample('8H').last()
+    price_data = mkt.crypto_data['ETH'].loc[datetime.datetime(2018,1,26):].resample('4H').last()
 
     backtest_df = pd.DataFrame()
     backtest_df['price'] = price_data
