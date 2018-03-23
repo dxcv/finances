@@ -10,7 +10,7 @@ def buy_all(trading_client, coin):
         try:
             trading_client.buy_market_order(amount=amount_to_buy, base=coin, quote="eur")
             bought=True
-            print('Bought {} {}'.format(amount_to_buy, coin))
+            print('Bought {0} {1} at {2} eur'.format(amount_to_buy, coin, current_price))
         except:
             amount_to_buy=round(0.9975*amount_to_buy,6)
 
@@ -23,7 +23,7 @@ def sell_all(trading_client, coin):
         try:
             trading_client.sell_market_order(amount=amount_to_sell, base=coin, quote="eur")
             sold=True
-            print('Sold {} {}'.format(amount_to_sell, coin))
+            print('Sold {0} {1} at {2} eur'.format(amount_to_sell, coin, current_price))
         except:
             amount_to_sell=round(amount_to_sell*0.9975, 6)
 
@@ -110,14 +110,12 @@ def dynamic_stoploss_strategy(
         reference_price = current_price
         bot_price = reference_price*(1-pct_gap)
         top_price = reference_price*(1+minimum_gain)
-        print('bougth at {}'.format(current_price))
 
     elif position == 'sell':
         sell_all(trading_client=trading_client, coin='btc')
         reference_price = current_price
         bot_price = reference_price*(1-minimum_gain)
         top_price = reference_price*(1+pct_gap)
-        print('sold at {}'.format(current_price))
 
     # reinvest?
     elif current_price > reference_price*(1+reinvest_gap):
