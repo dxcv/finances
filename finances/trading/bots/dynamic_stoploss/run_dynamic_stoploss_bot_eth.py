@@ -13,6 +13,7 @@ trading_client_eth = bts.Trading(
    secret='k34gpVPH1taeVWFkvRZdiWvROjfifmx7'
    )
 
+# to be run every 4 hours
 dynamic_stoploss_strategy(
 trading_client_eth,
 coin='eth',
