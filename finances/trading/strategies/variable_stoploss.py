@@ -93,7 +93,7 @@ def dynamic_stoploss_strategy(
 
     reference_price = price_series.iloc[0]
     bot_price=reference_price*(1-pct_gap)
-    top_price=reference_price*(1+2*fee)
+    top_price=reference_price*(1+minimum_gain)
 
     sell_points = {'index':[], 'data':[]}
     buy_points = {'index':[], 'data':[]}
@@ -133,7 +133,7 @@ def dynamic_stoploss_strategy(
             cash = 0
             reference_price=current_price
             bot_price=reference_price*(1-pct_gap)
-            top_price=reference_price*(1+2*fee)
+            top_price=reference_price*(1+minimum_gain)
 
             buy_points['index'].append(date)
             buy_points['data'].append(current_price)
@@ -142,7 +142,7 @@ def dynamic_stoploss_strategy(
             cash = coin_amount*current_price*(1-fee)
             coin_amount = 0
             reference_price=current_price
-            bot_price=reference_price*(1-2*fee)
+            bot_price=reference_price*(1-minimum_gain)
             top_price=reference_price*(1+pct_gap)
 
             sell_points['index'].append(date)
@@ -152,12 +152,12 @@ def dynamic_stoploss_strategy(
             if current_price > reference_price*(1+0.35):
                 reference_price=current_price
                 bot_price=reference_price*(1-pct_gap)
-                top_price=reference_price*(1+2*fee)
+                top_price=reference_price*(1+minimum_gain)
 
             elif current_price < reference_price*(1-0.35):
                 reference_price=current_price
                 bot_price=reference_price*(1+pct_gap)
-                top_price=reference_price*(1-2*fee)
+                top_price=reference_price*(1-minimum_gain)
         value = coin_amount*current_price+cash
         trading_value.append(value)
 
