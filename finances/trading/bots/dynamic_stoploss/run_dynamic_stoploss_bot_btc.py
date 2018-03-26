@@ -7,14 +7,14 @@ import os
 
 cfd, cfn = os.path.split(os.path.abspath(__file__))
 
-trading_client = bts.Trading(
+trading_client_btc = bts.Trading(
    username='769101',
    key='9JShgcZgw3rlDvcCGVh4mi9QodcPZy82',
    secret='GRKx4bOkKhDJh4Xex8eC3DtFK3MJwaO1'
    )
 
 dynamic_stoploss_strategy(
-trading_client,
+trading_client_btc,
 coin='btc',
 bot_status_json_path=os.path.join(cfd, 'trade_bot_status_btc.json'),
 current_price=float(trading_client.ticker(base='btc', quote='eur')['last']),
