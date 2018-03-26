@@ -22,7 +22,7 @@ min_gain_range = np.arange(0.0025, 0.05, 0.0025)
 
 results_df_list=[]
 
-for coin in ['BTC', 'ETH', 'LTC', 'XRP', 'BCH']:
+for coin in ['BTC']:
     for period in times:
         for pct_gap in pct_gap_range:
             for min_gain in min_gain_range:
