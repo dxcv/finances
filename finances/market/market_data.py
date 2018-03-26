@@ -123,8 +123,12 @@ class MarketData():
     def update_complete_data_base(self):
         self.update_market_eur_price()
 
-        # for coin in self.crypto_dictionary:
-        #     self.update_coin_full_data(crypto_code=coin)
+        for coin in self.crypto_dictionary:
+            try:
+                self.update_coin_full_data(crypto_code=coin)
+            except:
+                print('Error in the {} full data update'.format(coin))
+                continue
 
 
     def load_coin_full_data_base(self, crypto_code):
