@@ -77,8 +77,13 @@ class MarketData():
         return coin[0]
 
     def get_total_market_cap(self, currency='eur'):
-        total_market = COINMARKETCAP.stats(convert='EUR')
-        return total_market['total_market_cap_{}'.format(currency)]
+        try:
+            total_market = COINMARKETCAP.stats(convert='EUR')
+            value = total_market['total_market_cap_{}'.format(currency)]
+        except:
+            value = np.nan
+            print('!!!! Total Market Cap not working.')
+        return value
 
     def update_coin_full_data(self, crypto_code):
         coin_path = os.path.join(self.data_base_path, 'crypto_currencies', '{}_full_data.csv'.format(crypto_code))
@@ -118,8 +123,8 @@ class MarketData():
     def update_complete_data_base(self):
         self.update_market_eur_price()
 
-        for coin in self.crypto_dictionary:
-            self.update_coin_full_data(crypto_code=coin)
+        # for coin in self.crypto_dictionary:
+        #     self.update_coin_full_data(crypto_code=coin)
 
 
     def load_coin_full_data_base(self, crypto_code):
@@ -174,7 +179,7 @@ class MarketData():
 
         if time_scale is not None:
             df = df.resample(time_scale).mean()
-        
+
         select_dates_df=df.ix[start_date:end_date]
         relative_change=select_dates_df.apply(lambda x: (x-x[0])/x[0])
         return relative_change
@@ -195,10 +200,10 @@ class MarketData():
             fit_dist = norm
         rets = self.crypto_returns_data(symbols=symbol, time_step=time_frame)
         rets=rets.iloc[start_date:rets.index<end_date].dropna()
-        
-        # MLE of the sample for a normal distribution (to be improved) 
+
+        # MLE of the sample for a normal distribution (to be improved)
         dist_fit_params = fit_dist.fit(rets)
-        return dist_fit_params 
+        return dist_fit_params
 
 
 if __name__=='__main__':
