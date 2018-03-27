@@ -7,18 +7,19 @@ import os
 
 cfd, cfn = os.path.split(os.path.abspath(__file__))
 
-trading_client = bts.Trading(
+trading_client_xrp = bts.Trading(
    username='769101',
-   key='9JShgcZgw3rlDvcCGVh4mi9QodcPZy82',
-   secret='GRKx4bOkKhDJh4Xex8eC3DtFK3MJwaO1'
+   key='0Yzuy56JpPIDw7zXW7t6YgZlCDVlRRPf',
+   secret='S7ALtHEWsoAmxdHnxrhM4kthObJTpE7J'
    )
 
+# to be run in 8h periods
 dynamic_stoploss_strategy(
-trading_client,
+trading_client_xrp,
 coin='xrp',
 bot_status_json_path=os.path.join(cfd, 'trade_bot_status_xrp.json'),
-current_price=float(trading_client.ticker(base='xrp', quote='eur')['last']),
+current_price=float(trading_client_xrp.ticker(base='xrp', quote='eur')['last']),
 pct_gap=0.035,
-minimum_gain=0.0475,
+minimum_gain=0.025,
 reinvest_gap=0.35
 )

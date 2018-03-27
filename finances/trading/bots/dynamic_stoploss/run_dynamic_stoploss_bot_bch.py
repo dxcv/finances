@@ -7,18 +7,20 @@ import os
 
 cfd, cfn = os.path.split(os.path.abspath(__file__))
 
-trading_client = bts.Trading(
+trading_client_bch = bts.Trading(
    username='769101',
-   key='9JShgcZgw3rlDvcCGVh4mi9QodcPZy82',
-   secret='GRKx4bOkKhDJh4Xex8eC3DtFK3MJwaO1'
+   key='aU1G6LJFKvRi5Cz4iVAvDliLlUqVMFZc',
+   secret='IStHGikXR6owqWnwi0xHqUvdB9yKBa2g'
    )
 
+
+# to be run every 8H
 dynamic_stoploss_strategy(
-trading_client,
+trading_client_bch,
 coin='bch',
 bot_status_json_path=os.path.join(cfd, 'trade_bot_status_bch.json'),
-current_price=float(trading_client.ticker(base='bch', quote='eur')['last']),
-pct_gap=0.035,
-minimum_gain=0.0475,
+current_price=float(trading_client_bch.ticker(base='bch', quote='eur')['last']),
+pct_gap=0.025,
+minimum_gain=0.03,
 reinvest_gap=0.35
 )
