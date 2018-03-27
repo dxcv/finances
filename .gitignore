@@ -1,2 +1,3 @@
 *.pyc
 setup_files/finance.sublime-workspace
+finances/trading/strategies/dynamic_stoploss_sweep_data/
