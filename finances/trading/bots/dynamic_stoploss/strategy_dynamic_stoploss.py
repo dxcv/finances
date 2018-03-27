@@ -15,8 +15,9 @@ def buy_all(trading_client, coin):
             amount_to_buy=round(0.9975*amount_to_buy,6)
 
 def sell_all(trading_client, coin):
-    coin_amount = float(trading_client.account_balance(base=coin, quote="eur")['{}_available'.format(coin)])
-    amount_to_sell = round(coin_amount, 6)
+    current_price = float(trading_client.ticker(base=coin, quote='eur')['last'])
+    coin_available = float(trading_client.account_balance(base=coin, quote="eur")['{}_available'.format(coin)])
+    amount_to_sell = round(coin_available, 6)
 
     sold=False
     while not sold and amount_to_sell>0:

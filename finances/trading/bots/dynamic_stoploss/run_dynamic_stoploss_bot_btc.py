@@ -1,5 +1,3 @@
-import json
-
 from strategy_dynamic_stoploss import dynamic_stoploss_strategy
 
 import bitstamp.client as bts
@@ -18,7 +16,7 @@ dynamic_stoploss_strategy(
 trading_client_btc,
 coin='btc',
 bot_status_json_path=os.path.join(cfd, 'trade_bot_status_btc.json'),
-current_price=float(trading_client.ticker(base='btc', quote='eur')['last']),
+current_price=float(trading_client_btc.ticker(base='btc', quote='eur')['last']),
 pct_gap=0.035,
 minimum_gain=0.025,
 reinvest_gap=0.35
