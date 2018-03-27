@@ -1,9 +1,8 @@
-import json
-
 from strategy_dynamic_stoploss import dynamic_stoploss_strategy
 
 import bitstamp.client as bts
 import os
+
 
 cfd, cfn = os.path.split(os.path.abspath(__file__))
 
@@ -12,7 +11,6 @@ trading_client_bch = bts.Trading(
    key='aU1G6LJFKvRi5Cz4iVAvDliLlUqVMFZc',
    secret='IStHGikXR6owqWnwi0xHqUvdB9yKBa2g'
    )
-
 
 # to be run every 8H
 dynamic_stoploss_strategy(
