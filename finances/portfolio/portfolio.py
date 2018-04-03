@@ -204,24 +204,25 @@ class PortFolio():
 if __name__=='__main__':
 
     new_portfolio_assets = {
-        'BTC': 0.06233633479,
-        'ETH': 2.14081031,
-        'LTC': 2.22000003,
-        'XRP': 326.6,
-        'DASH': 0.286593,
-        'XMR': 1.32867,
-        'IOTA': 47.553,
-        'ADA': 0.073,
-        'XLM': 279.07,
+        'BTC': 0.17000428,
+        'ETH': 1.04765934,
+        'LTC': 1.87074403,
+        'XRP': 263.576776,
+        'DASH':0.146593,
+        'XMR': 0.59067,
+        'IOTA':47.553,
+        'ADA': 217.639,
+        'XLM': 140.07,
         'TRX': 0.237,
-        'BCH': 0.12,
+        'BCH': 0.20009,
         'FUN': 0.447,
-        'EMC2': 45,
+        'EMC2':45,
         'UBQ': 18.22222222,
         'BIS': 36.59233533,
-        'ADST': 136.71,
-        'NEO': 3.147627,
+        'ADST':136.71,
+        'NEO': 1.297627,
     }
+
 
     import pylab as plt
     import seaborn as sns
@@ -234,7 +235,7 @@ if __name__=='__main__':
         # assets_prices = assets_effective_price
         )
 
-    full_ad = myportfolio.assets_data
+    full_assets_data = myportfolio.assets_data
 
     for k in range(1,5):
         myportfolio.assets_data = full_ad.iloc[:k]

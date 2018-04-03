@@ -219,11 +219,15 @@ if __name__=='__main__':
 
     mkt = MarketData()
 
-    a = mkt.get_crypto_price_data('XMR')
-    a.plot()
-    print(a)
-    plt.show()
+    # a = mkt.get_crypto_price_data('XMR')
+    # a.plot()
+    # print(a)
+    # plt.show()
 
+
+    date=datetime.datetime(2018, 3, 29)
+    print(mkt.get_price_at_date(symbols='BTC', date=date))
+    print(mkt.get_price_at_date(symbols='DASH', date=date))
     # mu, std = mkt.normal_fit_returns('ETH')
     # print(mu)
     # # mkt.update_complete_data_base()
