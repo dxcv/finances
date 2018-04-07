@@ -238,20 +238,22 @@ if __name__=='__main__':
     full_assets_data = myportfolio.assets_data
 
     for k in range(1,5):
-        myportfolio.assets_data = full_ad.iloc[:k]
+        myportfolio.assets_data = full_assets_data.iloc[:k]
         myportfolio.update_data()
 
         myportfolio.values_data['TOTAL'].plot(label=k)
     plt.legend()
     # plt.show()
 
-    bitstamp_assets = {'BTC': 0, 'XRP':0, 'BCH':0 , 'LTC':0, 'ETH':0,
-    'ADA':0, 'NEO':0, 'XLM':0, 'XMR':0, 'DASH':0}
+    bitstamp_assets = {
+    'BTC': 0, 'XRP':0, 'BCH':0 , 'LTC':0, 'ETH':0,
+    # 'ADA':0, 'NEO':0, 'XLM':0, 'XMR':0, 'DASH':0
+    }
     new_portfolio = PortFolio()
     new_portfolio.assets = bitstamp_assets
-    start_date = datetime.datetime(2018,2,9,2)
+    # start_date = datetime.datetime(2018,4,3)
 
-    p = new_portfolio.optimize_allocation(projection_steps=30, value_to_invest=2600)
+    p = new_portfolio.optimize_allocation(projection_steps=30, value_to_invest=1833)
     print(p)
     # p.plot(style={'TOTAL':'--k'})
-    plt.show()
+    # plt.show()

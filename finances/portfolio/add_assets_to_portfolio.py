@@ -42,6 +42,7 @@ if __name__=='__main__':
 
     myportfolio.insert_assets_at_date(assets=new_portfolio_assets, date=datetime.datetime(2018,4,3))
     myportfolio.update_data()
+    myportfolio.save_data()
+    
     myportfolio.values_data.plot(style={'TOTAL':'--k'})
-    # myportfolio.save_data()
     plt.show()
