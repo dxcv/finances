@@ -1,4 +1,3 @@
-
 import pandas as pd
 import datetime
 import os
@@ -109,7 +108,7 @@ def back_test_random(
 def back_test_all(
     price_data,
     strategy,
-    time_delta_stress_test=datetime.timedelta(days=40),
+    time_delta_stress_test=datetime.timedelta(days=30),
     view_result=False
     ):
 

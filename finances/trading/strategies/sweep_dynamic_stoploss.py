@@ -17,12 +17,12 @@ mkt=mkt_data.MarketData()
 results_df = pd.DataFrame()
 
 pct_gap_range = np.arange(0.01,0.051,0.005)
-times = ['H', '2H', '4H', '6H', '8H', '12H']
+times = ['4H', '6H', '8H', '12H']
 min_gain_range = np.arange(0.0025, 0.051, 0.0025)
 
 results_df_list=[]
 
-for coin in ['BTC', 'XRP', 'BCH', 'XLM', 'XMR', 'ADA']:
+for coin in ['BTC', 'ETH', 'LTC', 'XRP', 'BCH']:
     for period in times:
         for pct_gap in pct_gap_range:
             for min_gain in min_gain_range:
@@ -48,4 +48,4 @@ for coin in ['BTC', 'XRP', 'BCH', 'XLM', 'XMR', 'ADA']:
                 df['period'] = period
                 results_df_list.append(df[['strategy', 'min_gain', 'pct_gap', 'period']])
                 results_df = pd.concat(results_df_list)
-                results_df.to_csv(os.path.join(cfd, 'dynamic_stoploss_strategy_{}.csv'.format(coin)))
+                results_df.to_csv(os.path.join(cfd, 'dynamic_stoploss_strategy_{}_2.csv'.format(coin)))
