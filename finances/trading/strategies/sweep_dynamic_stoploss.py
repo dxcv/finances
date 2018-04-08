@@ -53,6 +53,7 @@ for coin in ['BTC', 'ETH', 'LTC', 'XRP', 'BCH']:
         df['pct_gap'] = 0
         df['min_gain'] = 0
         df['period'] = period
-        results_df_list.append(df[['hold', 'min_gain', 'pct_gap', 'period']])
+        df['strategy'] = df['hold']
+        results_df_list.append(df[['strategy', 'min_gain', 'pct_gap', 'period']])
         results_df = pd.concat(results_df_list)
         results_df.to_csv(os.path.join(cfd, 'dynamic_stoploss_strategy_{}_2.csv'.format(coin)))
