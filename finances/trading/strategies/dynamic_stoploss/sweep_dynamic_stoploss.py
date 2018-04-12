@@ -9,7 +9,7 @@ sys.path.append(os.path.join(cfd, '..', '..', '..'))
 
 from finances.market import market_data as mkt_data
 from finances.trading.strategies.variable_stoploss import dynamic_stoploss_strategy
-from finances.trading.backtest import back_test_all
+from finances.trading.backtest_strategy import backtest_all, backtest_random
 
 
 mkt=mkt_data.MarketData()
@@ -37,8 +37,9 @@ for coin in ['BTC', 'ETH', 'LTC', 'XRP', 'BCH']:
                         fee=0.0025,
                         invested_value=100)
 
-                df = back_test_all(
+                df = backtest_random(
                     price_data,
+                    n=150,
                     time_delta_stress_test=datetime.timedelta(days=30),
                     strategy=strategy_to_sweep,
                     view_result=False)

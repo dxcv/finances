@@ -20,7 +20,7 @@ def backtest_strategy(price_data, strategy_run, initial_investment=100):
 
     return backtest_df
 
-def back_test_random(
+def backtest_random(
     price_data,
     strategy_run,
     n=200,
@@ -62,10 +62,9 @@ def back_test_random(
     return pd.DataFrame(data=compare_dic, index=selected_start_dates)
 
 
-def back_test_all(
+def backtest_all(
     price_data,
     strategy_run,
-    n=200,
     time_delta_stress_test=datetime.timedelta(days=30),
     view_result=False
     ):
@@ -122,10 +121,10 @@ if __name__=='__main__':
     # plt.show()
 
 
-    df = back_test_all(
+    df = backtest_random(
         price_data=price_data,
         strategy_run=run_dynamic_stoploss_strategy,
-        n=20,
+        n=100,
         time_delta_stress_test=datetime.timedelta(days=30),
         view_result=False
         )
