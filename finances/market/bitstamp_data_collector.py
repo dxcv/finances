@@ -68,12 +68,11 @@ def update_bitstamp_data(new_data_chunk):
         infer_datetime_format=True
     )
 
-    prices_df.append(new_data_chunk)
-    prices_df.to_csv(bitstamp_csv_path)
+    # add to database and save the csv
+    prices_df.append(new_data_chunk).to_csv(bitstamp_csv_path)
 
     print('Data saved at {}'.format(datetime.datetime.now()))
 
 if __name__=='__main__':
-    bitstamp_csv_path = os.path.join(exchanges_data_path, 'bitstamp_high_frequency_data.csv')
-    a = create_bitstamp_data_chunk(2, 0.5)
-    a.to_csv(bitstamp_csv_path)
+    new_data=create_bitstamp_data_chunk(1, 0.5)
+    update_bitstamp_data(new_data)
