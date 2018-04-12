@@ -31,8 +31,8 @@ def bitstamp_current_prices():
         base=coin_pair.split('-')[0]
         quote=coin_pair.split('-')[1]
         try:
-            current_prices[coin_pair] = float(bitstamp_public.ticker(base=base, quote=quote)['last'])
-            print('updated {}'.format(coin_pair))
+            coin_pair_price=float(bitstamp_public.ticker(base=base, quote=quote)['last'])
+            current_prices[coin_pair] = round(coin_pair_price, 6)
         except:
             current_prices[coin_pair] = np.nan
             print('Coin pair {} raised error at time {}'.format(coin_pair, datetime.datetime.now()))
