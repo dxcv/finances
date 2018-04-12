@@ -28,23 +28,24 @@ def back_test_random(
     view_result=False
     ):
 
+    initial_investment=100
+
     np.random.seed(seed=1234)
     compare_dic = {'hold':[], 'strategy':[], 'diff':[]}
-    date_list=[]
-    for k in [np.random.randint(len(price_data.index)) for i in range(n)]:
-        start_test = price_data.index[k]
+
+    start_dates = price_data.loc[:price_data.index[-1]-time_delta_stress_test].index
+    random_dates_index = [np.random.randint(len(start_dates)) for i in range(n)]
+    selected_start_dates = [start_dates[i] for i in random_dates_index]
+
+    for start_test in selected_start_dates:
         end_test=start_test+time_delta_stress_test
 
         prices_test_data = price_data.loc[start_test:end_test]
-        if prices_test_data.index[-1]-prices_test_data.index[0]<time_delta_stress_test:
-            continue
-
-        date_list.append(start_test)
 
         backtest_df = backtest_strategy(
             price_data=prices_test_data,
             strategy_run=strategy_run,
-            initial_investment=100)
+            initial_investment=initial_investment)
 
         if view_result:
             if n>25:
@@ -54,56 +55,52 @@ def back_test_random(
             prices_test_data.plot(ax=ax[1])
 
         for t in ['hold', 'strategy']:
-            compare_dic[t].append(backtest_df[t].iloc[-1]-100.0)
+            compare_dic[t].append(backtest_df[t].iloc[-1]-initial_investment)
 
         compare_dic['diff'].append(backtest_df['strategy'].iloc[-1]-backtest_df['hold'].iloc[-1])
 
-    return pd.DataFrame(data=compare_dic, index=date_list)
+    return pd.DataFrame(data=compare_dic, index=selected_start_dates)
 
 
 def back_test_all(
     price_data,
-    strategy,
+    strategy_run,
+    n=200,
     time_delta_stress_test=datetime.timedelta(days=30),
     view_result=False
     ):
 
+    initial_investment=100
+
     np.random.seed(seed=1234)
     compare_dic = {'hold':[], 'strategy':[], 'diff':[]}
-    date_list=[]
-    n_dates = len(price_data.loc[:(price_data.index[-1]-time_delta_stress_test)])
 
-    for k in range(n_dates):
-        start_test = price_data.index[k]
+    start_dates = price_data.loc[:price_data.index[-1]-time_delta_stress_test].index
+    selected_start_dates=start_dates
+
+    for start_test in selected_start_dates:
         end_test=start_test+time_delta_stress_test
 
         prices_test_data = price_data.loc[start_test:end_test]
-        if prices_test_data.index[-1]-prices_test_data.index[0]<time_delta_stress_test:
-            continue
 
-        date_list.append(start_test)
-
-        backtest_df = pd.DataFrame()
-
-        backtest_df['hold'] = prices_test_data*100.0/prices_test_data.iloc[0]
-
-        strategy_result=strategy(price_series=prices_test_data)
-
-        backtest_df['strategy'] = strategy_result
-
+        backtest_df = backtest_strategy(
+            price_data=prices_test_data,
+            strategy_run=strategy_run,
+            initial_investment=initial_investment)
 
         if view_result:
+            if n>25:
+                raise('Sample too big. Reduce number of tests')
             fig, ax = plt.subplots(2,1, sharex=True)
             backtest_df[['strategy', 'hold']].plot(ax=ax[0])
             prices_test_data.plot(ax=ax[1])
-            plt.show()
 
         for t in ['hold', 'strategy']:
-            compare_dic[t].append(backtest_df[t].iloc[-1]-100.0)
+            compare_dic[t].append(backtest_df[t].iloc[-1]-initial_investment)
 
         compare_dic['diff'].append(backtest_df['strategy'].iloc[-1]-backtest_df['hold'].iloc[-1])
 
-    return pd.DataFrame(data=compare_dic, index=date_list)
+    return pd.DataFrame(data=compare_dic, index=selected_start_dates)
 
 
 
@@ -125,7 +122,7 @@ if __name__=='__main__':
     # plt.show()
 
 
-    df = back_test_random(
+    df = back_test_all(
         price_data=price_data,
         strategy_run=run_dynamic_stoploss_strategy,
         n=20,
