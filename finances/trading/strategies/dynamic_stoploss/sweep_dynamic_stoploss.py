@@ -9,7 +9,7 @@ sys.path.append(os.path.join(cfd, '..', '..', '..'))
 
 from finances.market import market_data as mkt_data
 from finances.trading.strategies.dynamic_stoploss.dynamic_stoploss_strategy import run_dynamic_stoploss_strategy
-from finances.trading.strategies.backtest_strategy import backtest_all, backtest_random
+from finances.trading.strategies.backtest_strategy import backtest_dates_set
 
 
 mkt=mkt_data.MarketData()
@@ -22,11 +22,21 @@ min_gain_range = np.arange(0.0025, 0.051, 0.0025)
 
 results_df_list=[]
 
-for coin in ['BTC']:#, 'ETH', 'LTC', 'XRP', 'BCH']:
+for coin in ['BTC', 'ETH', 'LTC', 'XRP', 'BCH']:
     for period in times:
+
+        backtest_period=datetime.timedelta(days=30)
+        n_dates = 100
+
+        # select the dates to run the analysis into
+        price_data = mkt.crypto_data[coin].loc[datetime.datetime(2018,1,26):].resample(period).last()
+        start_dates = price_data.loc[:price_data.index[-1]-backtest_period].index
+        np.random.seed(seed=1234)
+        random_dates_index = [np.random.randint(len(start_dates)) for i in range(n_dates)]
+        selected_start_dates = [start_dates[i] for i in random_dates_index]
+
         for pct_gap in pct_gap_range:
             for min_gain in min_gain_range:
-                price_data = mkt.crypto_data[coin].loc[datetime.datetime(2018,1,26):].resample(period).last()
                 print(coin, period, pct_gap, min_gain)
 
                 def strategy_to_sweep(price_series, invested_value=100):
@@ -37,11 +47,11 @@ for coin in ['BTC']:#, 'ETH', 'LTC', 'XRP', 'BCH']:
                         fee=0.0025,
                         invested_value=invested_value)
 
-                df = backtest_random(
+                df = backtest_dates_set(
                     price_data,
                     strategy_run=strategy_to_sweep,
-                    n=100,
-                    time_delta_stress_test=datetime.timedelta(days=30),
+                    start_dates_set=selected_start_dates,
+                    time_delta_stress_test=backtest_period,
                     view_result=False)
 
                 df['pct_gap'] = pct_gap
