@@ -82,7 +82,6 @@ def dynamic_stoploss_strategy(
     reinvest_gap=0.35
     ):
 
-
     with open(bot_status_json_path) as json_file:
         current_bot_status = json.load(json_file)
 

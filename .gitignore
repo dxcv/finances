@@ -1,3 +1,14 @@
 *.pyc
 setup_files/finance.sublime-workspace
 finances/trading/strategies/dynamic_stoploss_sweep_data/
+finances/trading/strategies/dynamic_stoploss/data/dynamic_stoploss_strategy_XRP_2.csv
+finances/trading/strategies/dynamic_stoploss/data/dynamic_stoploss_strategy_XRP.csv
+finances/trading/strategies/dynamic_stoploss/data/dynamic_stoploss_strategy_XLM.csv
+finances/trading/strategies/dynamic_stoploss/data/dynamic_stoploss_strategy_LTC_2.csv
+finances/trading/strategies/dynamic_stoploss/data/dynamic_stoploss_strategy_LTC.csv
+finances/trading/strategies/dynamic_stoploss/data/dynamic_stoploss_strategy_ETH_2.csv
+finances/trading/strategies/dynamic_stoploss/data/dynamic_stoploss_strategy_ETH.csv
+finances/trading/strategies/dynamic_stoploss/data/dynamic_stoploss_strategy_BTC_2.csv
+finances/trading/strategies/dynamic_stoploss/data/dynamic_stoploss_strategy_BTC.csv
+finances/trading/strategies/dynamic_stoploss/data/dynamic_stoploss_strategy_BCH_2.csv
+finances/trading/strategies/dynamic_stoploss/data/dynamic_stoploss_strategy_BCH.csv

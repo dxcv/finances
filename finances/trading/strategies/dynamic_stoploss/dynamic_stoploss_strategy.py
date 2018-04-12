@@ -72,16 +72,7 @@ def decision_long(
     return decision, top_price, bot_price
 
 
-def dynamic_stoploss_strategy(
-    trading_client,
-    bot_status_json_path,
-    current_price,
-    pct_gap,
-    minimum_gain,
-    reinvest_gap=0.35
-    ):
-
-
+###
     with open(bot_status_json_path) as json_file:
         current_bot_status = json.load(json_file)
 
@@ -89,31 +80,41 @@ def dynamic_stoploss_strategy(
     top_price = current_bot_status['top_price']
     bot_price = current_bot_status['bot_price']
 
-    cash = float(trading_client.account_balance(base='btc', quote="eur")['eur_available'])
+    cash = float(trading_client.account_balance(base=coin, quote="eur")['eur_available'])
+
+
+def dynamic_stoploss_strategy(
+    status_dict,
+    cash,
+    current_price,
+    pct_gap,
+    minimum_gain,
+    reinvest_gap=0.35
+    ):
 
     if cash < 5:  # less than 5 euro
         decision_strategy = decision_long
     else:
         decision_strategy = decision_short
 
+    reference_price= status_dict['reference_price']
+    top_price=status_dict['top_price']
+    bot_price=status_dict['bot_price']
 
     position, top_price, bot_price = decision_strategy(
         current_price=current_price,
         minimum_gain=minimum_gain,
-        reference_price=current_bot_status['reference_price'],
-        top_price=current_bot_status['top_price'],
-        bot_price=current_bot_status['bot_price'],
+        reference_price=reference_price,
+        top_price=top_price,
+        bot_price=bot_price,
         )
-    print('Current position: {}'.format(position))
 
     if position == 'buy':
-        buy_all(trading_client=trading_client, coin='btc')
         reference_price = current_price
         bot_price = reference_price*(1-pct_gap)
         top_price = reference_price*(1+minimum_gain)
 
     elif position == 'sell':
-        sell_all(trading_client=trading_client, coin='btc')
         reference_price = current_price
         bot_price = reference_price*(1-minimum_gain)
         top_price = reference_price*(1+pct_gap)
@@ -129,23 +130,9 @@ def dynamic_stoploss_strategy(
         bot_price = reference_price*(1+pct_gap)
         top_price = reference_price*(1-minimum_gain)
 
-    current_bot_status['reference_price'] = reference_price
-    current_bot_status['top_price'] = top_price
-    current_bot_status['bot_price'] = bot_price
+    status_dict['reference_price'] = reference_price
+    status_dict['top_price'] = top_price
+    status_dict['bot_price'] = bot_price
 
-    bot_status_file = bot_status_json_path
+    return status_dict, position
 
-    with open(bot_status_file, 'w') as f:
-        json.dump(current_bot_status, f)
-
-if __name__=='__main__':
-    import bitstamp.client as bts
-    import os
-
-    cfd, cfn = os.path.split(os.path.abspath(__file__))
-
-    trading_client = bts.Trading(
-       username='769101',
-       key='9JShgcZgw3rlDvcCGVh4mi9QodcPZy82',
-       secret='GRKx4bOkKhDJh4Xex8eC3DtFK3MJwaO1'
-       )
