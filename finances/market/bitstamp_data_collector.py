@@ -90,7 +90,7 @@ def collect_bistamp_data():
     """
 
     time_step = 30  # seconds
-    n_values = 20   # saves the data every 10 minutos (20 times)
+    n_values = 10   # saves the data every 5 minutes (20 times)
     while True:
         data_chunk=create_bitstamp_data_chunk(n_values, time_step)
         update_bitstamp_data(data_chunk)
@@ -98,6 +98,7 @@ def collect_bistamp_data():
 
 if __name__=='__main__':
 
+    print('Starting again for one hour...')
     from time import sleep
     from threading import Thread
 
@@ -109,4 +110,5 @@ if __name__=='__main__':
     continuous_task.start()
 
     # after 60 minutes, terminate this python script
-    sleep(3600)
+    # 1 minute is added are added to improve overlap
+    sleep(3660)
