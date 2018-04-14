@@ -40,21 +40,31 @@ def bitstamp_current_prices():
     return current_prices
 
 
-def create_bitstamp_data_chunk(n_values, step_in_mins):
+def create_bitstamp_data_chunk(n_values, time_step):
+    """
+    Creates a df with n_values of lines with data collected each time_step (in seconds):
+
+    n_values (int): number of values we want to collect
+    time_step (float): step between values in seconds
+
+    Returns:
+    df (DataFrame): df with index the times of the data and the collumns each coin pair price
+    """
+
     prices_data = []
     times_list = []
 
     for k in range(n_values):
         times_list.append(datetime.datetime.now())
         prices_data.append(bitstamp_current_prices())
-        if k < n_values-1:
-            time.sleep(step_in_mins*60)
+        time.sleep(time_step)
 
     data_chunk = pd.DataFrame(
         data=prices_data,
         index=times_list)
 
     return data_chunk
+
 
 def update_bitstamp_data(new_data_chunk):
 
@@ -73,6 +83,30 @@ def update_bitstamp_data(new_data_chunk):
 
     print('Data saved at {}'.format(datetime.datetime.now()))
 
+
+def collect_bistamp_data():
+    """
+    The function to run the data collection and save it.
+    """
+
+    time_step = 30  # seconds
+    n_values = 20   # saves the data every 10 minutos (20 times)
+    while True:
+        data_chunk=create_bitstamp_data_chunk(n_values, time_step)
+        update_bitstamp_data(data_chunk)
+
+
 if __name__=='__main__':
-    new_data=create_bitstamp_data_chunk(1, 0.5)
-    update_bitstamp_data(new_data)
+
+    from time import sleep
+    from threading import Thread
+
+    continuous_task = Thread(target=collect_bistamp_data)   # run the some_task function in another
+                                                            # thread
+    continuous_task.daemon = True                           # Python will exit when the main thread
+                                                            # exits, even if this thread is still
+                                                            # running
+    continuous_task.start()
+
+    # after 60 minutes, terminate this python script
+    sleep(3600)
