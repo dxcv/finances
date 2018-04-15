@@ -142,3 +142,88 @@ Data saved at 2018-04-15 09:39:14.697209
 Data saved at 2018-04-15 09:44:39.042120
 Data saved at 2018-04-15 09:49:59.784806
 Data saved at 2018-04-15 09:55:22.544924
+Starting again for one hour...
+Data saved at 2018-04-15 09:55:23.185537
+Data saved at 2018-04-15 10:00:46.853003
+Data saved at 2018-04-15 10:06:09.614272
+Data saved at 2018-04-15 10:11:31.651011
+Data saved at 2018-04-15 10:16:54.326642
+Data saved at 2018-04-15 10:22:17.979276
+Data saved at 2018-04-15 10:27:41.484085
+Data saved at 2018-04-15 10:33:03.792731
+Data saved at 2018-04-15 10:38:24.185563
+Coin pair ltc-eur raised error at time 2018-04-15 10:46:35.721045
+Data saved at 2018-04-15 10:49:46.872543
+Data saved at 2018-04-15 10:55:15.599975
+Starting again for one hour...
+Data saved at 2018-04-15 10:55:29.771033
+Data saved at 2018-04-15 11:00:52.643318
+Data saved at 2018-04-15 11:06:15.313969
+Data saved at 2018-04-15 11:11:38.931918
+Data saved at 2018-04-15 11:17:01.227760
+Data saved at 2018-04-15 11:22:31.120346
+Data saved at 2018-04-15 11:27:57.904743
+Data saved at 2018-04-15 11:33:23.527739
+Data saved at 2018-04-15 11:38:53.344897
+Data saved at 2018-04-15 11:44:18.883834
+Data saved at 2018-04-15 11:49:43.411493
+Data saved at 2018-04-15 11:55:07.482593
+Starting again for one hour...
+Data saved at 2018-04-15 11:55:38.342077
+Data saved at 2018-04-15 12:01:02.968748
+Data saved at 2018-04-15 12:06:31.782275
+Data saved at 2018-04-15 12:11:58.857824
+Data saved at 2018-04-15 12:17:26.076947
+Data saved at 2018-04-15 12:22:51.374830
+Data saved at 2018-04-15 12:28:16.151181
+Data saved at 2018-04-15 12:33:39.707322
+Data saved at 2018-04-15 12:39:04.305551
+Data saved at 2018-04-15 12:44:27.606095
+Data saved at 2018-04-15 12:49:52.831114
+Data saved at 2018-04-15 12:55:16.743304
+Starting again for one hour...
+Coin pair bch-eur raised error at time 2018-04-15 13:00:20.304984
+Data saved at 2018-04-15 13:01:25.083113
+Data saved at 2018-04-15 13:06:52.789574
+Data saved at 2018-04-15 13:12:15.055499
+Coin pair xrp-btc raised error at time 2018-04-15 13:19:52.210753
+Data saved at 2018-04-15 13:23:37.948929
+Coin pair btc-eur raised error at time 2018-04-15 13:27:50.663137
+Coin pair bch-eur raised error at time 2018-04-15 13:27:50.673656
+Coin pair eth-eur raised error at time 2018-04-15 13:27:50.683944
+Coin pair xrp-btc raised error at time 2018-04-15 13:27:50.694481
+Coin pair eth-btc raised error at time 2018-04-15 13:27:50.704829
+Coin pair xrp-eur raised error at time 2018-04-15 13:27:50.716794
+Coin pair bch-btc raised error at time 2018-04-15 13:27:50.727173
+Coin pair ltc-btc raised error at time 2018-04-15 13:27:50.738119
+Coin pair ltc-eur raised error at time 2018-04-15 13:27:50.749270
+Data saved at 2018-04-15 13:29:36.662657
+Data saved at 2018-04-15 13:34:57.077605
+Coin pair xrp-eur raised error at time 2018-04-15 13:44:44.010872
+Data saved at 2018-04-15 13:46:18.911802
+Coin pair xrp-eur raised error at time 2018-04-15 13:52:20.116272
+Data saved at 2018-04-15 13:57:42.507888
+Starting again for one hour...
+Data saved at 2018-04-15 13:55:29.540573
+Data saved at 2018-04-15 14:00:52.028257
+Data saved at 2018-04-15 14:06:14.969348
+Data saved at 2018-04-15 14:11:48.824037
+Data saved at 2018-04-15 14:17:16.030041
+Data saved at 2018-04-15 14:22:39.601505
+Coin pair eth-eur raised error at time 2018-04-15 14:29:44.914955
+Data saved at 2018-04-15 14:34:04.941807
+Data saved at 2018-04-15 14:39:30.504532
+Data saved at 2018-04-15 14:44:56.825295
+Data saved at 2018-04-15 14:50:20.958328
+Starting again for one hour...
+Data saved at 2018-04-15 14:55:31.635069
+Data saved at 2018-04-15 15:01:06.859423
+Data saved at 2018-04-15 15:06:39.161802
+Data saved at 2018-04-15 15:12:15.773336
+Data saved at 2018-04-15 15:17:43.663732
+Data saved at 2018-04-15 15:23:10.843584
+Data saved at 2018-04-15 15:28:37.855261
+Data saved at 2018-04-15 15:34:12.277570
+Coin pair eth-eur raised error at time 2018-04-15 15:45:33.114947
+Data saved at 2018-04-15 15:46:06.306128
+Data saved at 2018-04-15 15:51:37.807764
