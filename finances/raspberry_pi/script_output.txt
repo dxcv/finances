@@ -282,3 +282,8 @@ Starting again for one hour...
 Data saved at 2018-04-15 20:12:43.768297
 Coin pair bch-eur raised error at time 2018-04-15 20:20:20.007186
 Data saved at 2018-04-15 20:21:23.983155
+Starting again for one hour...
+Data saved at 2018-04-15 20:22:42.925840
+Data saved at 2018-04-15 20:25:22.536948
+Data saved at 2018-04-15 20:28:02.908708
+Data saved at 2018-04-15 20:30:43.936081

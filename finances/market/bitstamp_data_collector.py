@@ -90,7 +90,7 @@ def collect_bistamp_data(minutes=10):
     """
     start_time = time.time()
     time_step = 30  # seconds
-    n_values = 5   # saves the data every 5 minutes (20 times)
+    n_values = 10   # saves the data every 5 minutes (20 times)
     while (time.time()-start_time) < minutes*60:
         data_chunk=create_bitstamp_data_chunk(n_values, time_step)
         update_bitstamp_data(data_chunk)
