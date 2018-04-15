@@ -1,0 +1,144 @@
+/home/pi/finances/finances/raspberry_pi/collect_bitstamp_data.sh: line 5:  1748 Segmentation fault      /home/pi/.virtualenvs/finances/bin/python2.7 /home/pi/finances/finances/market/bitstamp_data_collector.py
+Starting again for one hour...
+Data saved at 2018-04-14 18:47:23.700423
+Coin pair xrp-btc raised error at time 2018-04-14 18:56:06.197577
+Data saved at 2018-04-14 18:58:45.682002
+Data saved at 2018-04-14 19:04:08.284485
+Data saved at 2018-04-14 19:09:28.549383
+Coin pair bch-eur raised error at time 2018-04-14 19:20:19.006808
+Data saved at 2018-04-14 19:20:50.795434
+Data saved at 2018-04-14 19:26:13.404082
+Data saved at 2018-04-14 19:31:36.552572
+Data saved at 2018-04-14 19:37:04.559724
+Data saved at 2018-04-14 19:42:25.822913
+Starting again for one hour...
+Data saved at 2018-04-14 19:47:23.422234
+Data saved at 2018-04-14 19:52:45.949873
+Data saved at 2018-04-14 19:58:09.092129
+Data saved at 2018-04-14 20:03:31.480744
+Coin pair xrp-eur raised error at time 2018-04-14 20:10:36.991291
+Data saved at 2018-04-14 20:14:52.325388
+Data saved at 2018-04-14 20:20:13.725782
+Data saved at 2018-04-14 20:25:36.207409
+Data saved at 2018-04-14 20:30:56.844807
+Data saved at 2018-04-14 20:36:19.225655
+Data saved at 2018-04-14 20:41:41.429679
+Starting again for one hour...
+Data saved at 2018-04-14 20:47:23.479163
+Data saved at 2018-04-14 20:52:45.141722
+Data saved at 2018-04-14 20:58:07.800538
+Data saved at 2018-04-14 21:03:28.819491
+Coin pair xrp-btc raised error at time 2018-04-14 21:11:06.241375
+Data saved at 2018-04-14 21:14:49.700194
+Data saved at 2018-04-14 21:20:12.371055
+Data saved at 2018-04-14 21:25:33.816473
+Data saved at 2018-04-14 21:30:54.636268
+Data saved at 2018-04-14 21:36:16.728766
+Data saved at 2018-04-14 21:41:38.522363
+/home/pi/finances/finances/raspberry_pi/collect_bitstamp_data.sh: line 5:  2142 Segmentation fault      /home/pi/.virtualenvs/finances/bin/python2.7 /home/pi/finances/finances/market/bitstamp_data_collector.py
+/home/pi/finances/finances/raspberry_pi/collect_bitstamp_data.sh: line 5:  2234 Segmentation fault      /home/pi/.virtualenvs/finances/bin/python2.7 /home/pi/finances/finances/market/bitstamp_data_collector.py
+/home/pi/finances/finances/raspberry_pi/collect_bitstamp_data.sh: line 5:  2314 Segmentation fault      /home/pi/.virtualenvs/finances/bin/python2.7 /home/pi/finances/finances/market/bitstamp_data_collector.py
+/home/pi/finances/finances/raspberry_pi/collect_bitstamp_data.sh: line 5:  2404 Segmentation fault      /home/pi/.virtualenvs/finances/bin/python2.7 /home/pi/finances/finances/market/bitstamp_data_collector.py
+/home/pi/finances/finances/raspberry_pi/collect_bitstamp_data.sh: line 5:  2610 Segmentation fault      /home/pi/.virtualenvs/finances/bin/python2.7 /home/pi/finances/finances/market/bitstamp_data_collector.py
+Segmentation fault
+Starting again for one hour...
+Data saved at 2018-04-15 01:55:25.178743
+Data saved at 2018-04-15 02:00:57.900353
+Data saved at 2018-04-15 02:06:29.018037
+Data saved at 2018-04-15 02:11:53.393687
+Data saved at 2018-04-15 02:17:23.454366
+Data saved at 2018-04-15 02:22:49.351245
+Data saved at 2018-04-15 02:28:15.469312
+Data saved at 2018-04-15 02:33:39.265678
+Data saved at 2018-04-15 02:39:10.512658
+Coin pair bch-eur raised error at time 2018-04-15 02:45:10.932083
+Data saved at 2018-04-15 02:50:34.901022
+Starting again for one hour...
+Data saved at 2018-04-15 02:55:23.430469
+Data saved at 2018-04-15 03:00:46.046702
+Data saved at 2018-04-15 03:06:20.257723
+Data saved at 2018-04-15 03:11:44.564473
+Data saved at 2018-04-15 03:17:13.051774
+Data saved at 2018-04-15 03:22:38.125466
+Data saved at 2018-04-15 03:28:04.971132
+Data saved at 2018-04-15 03:33:28.461402
+Data saved at 2018-04-15 03:38:52.476739
+Data saved at 2018-04-15 03:44:19.286294
+Data saved at 2018-04-15 03:49:43.563675
+Data saved at 2018-04-15 03:55:08.457235
+Starting again for one hour...
+Data saved at 2018-04-15 03:55:38.602919
+Data saved at 2018-04-15 04:01:01.975268
+Data saved at 2018-04-15 04:06:26.798190
+Data saved at 2018-04-15 04:11:52.251141
+Data saved at 2018-04-15 04:17:16.829579
+Data saved at 2018-04-15 04:22:42.758934
+Coin pair bch-eur raised error at time 2018-04-15 04:30:19.904585
+Data saved at 2018-04-15 04:34:06.285906
+Data saved at 2018-04-15 04:39:31.362743
+Coin pair bch-eur raised error at time 2018-04-15 04:49:20.109593
+Data saved at 2018-04-15 04:50:56.588166
+Starting again for one hour...
+Data saved at 2018-04-15 04:55:22.619729
+Data saved at 2018-04-15 05:00:44.424976
+Data saved at 2018-04-15 05:06:09.941761
+Data saved at 2018-04-15 05:11:32.588373
+Data saved at 2018-04-15 05:17:03.760946
+Data saved at 2018-04-15 05:22:26.669942
+Data saved at 2018-04-15 05:27:51.100586
+Data saved at 2018-04-15 05:33:19.161122
+Coin pair xrp-eur raised error at time 2018-04-15 05:44:12.015086
+Data saved at 2018-04-15 05:44:42.902726
+Data saved at 2018-04-15 05:50:06.941154
+Starting again for one hour...
+Data saved at 2018-04-15 05:55:23.327721
+Data saved at 2018-04-15 06:00:46.285341
+Data saved at 2018-04-15 06:06:09.512853
+Data saved at 2018-04-15 06:11:30.251129
+Data saved at 2018-04-15 06:16:52.977930
+Data saved at 2018-04-15 06:22:26.461310
+Data saved at 2018-04-15 06:27:52.574529
+Data saved at 2018-04-15 06:33:17.044422
+Data saved at 2018-04-15 06:38:41.889889
+Data saved at 2018-04-15 06:44:06.882801
+Data saved at 2018-04-15 06:49:29.865826
+Coin pair xrp-eur raised error at time 2018-04-15 06:58:14.221622
+Data saved at 2018-04-15 07:00:54.241676
+Starting again for one hour...
+Data saved at 2018-04-15 06:55:24.308064
+Data saved at 2018-04-15 07:00:46.785740
+Coin pair xrp-eur raised error at time 2018-04-15 07:07:19.913004
+Data saved at 2018-04-15 07:12:08.638350
+Coin pair ltc-eur raised error at time 2018-04-15 07:20:50.411613
+Data saved at 2018-04-15 07:23:28.885606
+Data saved at 2018-04-15 07:28:50.468836
+Data saved at 2018-04-15 07:34:12.328881
+Data saved at 2018-04-15 07:39:32.537011
+Data saved at 2018-04-15 07:44:54.204220
+Data saved at 2018-04-15 07:50:16.104013
+Starting again for one hour...
+Data saved at 2018-04-15 07:55:28.617588
+Data saved at 2018-04-15 08:00:50.464116
+Data saved at 2018-04-15 08:06:12.705295
+Data saved at 2018-04-15 08:11:38.911978
+Data saved at 2018-04-15 08:17:02.081328
+Data saved at 2018-04-15 08:22:30.570939
+Data saved at 2018-04-15 08:28:04.375610
+Data saved at 2018-04-15 08:33:27.695440
+Data saved at 2018-04-15 08:38:55.922181
+Data saved at 2018-04-15 08:44:21.529583
+Data saved at 2018-04-15 08:49:47.719004
+Data saved at 2018-04-15 08:55:14.901319
+Starting again for one hour...
+Data saved at 2018-04-15 08:55:29.990128
+Data saved at 2018-04-15 09:00:58.847940
+Data saved at 2018-04-15 09:06:21.233060
+Data saved at 2018-04-15 09:11:43.140028
+Data saved at 2018-04-15 09:17:05.676174
+Data saved at 2018-04-15 09:22:27.245628
+Data saved at 2018-04-15 09:27:50.456599
+Coin pair eth-eur raised error at time 2018-04-15 09:35:59.009560
+Data saved at 2018-04-15 09:39:14.697209
+Data saved at 2018-04-15 09:44:39.042120
+Data saved at 2018-04-15 09:49:59.784806
+Data saved at 2018-04-15 09:55:22.544924

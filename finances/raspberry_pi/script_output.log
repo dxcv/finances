@@ -1,4 +1,11 @@
-/bin/sh: 1: /home/pi/finances/finances/raspberry_pi/collect_bitstamp_data.sh: Permission denied
-/bin/sh: 1: /home/pi/finances/finances/raspberry_pi/collect_bitstamp_data.sh: Permission denied
-/bin/sh: 1: /home/pi/finances/finances/raspberry_pi/collect_bitstamp_data.sh: Permission denied
-/bin/sh: 1: /home/pi/finances/finances/raspberry_pi/collect_bitstamp_data.sh: Permission denied
+Starting again for one hour...
+Data saved at 2018-04-14 17:42:28.072749
+Data saved at 2018-04-14 17:47:58.108456
+Data saved at 2018-04-14 17:53:29.862801
+Data saved at 2018-04-14 17:58:52.843301
+Data saved at 2018-04-14 18:04:19.479406
+Coin pair bch-eur raised error at time 2018-04-14 18:13:03.983008
+Data saved at 2018-04-14 18:15:45.211697
+Coin pair bch-eur raised error at time 2018-04-14 18:26:05.891566
+Coin pair eth-eur raised error at time 2018-04-14 18:32:06.090412
+Data saved at 2018-04-14 18:33:10.137998

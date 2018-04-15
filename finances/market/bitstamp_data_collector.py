@@ -84,14 +84,14 @@ def update_bitstamp_data(new_data_chunk):
     print('Data saved at {}'.format(datetime.datetime.now()))
 
 
-def collect_bistamp_data():
+def collect_bistamp_data(hours=1):
     """
     The function to run the data collection and save it.
     """
-
+    start_time = time.time()
     time_step = 30  # seconds
     n_values = 10   # saves the data every 5 minutes (20 times)
-    while True:
+    while (time.time()-start_time) < hours*3600:
         data_chunk=create_bitstamp_data_chunk(n_values, time_step)
         update_bitstamp_data(data_chunk)
 
@@ -100,15 +100,15 @@ if __name__=='__main__':
 
     print('Starting again for one hour...')
     from time import sleep
-    from threading import Thread
-
-    continuous_task = Thread(target=collect_bistamp_data)   # run the some_task function in another
+    # from threading import Thread
+    collect_bistamp_data(1)
+    # continuous_task = Thread(target=collect_bistamp_data)   # run the some_task function in another
                                                             # thread
-    continuous_task.daemon = True                           # Python will exit when the main thread
+    #continuous_task.daemon = True                           # Python will exit when the main thread
                                                             # exits, even if this thread is still
                                                             # running
-    continuous_task.start()
+    # continuous_task.start()
 
     # after 60 minutes, terminate this python script
     # 1 minute is added are added to improve overlap
-    sleep(3660)
+    # sleep(3660)
