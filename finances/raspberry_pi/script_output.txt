@@ -227,3 +227,58 @@ Data saved at 2018-04-15 15:34:12.277570
 Coin pair eth-eur raised error at time 2018-04-15 15:45:33.114947
 Data saved at 2018-04-15 15:46:06.306128
 Data saved at 2018-04-15 15:51:37.807764
+Starting again for one hour...
+Data saved at 2018-04-15 15:55:26.154565
+Data saved at 2018-04-15 16:01:06.530251
+Data saved at 2018-04-15 16:06:39.766084
+Data saved at 2018-04-15 16:12:16.046881
+Data saved at 2018-04-15 16:17:51.375735
+Coin pair xrp-eur raised error at time 2018-04-15 16:28:19.109945
+Data saved at 2018-04-15 16:29:22.775286
+Data saved at 2018-04-15 16:35:08.176557
+Data saved at 2018-04-15 16:40:43.195518
+Data saved at 2018-04-15 16:46:12.182902
+Data saved at 2018-04-15 16:51:51.329451
+Starting again for one hour...
+Data saved at 2018-04-15 16:55:34.487893
+Data saved at 2018-04-15 17:01:05.804020
+Data saved at 2018-04-15 17:06:28.092345
+Data saved at 2018-04-15 17:11:58.898277
+Data saved at 2018-04-15 17:17:26.650842
+Data saved at 2018-04-15 17:22:52.300002
+Data saved at 2018-04-15 17:28:33.199342
+Data saved at 2018-04-15 17:34:53.054608
+Data saved at 2018-04-15 17:41:55.977461
+Data saved at 2018-04-15 17:48:54.510571
+Data saved at 2018-04-15 17:55:08.056383
+Starting again for one hour...
+Coin pair eth-eur raised error at time 2018-04-15 17:55:02.696320
+Coin pair eth-btc raised error at time 2018-04-15 17:55:32.358606
+Data saved at 2018-04-15 17:57:42.910089
+Data saved at 2018-04-15 18:03:41.993276
+Data saved at 2018-04-15 18:09:08.853285
+Data saved at 2018-04-15 18:14:40.331989
+Data saved at 2018-04-15 18:20:12.785048
+Data saved at 2018-04-15 18:26:12.308088
+Coin pair bch-eur raised error at time 2018-04-15 18:28:44.005262
+Coin pair bch-eur raised error at time 2018-04-15 18:30:57.927040
+Data saved at 2018-04-15 18:34:29.288535
+Data saved at 2018-04-15 18:40:30.430040
+Data saved at 2018-04-15 18:46:15.604154
+Data saved at 2018-04-15 18:51:45.168916
+Starting again for one hour...
+Data saved at 2018-04-15 18:55:33.469618
+Data saved at 2018-04-15 19:00:58.270346
+Data saved at 2018-04-15 19:06:27.916947
+Data saved at 2018-04-15 19:11:56.120058
+Data saved at 2018-04-15 19:17:23.618790
+Data saved at 2018-04-15 19:22:47.145853
+Data saved at 2018-04-15 19:28:16.617468
+Data saved at 2018-04-15 19:33:44.419845
+Data saved at 2018-04-15 19:39:29.155317
+Data saved at 2018-04-15 19:45:05.633412
+Data saved at 2018-04-15 19:51:00.144836
+Starting again for one hour...
+Data saved at 2018-04-15 20:12:43.768297
+Coin pair bch-eur raised error at time 2018-04-15 20:20:20.007186
+Data saved at 2018-04-15 20:21:23.983155
