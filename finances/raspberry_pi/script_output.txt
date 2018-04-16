@@ -305,3 +305,182 @@ Data saved at 2018-04-15 20:50:31.921002
 Starting again for one hour...
 Data saved at 2018-04-15 20:45:23.577726
 Data saved at 2018-04-15 20:50:45.123884
+Starting again for one hour...
+Data saved at 2018-04-15 20:55:22.688395
+Data saved at 2018-04-15 21:00:45.709095
+Starting again for one hour...
+Coin pair bch-eur raised error at time 2018-04-15 21:08:11.907660
+Data saved at 2018-04-15 21:11:26.086325
+Starting again for one hour...
+Coin pair eth-eur raised error at time 2018-04-15 21:18:12.006523
+Data saved at 2018-04-15 21:21:23.540507
+Starting again for one hour...
+Coin pair bch-btc raised error at time 2018-04-15 21:36:04.315852
+Data saved at 2018-04-15 21:41:22.603161
+Starting again for one hour...
+Data saved at 2018-04-15 21:25:22.591937
+Coin pair eth-eur raised error at time 2018-04-15 21:36:11.906294
+Coin pair xrp-btc raised error at time 2018-04-15 21:42:12.099719
+Data saved at 2018-04-15 21:42:43.516616
+Segmentation fault
+Starting again for one hour...
+Data saved at 2018-04-15 21:45:24.325299
+Data saved at 2018-04-15 21:50:45.727109
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Segmentation fault
+Starting again for one hour...
+Data saved at 2018-04-16 20:16:31.959269
+Coin pair eth-eur raised error at time 2018-04-16 20:27:01.103866
+Data saved at 2018-04-16 20:28:39.684761
+Starting again for one hour...
+Data saved at 2018-04-16 20:25:48.815157
+Data saved at 2018-04-16 20:31:24.640414
+Starting again for one hour...
+Data saved at 2018-04-16 20:35:33.096126
+Coin pair xrp-btc raised error at time 2018-04-16 20:45:11.402754
+Data saved at 2018-04-16 20:47:36.209596
+Starting again for one hour...
+0
+Data saved at 2018-04-16 20:46:06.046093
+1
+Data saved at 2018-04-16 20:51:44.476582
+Starting new 10 min run...
+(0, 9.059906005859375e-06)
+Data saved at 2018-04-16 21:06:00.209062
+(1, 357.2327950000763)
+Data saved at 2018-04-16 21:11:34.579804
+Starting new 10 min run...
+(0, 7.867813110351562e-06)
+Coin pair bch-eur raised error at time 2018-04-16 21:18:20.952700
+Data saved at 2018-04-16 21:21:34.126320

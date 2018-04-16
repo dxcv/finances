@@ -90,18 +90,24 @@ def collect_bistamp_data(minutes=10):
     """
     start_time = time.time()
     time_step = 30  # seconds
-    n_values = 10   # saves the data every 5 minutes (20 times)
-    while (time.time()-start_time) < minutes*60:
+    n_values = 10   # saves the data every 5 minutes (10 times)
+    
+    i=0
+    while (time.time()-start_time) < minutes*60 or i>2:
+        print(i, time.time()-start_time)
         data_chunk=create_bitstamp_data_chunk(n_values, time_step)
         update_bitstamp_data(data_chunk)
+        i+=1
+    
 
 
 if __name__=='__main__':
 
-    print('Starting again for one hour...')
+    print('Starting new 10 min run...')
     from time import sleep
     # from threading import Thread
     collect_bistamp_data(minutes=10)
+    exit(0)
     # continuous_task = Thread(target=collect_bistamp_data)   # run the some_task function in another
                                                             # thread
     #continuous_task.daemon = True                           # Python will exit when the main thread
