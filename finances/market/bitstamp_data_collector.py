@@ -40,7 +40,7 @@ def bitstamp_current_prices():
     return current_prices
 
 
-def create_bitstamp_data_chunk(n_values, time_step):
+def create_bitstamp_data_chunk(n_values, time_step, session_period):
     """
     Creates a df with n_values of lines with data collected each time_step (in seconds):
 
@@ -57,9 +57,10 @@ def create_bitstamp_data_chunk(n_values, time_step):
     for k in range(n_values):
         times_list.append(datetime.datetime.now())
         prices_data.append(bitstamp_current_prices())
-        if k < n_values-1:
-            time.sleep(time_step)
-
+        if (time.time() - start_time) >= session_period-time_step:
+            break
+        time.sleep(time_step)
+        
     data_chunk = pd.DataFrame(
         data=prices_data,
         index=times_list)
@@ -70,6 +71,7 @@ def create_bitstamp_data_chunk(n_values, time_step):
 def update_bitstamp_data(new_data_chunk):
 
     bitstamp_csv_path = os.path.join(exchanges_data_path, 'bitstamp_high_frequency_data.csv')
+
     # if not os.path.exists(bitstamp_csv_path):
 
     prices_df = pd.read_csv(
@@ -81,42 +83,30 @@ def update_bitstamp_data(new_data_chunk):
 
     # add to database and save the csv
     prices_df.append(new_data_chunk).to_csv(bitstamp_csv_path)
-
     print('Data saved at {}'.format(datetime.datetime.now()))
 
 
-def collect_bistamp_data(collect_step=30, saving_step=300, session_time=600):
+def collect_bistamp_data(collection_step=30, saving_step=60, session_time=120):
     """
     The function to run the data collection and save it.
     """
-    number_saves = session_time/saving_step
-    number_collections = saving_step/collect_step
-    while True:#for chunk_no in range(number_saves-1):
-        data_chunk=create_bitstamp_data_chunk(n_values=number_collections, time_step=collect_step)
+    number_saves = int(session_time/saving_step)
+    number_collections = int(saving_step/collection_step)
+    for chunk_no in range(number_saves):
+        data_chunk=create_bitstamp_data_chunk(
+            n_values=number_collections,
+            time_step=collection_step,
+            session_period=session_time)
         update_bitstamp_data(data_chunk)
-        #time.sleep(collect_step)
-    
-    # do last step to ensure no overlap
-    # data_chunk=create_bitstamp_data_chunk(n_values=number_collections, time_step=collect_step)
-    # update_bitstamp_data(data_chunk)
-    
 
 
 if __name__=='__main__':
-    print('#----------------#--------------------#')
+    global start_time
+    start_time = time.time()
+    stop_python=False
+
     print('Session open at: {}'.format(datetime.datetime.now()))
     from time import sleep
     collect_bistamp_data()
     print('Session closed at: {}'.format(datetime.datetime.now()))
     exit(0)
-    
-    # continuous_task = Thread(target=collect_bistamp_data)   # run the some_task function in another
-                                                            # thread
-    #continuous_task.daemon = True                           # Python will exit when the main thread
-                                                            # exits, even if this thread is still
-                                                            # running
-    # continuous_task.start()
-
-    # after 60 minutes, terminate this python script
-    # 1 minute is added are added to improve overlap
-    # sleep(3660)
