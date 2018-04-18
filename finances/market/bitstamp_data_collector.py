@@ -57,7 +57,8 @@ def create_bitstamp_data_chunk(n_values, time_step):
     for k in range(n_values):
         times_list.append(datetime.datetime.now())
         prices_data.append(bitstamp_current_prices())
-        time.sleep(time_step)
+        if k < n_values-1:
+            time.sleep(time_step)
 
     data_chunk = pd.DataFrame(
         data=prices_data,
@@ -84,30 +85,31 @@ def update_bitstamp_data(new_data_chunk):
     print('Data saved at {}'.format(datetime.datetime.now()))
 
 
-def collect_bistamp_data(minutes=10):
+def collect_bistamp_data(collect_step=30, saving_step=300, session_time=600):
     """
     The function to run the data collection and save it.
     """
-    start_time = time.time()
-    time_step = 30  # seconds
-    n_values = 10   # saves the data every 5 minutes (10 times)
-    
-    i=0
-    while (time.time()-start_time) < minutes*60 or i>2:
-        print(i, time.time()-start_time)
-        data_chunk=create_bitstamp_data_chunk(n_values, time_step)
+    number_saves = session_time/saving_step
+    number_collections = saving_step/collect_step
+    while True:#for chunk_no in range(number_saves-1):
+        data_chunk=create_bitstamp_data_chunk(n_values=number_collections, time_step=collect_step)
         update_bitstamp_data(data_chunk)
-        i+=1
+        #time.sleep(collect_step)
+    
+    # do last step to ensure no overlap
+    # data_chunk=create_bitstamp_data_chunk(n_values=number_collections, time_step=collect_step)
+    # update_bitstamp_data(data_chunk)
     
 
 
 if __name__=='__main__':
-
-    print('Starting new 10 min run...')
+    print('#----------------#--------------------#')
+    print('Session open at: {}'.format(datetime.datetime.now()))
     from time import sleep
-    # from threading import Thread
-    collect_bistamp_data(minutes=10)
+    collect_bistamp_data()
+    print('Session closed at: {}'.format(datetime.datetime.now()))
     exit(0)
+    
     # continuous_task = Thread(target=collect_bistamp_data)   # run the some_task function in another
                                                             # thread
     #continuous_task.daemon = True                           # Python will exit when the main thread
