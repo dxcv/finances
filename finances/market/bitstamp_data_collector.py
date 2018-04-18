@@ -86,7 +86,7 @@ def update_bitstamp_data(new_data_chunk):
     print('Data saved at {}'.format(datetime.datetime.now()))
 
 
-def collect_bistamp_data(collection_step=30, saving_step=60, session_time=120):
+def collect_bistamp_data(collection_step=30, saving_step=300, session_time=600):
     """
     The function to run the data collection and save it.
     """
