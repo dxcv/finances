@@ -57,9 +57,12 @@ def create_bitstamp_data_chunk(n_values, time_step, session_period):
     for k in range(n_values):
         times_list.append(datetime.datetime.now())
         prices_data.append(bitstamp_current_prices())
-        if (time.time() - start_time) >= session_period-time_step:
-            break
-        time.sleep(time_step)
+        ## if (time.time() - start_time) >= session_period-time_step:
+            ##break
+        if k<n_values-1:
+            time.sleep(time_step)
+        
+        
         
     data_chunk = pd.DataFrame(
         data=prices_data,
@@ -101,12 +104,21 @@ def collect_bistamp_data(collection_step=30, saving_step=300, session_time=600):
 
 
 if __name__=='__main__':
-    global start_time
-    start_time = time.time()
-    stop_python=False
-
-    print('Session open at: {}'.format(datetime.datetime.now()))
-    from time import sleep
-    collect_bistamp_data()
-    print('Session closed at: {}'.format(datetime.datetime.now()))
+##    print('Session open at: {}'.format(datetime.datetime.now()))
+    data_chunk=create_bitstamp_data_chunk(
+        n_values=2,
+        time_step=30,
+        session_period=60)
+    update_bitstamp_data(data_chunk)
+##    print('Session closed at: {}'.format(datetime.datetime.now()))
     exit(0)
+##    print('------------------')
+##    global start_time
+##    start_time = time.time()
+##    stop_python=False
+##
+##    print('Session open at: {}'.format(datetime.datetime.now()))
+##    from time import sleep
+##    collect_bistamp_data()
+##    print('Session closed at: {}'.format(datetime.datetime.now()))
+##    exit(0)
