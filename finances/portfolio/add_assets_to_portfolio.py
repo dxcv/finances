@@ -10,22 +10,22 @@ from finances.portfolio.portfolio import PortFolio
 if __name__=='__main__':
 
     new_portfolio_assets = {
-        'BTC': 0.17000428,
-        'ETH': 1.04765934,
-        'LTC': 1.87074403,
-        'XRP': 263.576776,
-        'DASH':0.146593,
+        'BTC': 0.11307681,
+        'ETH': 1.23513731,
+        'LTC': 3.37977291,
+        'XRP': 757.544071,
+        'DASH': 0.146593,
         'XMR': 0.59067,
-        'IOTA':47.553,
+        'IOTA': 47.553,
         'ADA': 217.639,
         'XLM': 140.07,
         'TRX': 0.237,
-        'BCH': 0.20009,
+        'BCH': 0.305129,
         'FUN': 0.447,
-        'EMC2':45,
+        'EMC2': 45,
         'UBQ': 18.22222222,
         'BIS': 36.59233533,
-        'ADST':136.71,
+        'ADST': 136.71,
         'NEO': 1.297627,
     }
 
