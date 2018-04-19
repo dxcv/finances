@@ -40,85 +40,29 @@ def bitstamp_current_prices():
     return current_prices
 
 
-def create_bitstamp_data_chunk(n_values, time_step, session_period):
-    """
-    Creates a df with n_values of lines with data collected each time_step (in seconds):
+def update_prices_csv(filename, prices_dict):
+    pair_order = [
+        'bch-btc','bch-eur','btc-eur','eth-btc','eth-eur',
+        'ltc-btc','ltc-eur','xrp-btc','xrp-eur'
+    ]
+    list_to_write=[datetime.datetime.now()]+[prices_dict[pair] for pair in pair_order]
+    string_to_write=",".join(map(str, list_to_write))
 
-    n_values (int): number of values we want to collect
-    time_step (float): step between values in seconds
+    print(string_to_write)
 
-    Returns:
-    df (DataFrame): df with index the times of the data and the collumns each coin pair price
-    """
-
-    prices_data = []
-    times_list = []
-
-    for k in range(n_values):
-        times_list.append(datetime.datetime.now())
-        prices_data.append(bitstamp_current_prices())
-        ## if (time.time() - start_time) >= session_period-time_step:
-            ##break
-        if k<n_values-1:
-            time.sleep(time_step)
-        
-        
-        
-    data_chunk = pd.DataFrame(
-        data=prices_data,
-        index=times_list)
-
-    return data_chunk
+    with open(filename, 'a') as csv_file:
+        csv_file.write(string_to_write+"\n")
 
 
-def update_bitstamp_data(new_data_chunk):
-
-    bitstamp_csv_path = os.path.join(exchanges_data_path, 'bitstamp_high_frequency_data.csv')
-
-    # if not os.path.exists(bitstamp_csv_path):
-
-    prices_df = pd.read_csv(
-        bitstamp_csv_path,
-        index_col=0,
-        parse_dates=True,
-        infer_datetime_format=True
-    )
-
-    # add to database and save the csv
-    prices_df.append(new_data_chunk).to_csv(bitstamp_csv_path)
-    print('Data saved at {}'.format(datetime.datetime.now()))
-
-
-def collect_bistamp_data(collection_step=30, saving_step=300, session_time=600):
+def collect_bistamp_data():
     """
     The function to run the data collection and save it.
     """
-    number_saves = int(session_time/saving_step)
-    number_collections = int(saving_step/collection_step)
-    for chunk_no in range(number_saves):
-        data_chunk=create_bitstamp_data_chunk(
-            n_values=number_collections,
-            time_step=collection_step,
-            session_period=session_time)
-        update_bitstamp_data(data_chunk)
+    prices_data = bitstamp_current_prices()
+    bitstamp_csv_path = os.path.join(exchanges_data_path, 'bitstamp_high_frequency_data.csv')
+    update_prices_csv(bitstamp_csv_path, prices_data)
+    print('Data saved at: {}'.format(datetime.datetime.now()))
 
 
 if __name__=='__main__':
-##    print('Session open at: {}'.format(datetime.datetime.now()))
-    data_chunk=create_bitstamp_data_chunk(
-        n_values=2,
-        time_step=30,
-        session_period=60)
-    update_bitstamp_data(data_chunk)
-##    print('Session closed at: {}'.format(datetime.datetime.now()))
-    exit(0)
-##    print('------------------')
-##    global start_time
-##    start_time = time.time()
-##    stop_python=False
-##
-##    print('Session open at: {}'.format(datetime.datetime.now()))
-##    from time import sleep
-##    collect_bistamp_data()
-##    print('Session closed at: {}'.format(datetime.datetime.now()))
-##    exit(0)
+    collect_bistamp_data()
