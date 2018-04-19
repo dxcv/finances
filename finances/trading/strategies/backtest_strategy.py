@@ -112,26 +112,26 @@ if __name__=='__main__':
 
     mkt=mkt_data.MarketData()
 
-    price_data = mkt.crypto_data['ETH'].loc[datetime.datetime(2018,1,26):].resample('4H').last()
+    price_data = mkt.crypto_data['ETH'].loc[datetime.datetime(2018,3,29):].resample('4H').last()
 
-    # backtest_df=backtest_strategy(price_data)
+    backtest_df=backtest_strategy(price_data,strategy_run=run_dynamic_stoploss_strategy)
 
-    # fig, ax = plt.subplots(2,1, sharex=True)
-    # backtest_df[['strategy', 'hold']].plot(ax=ax[0])
-    # price_data.plot(ax=ax[1])
-    # # buy.plot(ax=ax[1], style='go')
-    # # sell.plot(ax=ax[1], style='rx')
+    fig, ax = plt.subplots(2,1, sharex=True)
+    backtest_df[['strategy', 'hold']].plot(ax=ax[0])
+    price_data.plot(ax=ax[1])
+    # buy.plot(ax=ax[1], style='go')
+    # sell.plot(ax=ax[1], style='rx')
 
-    # plt.show()
-
-
-    df = backtest_random(
-        price_data=price_data,
-        strategy_run=run_dynamic_stoploss_strategy,
-        n=100,
-        time_delta_stress_test=datetime.timedelta(days=30),
-        view_result=False
-        )
-
-    df.boxplot()
     plt.show()
+
+
+    # df = backtest_random(
+    #     price_data=price_data,
+    #     strategy_run=run_dynamic_stoploss_strategy,
+    #     n=100,
+    #     time_delta_stress_test=datetime.timedelta(days=30),
+    #     view_result=False
+    #     )
+
+    # df.boxplot()
+    # plt.show()
