@@ -105,20 +105,27 @@ class MarketData():
 
     def update_market_eur_price(self):
         data_base = self.crypto_data
+
+        current_prices = {}
         _temp_df = pd.DataFrame(index=[datetime.datetime.now().replace(second=0, microsecond=0)])
 
         # add the data for all the crypto currencies
         for coin in self.crypto_dictionary:
-            _temp_df[coin] = self.get_current_coin_price(coin, currency='eur')
-            print('{} price data updated'.format(coin))
+            current_prices[coin] = self.get_current_coin_price(coin, currency='eur')
+            # print('{} price data updated'.format(coin))
 
-        # add the total market capitalization data
-        _temp_df['TotalMarketCap'] = self.get_total_market_cap(currency='eur')
-        print('TotalMarketCap value data updated')
+        # # add the total market capitalization data
+        current_prices['TotalMarketCap'] = self.get_total_market_cap(currency='eur')
+        # print('TotalMarketCap value data updated')
 
-        # append this to the current database
-        self.crypto_data = data_base.append(_temp_df)
-        return self.crypto_data
+        sorted_keys = sorted(current_prices.keys())
+        list_to_write = [datetime.datetime.now().replace(second=0, microsecond=0)] 
+        list_to_write += [current_prices[k] for k in sorted_keys]
+        string_to_write=",".join(map(str, list_to_write))
+        print(string_to_write)
+                # # append this to the current database
+        # self.crypto_data = data_base.append(_temp_df)
+        # return self.crypto_data
 
     def update_complete_data_base(self):
         self.update_market_eur_price()
@@ -218,6 +225,8 @@ if __name__=='__main__':
     sns.set()
 
     mkt = MarketData()
+
+    mkt.update_market_eur_price()
 
     # a = mkt.get_crypto_price_data('XMR')
     # a.plot()
