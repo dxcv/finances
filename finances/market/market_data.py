@@ -9,6 +9,7 @@ import pandas as pd
 import pickle
 import quandl
 import datetime
+import csv
 
 from coinmarketcap import Market
 
@@ -39,7 +40,7 @@ convert_name_dictionary={
     'ICX': 'icon',
     'QTUM': 'qtum',
     'VEN': 'vechain',
-    # 'XRB': 'raiblocks',
+    'XRB': 'raiblocks',
     'STEEM': 'steem',
     'STRAAT': 'stratis',
     'XVG': 'verge'
@@ -52,24 +53,23 @@ class MarketData():
     crypto_data = pd.DataFrame()
 
     def __init__(self):
-        self.crypto_data = self.load_crypto_data(currency='eur')
-
+        db_name_csv = 'main_crypto_eur_database.csv'
+        self.crypto_db_path = os.path.join(self.data_base_path, 'crypto_currencies', db_name_csv)
 
     def load_crypto_data(self, currency='eur'):
-        db_name_csv = 'main_crypto_{}_database.csv'.format(currency)
-        crypto_db_path = os.path.join(self.data_base_path, 'crypto_currencies', db_name_csv)
-        print('Loaded crypto currency database from {}'.format(crypto_db_path))
-        return pd.read_csv(crypto_db_path, index_col=0, parse_dates=True, infer_datetime_format=True)
+        print('Loaded crypto currency database from {}'.format(self.crypto_db_path))
+        self.crypto_data = pd.read_csv(self.crypto_db_path, index_col=0, parse_dates=True, infer_datetime_format=True)
+        return self.crypto_data
 
     def get_current_coin_price(self, crypto_code, currency='eur'):
         crypto_name = self.crypto_dictionary[crypto_code]
         try:
             coin = COINMARKETCAP.ticker(crypto_name, convert='eur')
-            value = coin[0]['price_{}'.format(currency)]
+            value = float(coin[0]['price_{}'.format(currency)])
         except:
             value = np.nan
             print('!!!! {} not working.'.format(crypto_name))
-        return float(value)
+        return value
 
     def get_coin_full_data(self, crypto_code):
         crypto_name = self.crypto_dictionary[crypto_code]
@@ -87,41 +87,44 @@ class MarketData():
 
     def update_coin_full_data(self, crypto_code):
         coin_path = os.path.join(self.data_base_path, 'crypto_currencies', '{}_full_data.csv'.format(crypto_code))
+        coin_full_data = self.get_coin_full_data(crypto_code)
+        
         try:
-            data_coin_df = pd.read_csv(
-                coin_path,
-                index_col=0,
-                parse_dates=True,
-                infer_datetime_format=True)
+            coin_full_data['']=datetime.datetime.now().replace(second=0, microsecond=0)
+            sorted_keys = sorted(list(coin_full_data.keys()))
+            with open(coin_path, 'a') as csv_file:
+                writer = csv.DictWriter(csv_file, fieldnames=sorted_keys, dialect='excel')
+                writer.writerow(coin_full_data)
+
         except FileNotFoundError:
             data_coin_df = pd.DataFrame()
+            _temp_df = pd.DataFrame(
+                data=coin_full_data,
+                index=[datetime.datetime.now().replace(second=0, microsecond=0)])
+            data_coin_df = data_coin_df.append(_temp_df)
+            data_coin_df.to_csv(coin_path)
+            print('Created full database for {}'.format(crypto_code))
 
-        coin_full_data = self.get_coin_full_data(crypto_code)
-        _temp_df = pd.DataFrame(
-            data=coin_full_data,
-            index=[datetime.datetime.now().replace(second=0, microsecond=0)])
-        data_coin_df = data_coin_df.append(_temp_df)
-        data_coin_df.to_csv(coin_path)
 
-    def update_market_eur_price(self):
+    def update_market_price_db(self):
         data_base = self.crypto_data
-        _temp_df = pd.DataFrame(index=[datetime.datetime.now().replace(second=0, microsecond=0)])
-
-        # add the data for all the crypto currencies
+        current_prices = {}
         for coin in self.crypto_dictionary:
-            _temp_df[coin] = self.get_current_coin_price(coin, currency='eur')
-            print('{} price data updated'.format(coin))
+            current_prices[coin] = self.get_current_coin_price(coin, currency='eur')
 
         # add the total market capitalization data
-        _temp_df['TotalMarketCap'] = self.get_total_market_cap(currency='eur')
-        print('TotalMarketCap value data updated')
+        current_prices['TotalMarketCap'] = self.get_total_market_cap(currency='eur')
 
-        # append this to the current database
-        self.crypto_data = data_base.append(_temp_df)
-        return self.crypto_data
+        # start organizing data to write csv
+        current_prices['']=datetime.datetime.now().replace(second=0, microsecond=0)
+        sorted_keys = sorted(list(current_prices.keys()))
+        with open(self.crypto_db_path, 'a') as csv_file:
+            writer = csv.DictWriter(csv_file, fieldnames=sorted_keys, dialect='excel')
+            writer.writerow(current_prices)
+
 
     def update_complete_data_base(self):
-        self.update_market_eur_price()
+        self.update_market_price_db()
 
         for coin in self.crypto_dictionary:
             try:
@@ -219,17 +222,25 @@ if __name__=='__main__':
 
     mkt = MarketData()
 
+    mkt.update_market_price_db()
+
+
+    df = pd.read_csv(mkt.crypto_db_path, index_col=0, parse_dates=True, infer_datetime_format=True)
+    print(df.iloc[-10:])
+    df.iloc[-10:].BTC.plot()
+    plt.plot()
+    plt.show()
     # a = mkt.get_crypto_price_data('XMR')
     # a.plot()
     # print(a)
     # plt.show()
 
 
-    date=datetime.datetime(2018, 3, 29)
-    print(mkt.get_price_at_date(symbols='BTC', date=date))
-    print(mkt.get_price_at_date(symbols='DASH', date=date))
-    # mu, std = mkt.normal_fit_returns('ETH')
-    # print(mu)
+    # date=datetime.datetime(2018, 3, 29)
+    # print(mkt.get_price_at_date(symbols='BTC', date=date))
+    # print(mkt.get_price_at_date(symbols='DASH', date=date))
+    # # mu, std = mkt.normal_fit_returns('ETH')
+    # # print(mu)
     # # mkt.update_complete_data_base()
     # df = mkt.cummulative_variation(n_days=10)
     # df.plot()

@@ -6,11 +6,8 @@ Created on Sun Oct 15 19:30:18 2017
 """
 
 import bitstamp.client as bts
-import time
-import pandas as pd
 import datetime
 import numpy as np
-
 
 import os
 
@@ -65,4 +62,18 @@ def collect_bistamp_data():
 
 
 if __name__=='__main__':
-    collect_bistamp_data()
+    #collect_bistamp_data()
+    
+    import pandas as pd
+    import pylab as plt
+    bitstamp_csv_path = os.path.join(exchanges_data_path, 'bitstamp_high_frequency_data.csv')
+    prices_df = pd.read_csv(
+        bitstamp_csv_path,
+        index_col=0,
+        parse_dates=True,
+        infer_datetime_format=True
+    )
+
+    print(prices_df)
+    prices_df['xrp-eur'].plot()
+    plt.show()
