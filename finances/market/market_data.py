@@ -55,11 +55,11 @@ class MarketData():
     def __init__(self):
         db_name_csv = 'main_crypto_eur_database.csv'
         self.crypto_db_path = os.path.join(self.data_base_path, 'crypto_currencies', db_name_csv)
-        self.crypto_data = self.load_crypto_data(currency='eur')
 
     def load_crypto_data(self, currency='eur'):
         print('Loaded crypto currency database from {}'.format(self.crypto_db_path))
-        return pd.read_csv(self.crypto_db_path, index_col=0, parse_dates=True, infer_datetime_format=True)
+        self.crypto_data = pd.read_csv(self.crypto_db_path, index_col=0, parse_dates=True, infer_datetime_format=True)
+        return self.crypto_data
 
     def get_current_coin_price(self, crypto_code, currency='eur'):
         crypto_name = self.crypto_dictionary[crypto_code]
@@ -87,21 +87,24 @@ class MarketData():
 
     def update_coin_full_data(self, crypto_code):
         coin_path = os.path.join(self.data_base_path, 'crypto_currencies', '{}_full_data.csv'.format(crypto_code))
+        coin_full_data = self.get_coin_full_data(crypto_code)
+        
         try:
-            data_coin_df = pd.read_csv(
-                coin_path,
-                index_col=0,
-                parse_dates=True,
-                infer_datetime_format=True)
+            coin_full_data['']=datetime.datetime.now().replace(second=0, microsecond=0)
+            sorted_keys = sorted(list(coin_full_data.keys()))
+            with open(coin_path, 'a') as csv_file:
+                writer = csv.DictWriter(csv_file, fieldnames=sorted_keys, dialect='excel')
+                writer.writerow(coin_full_data)
+
         except FileNotFoundError:
             data_coin_df = pd.DataFrame()
+            _temp_df = pd.DataFrame(
+                data=coin_full_data,
+                index=[datetime.datetime.now().replace(second=0, microsecond=0)])
+            data_coin_df = data_coin_df.append(_temp_df)
+            data_coin_df.to_csv(coin_path)
+            print('Created full database for {}'.format(crypto_code))
 
-        coin_full_data = self.get_coin_full_data(crypto_code)
-        _temp_df = pd.DataFrame(
-            data=coin_full_data,
-            index=[datetime.datetime.now().replace(second=0, microsecond=0)])
-        data_coin_df = data_coin_df.append(_temp_df)
-        data_coin_df.to_csv(coin_path)
 
     def update_market_price_db(self):
         data_base = self.crypto_data
@@ -121,7 +124,7 @@ class MarketData():
 
 
     def update_complete_data_base(self):
-        self.update_market_eur_price()
+        self.update_market_price_db()
 
         for coin in self.crypto_dictionary:
             try:
