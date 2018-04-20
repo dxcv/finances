@@ -9,8 +9,8 @@ cfd, cfn = os.path.split(os.path.abspath(__file__))
 
 trading_client_xrp = bts.Trading(
    username='769101',
-   key='0Yzuy56JpPIDw7zXW7t6YgZlCDVlRRPf',
-   secret='S7ALtHEWsoAmxdHnxrhM4kthObJTpE7J'
+   key='fifYuo3MdXR98eAEGci844fFbBCcoTdn',
+   secret='yET9TpIOllV8MwR0qHFMp5vgFjVSwTbn'
    )
 
 # to be run in 8h periods
