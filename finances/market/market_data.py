@@ -55,6 +55,7 @@ class MarketData():
     def __init__(self):
         db_name_csv = 'main_crypto_eur_database.csv'
         self.crypto_db_path = os.path.join(self.data_base_path, 'crypto_currencies', db_name_csv)
+        self.load_crypto_data(currency='eur')
 
     def load_crypto_data(self, currency='eur'):
         print('Loaded crypto currency database from {}'.format(self.crypto_db_path))
