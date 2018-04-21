@@ -79,7 +79,7 @@ def dynamic_stoploss_strategy(
     current_price,
     pct_gap,
     minimum_gain,
-    reinvest_gap=0.35
+    reinvest_gap=0.5
     ):
 
     with open(bot_status_json_path) as json_file:
