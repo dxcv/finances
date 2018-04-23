@@ -45,8 +45,6 @@ def update_prices_csv(filename, prices_dict):
     list_to_write=[datetime.datetime.now()]+[prices_dict[pair] for pair in pair_order]
     string_to_write=",".join(map(str, list_to_write))
 
-    print(string_to_write)
-
     with open(filename, 'a') as csv_file:
         csv_file.write(string_to_write+"\n")
 
