@@ -52,7 +52,7 @@ def update_prices_csv(filename, prices_dict):
         csv_file.write(string_to_write+"\n")
 
 
-def collect_bistamp_data():
+def collect_bitstamp_data():
     """
     The function to run the data collection and save it.
     """
@@ -63,4 +63,4 @@ def collect_bistamp_data():
 
 
 if __name__=='__main__':
-    collect_bistamp_data()
+    collect_bitstamp_data()

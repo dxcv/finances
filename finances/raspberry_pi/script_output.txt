@@ -12708,3 +12708,44 @@ Data saved at: 2018-04-23 20:27:04.766435
 Data saved at: 2018-04-23 20:27:38.134323
 Data saved at: 2018-04-23 20:28:10.519238
 Data saved at: 2018-04-23 20:29:07.927857
+Data saved at: 2018-04-23 20:30:09.267151
+Data saved at: 2018-04-23 20:30:13.730265
+Data saved at: 2018-04-23 20:30:57.744104
+Data saved at: 2018-04-23 20:31:05.139012
+Data saved at: 2018-04-23 20:31:43.814125
+Data saved at: 2018-04-23 20:32:10.382050
+Data saved at: 2018-04-23 20:32:44.457581
+Data saved at: 2018-04-23 20:33:05.332909
+Data saved at: 2018-04-23 20:33:38.772824
+Data saved at: 2018-04-23 20:34:06.543360
+Data saved at: 2018-04-23 20:34:40.579397
+Data saved at: 2018-04-23 20:35:05.188347
+Data saved at: 2018-04-23 20:35:38.574203
+Data saved at: 2018-04-23 20:38:13.759501
+Data saved at: 2018-04-23 20:38:54.172811
+Data saved at: 2018-04-23 20:39:14.351003
+Data saved at: 2018-04-23 20:39:47.602719
+Data saved at: 2018-04-23 20:40:04.848394
+Data saved at: 2018-04-23 20:41:05.067110
+Data saved at: 2018-04-23 20:41:38.634633
+Data saved at: 2018-04-23 20:42:05.216029
+Coin pair ltc-btc raised error at time 2018-04-23 20:42:05.253820
+Data saved at: 2018-04-23 20:42:05.451017
+Data saved at: 2018-04-23 20:42:38.709918
+Data saved at: 2018-04-23 20:42:38.771725
+Coin pair ltc-btc raised error at time 2018-04-23 20:43:05.159885
+Data saved at: 2018-04-23 20:43:05.365077
+Data saved at: 2018-04-23 20:43:38.800399
+Data saved at: 2018-04-23 20:44:05.009398
+Data saved at: 2018-04-23 20:44:38.263662
+Data saved at: 2018-04-23 20:45:05.732905
+Data saved at: 2018-04-23 20:45:39.029971
+Data saved at: 2018-04-23 20:46:09.984426
+Coin pair ltc-btc raised error at time 2018-04-23 20:46:43.160194
+Data saved at: 2018-04-23 20:46:43.411737
+Data saved at: 2018-04-23 20:46:48.326799
+Data saved at: 2018-04-23 20:47:04.633759
+Data saved at: 2018-04-23 20:47:40.086521
+Data saved at: 2018-04-23 20:48:06.078156
+Data saved at: 2018-04-23 20:48:39.623304
+Data saved at: 2018-04-23 20:49:05.025878
