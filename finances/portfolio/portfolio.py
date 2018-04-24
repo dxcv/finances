@@ -228,26 +228,27 @@ if __name__=='__main__':
     import seaborn as sns
     from pprint import pprint
 
-    sns.set()
+    # sns.set()
     
-    myportfolio = PortFolio(
-        name= 'PedroPortfolio',
-        # assets_prices = assets_effective_price
-        )
+    # myportfolio = PortFolio(
+    #     name= 'PedroPortfolio',
+    #     # assets_prices = assets_effective_price
+    #     )
 
-    full_assets_data = myportfolio.assets_data
+    # full_assets_data = myportfolio.assets_data
 
-    for k in range(1,5):
-        myportfolio.assets_data = full_assets_data.iloc[:k]
-        myportfolio.update_data()
+    # for k in range(1,5):
+    #     myportfolio.assets_data = full_assets_data.iloc[:k]
+    #     myportfolio.update_data()
 
-        myportfolio.values_data['TOTAL'].plot(label=k)
-    plt.legend()
-    # plt.show()
+    #     myportfolio.values_data['TOTAL'].plot(label=k)
+    # plt.legend()
+    # # plt.show()
 
     bitstamp_assets = {
     'BTC': 0, 'XRP':0, 'BCH':0 , 'LTC':0, 'ETH':0,
-    # 'ADA':0, 'NEO':0, 'XLM':0, 'XMR':0, 'DASH':0
+    'ADA':0, 'NEO':0, 'XLM':0, 'XMR':0, 'DASH':0, 'IOTA':0,
+    'EOS': 0
     }
     new_portfolio = PortFolio()
     new_portfolio.assets = bitstamp_assets
