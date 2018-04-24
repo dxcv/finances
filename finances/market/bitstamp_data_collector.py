@@ -64,3 +64,17 @@ def collect_bitstamp_data():
 
 if __name__=='__main__':
     collect_bitstamp_data()
+
+    # import pandas as pd
+    # import pylab as plt
+    # bitstamp_csv_path = os.path.join(exchanges_data_path, 'bitstamp_high_frequency_data.csv')
+    # prices_df = pd.read_csv(
+    #     bitstamp_csv_path,
+    #     index_col=0,
+    #     parse_dates=True,
+    #     infer_datetime_format=True
+    # )
+
+    # print(prices_df)
+    # prices_df['eth-btc'].plot()
+    # plt.show()
