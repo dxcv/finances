@@ -9,8 +9,8 @@ cfd, cfn = os.path.split(os.path.abspath(__file__))
 
 trading_client_xrp = bts.Trading(
    username='769101',
-   key='fifYuo3MdXR98eAEGci844fFbBCcoTdn',
-   secret='yET9TpIOllV8MwR0qHFMp5vgFjVSwTbn'
+   key='IlnDcYwsQGvn25KpaQ4SLwsJVl0EQT4X',
+   secret='szzlNK6RSV8ht0uZeaacii7EJ8fiTFZL'
    )
 
 # to be run in 8h periods
@@ -21,5 +21,5 @@ bot_status_json_path=os.path.join(cfd, 'trade_bot_status_xrp.json'),
 current_price=float(trading_client_xrp.ticker(base='xrp', quote='eur')['last']),
 pct_gap=0.035,
 minimum_gain=0.0175,
-reinvest_gap=0.35
+reinvest_gap=0.6
 )

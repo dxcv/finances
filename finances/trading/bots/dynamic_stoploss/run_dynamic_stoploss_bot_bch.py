@@ -8,8 +8,8 @@ cfd, cfn = os.path.split(os.path.abspath(__file__))
 
 trading_client_bch = bts.Trading(
    username='769101',
-   key='aU1G6LJFKvRi5Cz4iVAvDliLlUqVMFZc',
-   secret='IStHGikXR6owqWnwi0xHqUvdB9yKBa2g'
+   key='Z1ZzxqDqXvLo1MmxRUhfdviqPtFrOCSx',
+   secret='OyZ67LZXFqu3UYQDVY0qlMuO9suVUIGi'
    )
 
 # to be run every 8H
@@ -20,5 +20,5 @@ bot_status_json_path=os.path.join(cfd, 'trade_bot_status_bch.json'),
 current_price=float(trading_client_bch.ticker(base='bch', quote='eur')['last']),
 pct_gap=0.035,
 minimum_gain=0.0175,
-reinvest_gap=0.35
+reinvest_gap=0.6
 )
