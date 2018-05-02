@@ -74,11 +74,6 @@ def backtest_random(
     random_dates_index = [np.random.randint(len(start_dates)) for i in range(n)]
     selected_start_dates = [start_dates[i] for i in random_dates_index]
 
-    from pprint import pprint
-    pprint(sorted(selected_start_dates))
-
-    exit()
-
     return backtest_dates_set(
         price_data,
         strategy_run,
