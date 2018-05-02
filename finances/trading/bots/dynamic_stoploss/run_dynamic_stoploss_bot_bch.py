@@ -20,5 +20,5 @@ bot_status_json_path=os.path.join(cfd, 'trade_bot_status_bch.json'),
 current_price=float(trading_client_bch.ticker(base='bch', quote='eur')['last']),
 pct_gap=0.035,
 minimum_gain=0.0175,
-reinvest_gap=0.6
+reinvest_gap=0.5
 )
