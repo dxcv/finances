@@ -43,7 +43,8 @@ convert_name_dictionary={
     'XRB': 'raiblocks',
     'STEEM': 'steem',
     'STRAAT': 'stratis',
-    'XVG': 'verge'
+    'XVG': 'verge',
+    'EOS': 'eos'
 }
 
 
