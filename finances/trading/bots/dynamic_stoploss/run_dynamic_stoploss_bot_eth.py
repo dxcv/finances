@@ -7,8 +7,8 @@ cfd, cfn = os.path.split(os.path.abspath(__file__))
 
 trading_client_eth = bts.Trading(
    username='769101',
-   key='owkttzabH1Lph5qfLeelvt1dK6DXlXAe',
-   secret='k34gpVPH1taeVWFkvRZdiWvROjfifmx7'
+   key='xMVKpVIPy6rC6THS4nA3Mdmp9yhEc5jF',
+   secret='h7owGh2AV7cuci2ftXSqu006bUWk5fnF'
    )
 
 # to be run every 4 hours
@@ -19,5 +19,5 @@ bot_status_json_path=os.path.join(cfd, 'trade_bot_status_eth.json'),
 current_price=float(trading_client_eth.ticker(base='eth', quote='eur')['last']),
 pct_gap=0.035,
 minimum_gain=0.0175,
-reinvest_gap=0.35
+reinvest_gap=0.5
 )
