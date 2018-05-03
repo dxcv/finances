@@ -3,6 +3,7 @@ import datetime
 import os
 import numpy as np
 import sys
+import random
 
 cfd, cfn = os.path.split(os.path.abspath(__file__))
 sys.path.append(os.path.join(cfd, '..', '..', '..'))
@@ -22,19 +23,17 @@ min_gain_range = np.arange(0.005, 0.051, 0.005)
 
 results_df_list=[]
 
-for coin in ['BTC', 'ETH', 'LTC', 'XRP', 'BCH']:
+for coin in ['BTC', 'ETH', 'LTC', 'XRP', 'BCH', 'XLM', 'ADA', 'TRX', 'NEO', 'IOTA']:
     for period in times:
 
         backtest_period=datetime.timedelta(days=30)
-        n_dates = 250
+        n_dates = 100
 
         # select the dates to run the analysis into
         price_data = mkt.crypto_data[coin].loc[datetime.datetime(2018,1,26):].resample(period).last()
         start_dates = price_data.loc[:price_data.index[-1]-backtest_period].index
-        np.random.seed(seed=1234)
-        random_dates_index = [np.random.randint(len(start_dates)) for i in range(n_dates)]
-        selected_start_dates = [start_dates[i] for i in random_dates_index]
-
+        random.seed(1234)
+        selected_start_dates = random.sample(list(start_dates),n_dates)
         pprint(sorted(selected_start_dates))
 
         for pct_gap in pct_gap_range:
@@ -61,7 +60,7 @@ for coin in ['BTC', 'ETH', 'LTC', 'XRP', 'BCH']:
                 df['period'] = period
                 results_df_list.append(df[['strategy', 'min_gain', 'pct_gap', 'period']])
                 results_df = pd.concat(results_df_list)
-                results_df.to_csv(os.path.join(cfd, 'dynamic_stoploss_strategy_{}_3.csv'.format(coin)))
+                results_df.to_csv(os.path.join(cfd, 'dynamic_stoploss_strategy_{}_Maio.csv'.format(coin)))
 
         # add hold strategy
         df['pct_gap'] = 0
