@@ -44,7 +44,8 @@ convert_name_dictionary={
     'STEEM': 'steem',
     'STRAAT': 'stratis',
     'XVG': 'verge',
-    'EOS': 'eos'
+    'EOS': 'eos',
+    'ONT': 'ontology'
 }
 
 
