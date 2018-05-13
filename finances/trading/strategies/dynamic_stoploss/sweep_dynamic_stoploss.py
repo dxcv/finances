@@ -19,7 +19,7 @@ results_df = pd.DataFrame()
 
 pct_gap_range = np.arange(0.01,0.1,0.01)
 times = ['4H', '6H', '8H', '12H']
-min_gain_range = np.arange(0.005, 0.051, 0.005)
+min_gain_range = np.arange(0.01,0.1,0.01)
 
 results_df_list=[]
 

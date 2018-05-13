@@ -166,7 +166,7 @@ def run_dynamic_stoploss_strategy(
             current_price=current_price,
             pct_gap=pct_gap,
             minimum_gain=minimum_gain,
-            reinvest_gap=0.35
+            reinvest_gap=0.5
             )
 
         if position == 'buy':
