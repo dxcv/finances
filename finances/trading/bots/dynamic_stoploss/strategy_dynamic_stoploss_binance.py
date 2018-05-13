@@ -1,30 +1,37 @@
 import json
 
-def buy_all_for_btc(trading_client, coin, btc_quantity):
-    current_price_btc = float(trading_client.ticker(base=coin, quote='eur')['last'])
-    amount_to_buy = round(btc_quantity/current_price, 6)
+def buy_all_with_btc(trading_client, coin, btc_quantity):
+    price_list={}
+    for pair in client.get_all_tickers():
+        price_list[pair['symbol']] = float(pair['price'])
+    current_price= price_list[coin+'BTC']
+    amount_to_buy = round(btc_quantity/current_price, 3)
 
     bought=False
     while not bought and amount_to_buy>0:
         try:
-            trading_client.buy_market_order(amount=amount_to_buy, base=coin, quote="eur")
+            trading_client.order_market_buy(
+                symbol=coin+'BTC',
+                quantity=amount_to_buy
+            )
             bought=True
-            print('Bought {0} {1} at {2} btc'.format(amount_to_buy, coin, current_price_btc))
+            print('Bought {0} {1}'.format(amount_to_buy, coin))
         except:
             amount_to_buy=round(0.9975*amount_to_buy,6)
 
 def sell_all_for_btc(trading_client, coin):
-    current_price_btc = float(trading_client.ticker(base=coin, quote='eur')['last'])
-
-    coin_available = float(trading_client.account_balance(base=coin, quote="eur")['{}_available'.format(coin)])
-    amount_to_sell = round(coin_available, 6)
+    coin_available = float(trading_client.get_asset_balance(asset=coin)['free'])
+    amount_to_sell = coin_available
 
     sold=False
     while not sold and amount_to_sell>0:
         try:
-            trading_client.sell_market_order(amount=amount_to_sell, base=coin, quote="eur")
+            trading_client.order_market_sell(
+                symbol=coin+'BTC',
+                quantity=amount_to_sell
+            )
             sold=True
-            print('Sold {0} {1} at {2} btc'.format(amount_to_sell, coin, current_price_btc))
+            print('Sold {0} {1}'.format(amount_to_sell, coin))
         except:
             amount_to_sell=round(amount_to_sell*0.9975, 6)
     return amount_to_sell
@@ -108,7 +115,7 @@ def dynamic_stoploss_strategy(
     print('Current position: {}'.format(position))
 
     if position == 'buy':
-        buy_all_for_btc(trading_client=trading_client, coin=coin, btc_quantity=current_bot_status['btc'])
+        buy_all_with_btc(trading_client=trading_client, coin=coin, btc_quantity=current_bot_status['btc'])
         current_bot_status['btc'] = 0
         reference_price = current_price
         bot_price = reference_price*(1-pct_gap)
@@ -141,13 +148,15 @@ def dynamic_stoploss_strategy(
         json.dump(current_bot_status, f)
 
 if __name__=='__main__':
-    import bitstamp.client as bts
-    import os
+    from binance.client import Client
+    from pprint import pprint
 
-    cfd, cfn = os.path.split(os.path.abspath(__file__))
-
-    trading_client = bts.Trading(
-       username='769101',
-       key='9JShgcZgw3rlDvcCGVh4mi9QodcPZy82',
-       secret='GRKx4bOkKhDJh4Xex8eC3DtFK3MJwaO1'
-       )
+    api_key='QuJSzBd0O8Uube4sOr1DOySMsZWsKC5EpjFYP12FZPO0WEQbBrjjU8N5kVPb5Qkt'
+    api_secret = 'XiPd9cc3VHDl5sa0juCYs27kVPipPEMkddmHxYol6pGuOWgLsZK4cH7SwpJf4Qev'
+    client = Client(api_key, api_secret)
+    all_tickers = client.get_all_tickers()
+    price_list = {}
+    for pair in client.get_all_tickers():
+        price_list[pair['symbol']] = float(pair['price'])
+    pprint(price_list)
+    # pprint(client.get_all_tickers())
