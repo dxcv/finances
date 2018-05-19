@@ -225,19 +225,10 @@ if __name__=='__main__':
 
     mkt = MarketData()
 
-    mkt.update_market_price_db()
-
-
-    df = pd.read_csv(mkt.crypto_db_path, index_col=0, parse_dates=True, infer_datetime_format=True)
-    print(df.iloc[-10:])
-    df.iloc[-10:].BTC.plot()
-    plt.plot()
+    a = mkt.get_crypto_price_data('BTC')
+    a.plot()
+    print(a)
     plt.show()
-    # a = mkt.get_crypto_price_data('XMR')
-    # a.plot()
-    # print(a)
-    # plt.show()
-
 
     # date=datetime.datetime(2018, 3, 29)
     # print(mkt.get_price_at_date(symbols='BTC', date=date))
