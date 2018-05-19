@@ -2,7 +2,7 @@ import json
 
 def buy_all_with_btc(trading_client, coin, btc_quantity):
     price_list={}
-    for pair in client.get_all_tickers():
+    for pair in trading_client.get_all_tickers():
         price_list[pair['symbol']] = float(pair['price'])
     current_price= price_list[coin+'BTC']
     amount_to_buy = round(btc_quantity/current_price, 3)
