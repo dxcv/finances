@@ -10,10 +10,10 @@ def buy_all_with_btc(trading_client, coin, btc_quantity):
     bought=False
     while not bought and amount_to_buy>0:
         try:
-            trading_client.order_market_buy(
-                symbol=coin+'BTC',
-                quantity=amount_to_buy
-            )
+            # trading_client.order_market_buy(
+            #     symbol=coin+'BTC',
+            #     quantity=amount_to_buy
+            # )
             bought=True
             print('Bought {0} {1}'.format(amount_to_buy, coin))
         except:
@@ -26,10 +26,10 @@ def sell_all_for_btc(trading_client, coin):
     sold=False
     while not sold and amount_to_sell>0:
         try:
-            trading_client.order_market_sell(
-                symbol=coin+'BTC',
-                quantity=amount_to_sell
-            )
+            # trading_client.order_market_sell(
+            #     symbol=coin+'BTC',
+            #     quantity=amount_to_sell
+            # )
             sold=True
             print('Sold {0} {1}'.format(amount_to_sell, coin))
         except:
@@ -91,7 +91,9 @@ def dynamic_stoploss_strategy(
     ):
 
     with open(bot_status_json_path) as json_file:
-        current_bot_status = json.load(json_file)[coin]
+        binance_bot_status = json.load(json_file)
+
+    current_bot_status = binance_bot_status[coin]
 
     reference_price = current_bot_status['reference_price']
     top_price = current_bot_status['top_price']
@@ -112,7 +114,10 @@ def dynamic_stoploss_strategy(
         )
     print('Current position: {}'.format(position))
 
+    position = 'buy'
+
     if position == 'buy':
+        print('ola')
         buy_all_with_btc(trading_client=trading_client, coin=coin, btc_quantity=current_bot_status['btc'])
         current_bot_status['btc'] = 0
         reference_price = current_price
@@ -142,8 +147,10 @@ def dynamic_stoploss_strategy(
 
     bot_status_file = bot_status_json_path
 
+    binance_bot_status[coin] = current_bot_status
+
     with open(bot_status_file, 'w') as f:
-        json.dump(current_bot_status, f)
+        json.dump(binance_bot_status, f)
 
 if __name__=='__main__':
     from binance.client import Client
