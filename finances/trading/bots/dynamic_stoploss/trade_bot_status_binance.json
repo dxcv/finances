@@ -1,1 +1,5 @@
-{"XLM": {"reference_price": 3.829e-05, "top_price": 4.17361e-05, "bot_price": 3.48439e-05, "btc": 0}}
+{
+	"XLM": {"reference_price": 3.829e-05, "top_price": 4.17361e-05, "bot_price": 3.48439e-05, "btc": 0},
+	"ADA": {"reference_price": 2.935e-05, "top_price": 0.000032285, "bot_price": 0.000026415, "btc": 0},
+	"TRX": {"reference_price": 8.82e-06, "top_price": 9.702e-6, "bot_price": 7.938e-6, "btc": 0}
+}

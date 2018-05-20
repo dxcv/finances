@@ -19,11 +19,34 @@ for pair in trading_client_binance.get_all_tickers():
 
 # STELLAR
 dynamic_stoploss_strategy(
-trading_client_binance,
-coin='XLM',
-bot_status_json_path=os.path.join(cfd, 'trade_bot_status_binance.json'),
-current_price=price_list['XLMBTC'],
-pct_gap=0.09,
-minimum_gain=0.09,
-reinvest_gap=0.5
+	trading_client_binance,
+	coin='XLM',
+	bot_status_json_path=os.path.join(cfd, 'trade_bot_status_binance.json'),
+	current_price=price_list['XLMBTC'],
+	pct_gap=0.09,
+	minimum_gain=0.09,
+	reinvest_gap=0.5
+)
+
+
+# CARDANO
+dynamic_stoploss_strategy(
+	trading_client_binance,
+	coin='ADA',
+	bot_status_json_path=os.path.join(cfd, 'trade_bot_status_binance.json'),
+	current_price=price_list['ADABTC'],
+	pct_gap=0.09,
+	minimum_gain=0.09,
+	reinvest_gap=0.5
+)
+
+# TRON
+dynamic_stoploss_strategy(
+	trading_client_binance,
+	coin='TRX',
+	bot_status_json_path=os.path.join(cfd, 'trade_bot_status_binance.json'),
+	current_price=price_list['TRXBTC'],
+	pct_gap=0.09,
+	minimum_gain=0.09,
+	reinvest_gap=0.5
 )
