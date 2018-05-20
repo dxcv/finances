@@ -91,13 +91,11 @@ def dynamic_stoploss_strategy(
     ):
 
     with open(bot_status_json_path) as json_file:
-        current_bot_status = json.load(json_file)
+        current_bot_status = json.load(json_file)[coin]
 
     reference_price = current_bot_status['reference_price']
     top_price = current_bot_status['top_price']
     bot_price = current_bot_status['bot_price']
-
-    cash = float(trading_client.account_balance(base=coin, quote="eur")['eur_available'])
 
     if current_bot_status['btc'] == 0:  # less than 5 euro
         decision_strategy = decision_long
