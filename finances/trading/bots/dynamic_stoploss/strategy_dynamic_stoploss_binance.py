@@ -10,10 +10,10 @@ def buy_all_with_btc(trading_client, coin, btc_quantity):
     bought=False
     while not bought and amount_to_buy>0:
         try:
-            # trading_client.order_market_buy(
-            #     symbol=coin+'BTC',
-            #     quantity=amount_to_buy
-            # )
+            trading_client.order_market_buy(
+                symbol=coin+'BTC',
+                quantity=amount_to_buy
+            )
             bought=True
             print('Bought {0} {1}'.format(amount_to_buy, coin))
         except:
@@ -26,10 +26,10 @@ def sell_all_for_btc(trading_client, coin):
     sold=False
     while not sold and amount_to_sell>0:
         try:
-            # trading_client.order_market_sell(
-            #     symbol=coin+'BTC',
-            #     quantity=amount_to_sell
-            # )
+            trading_client.order_market_sell(
+                symbol=coin+'BTC',
+                quantity=amount_to_sell
+            )
             sold=True
             print('Sold {0} {1}'.format(amount_to_sell, coin))
         except:
@@ -114,10 +114,7 @@ def dynamic_stoploss_strategy(
         )
     print('Current position: {}'.format(position))
 
-    position = 'buy'
-
     if position == 'buy':
-        print('ola')
         buy_all_with_btc(trading_client=trading_client, coin=coin, btc_quantity=current_bot_status['btc'])
         current_bot_status['btc'] = 0
         reference_price = current_price

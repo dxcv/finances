@@ -1,6 +1,7 @@
 import json
 
-from strategy_dynamic_stoploss import dynamic_stoploss_strategy
+from strategy_dynamic_stoploss_binance import dynamic_stoploss_strategy
+from binance.client import Client
 
 import bitstamp.client as bts
 import os
@@ -20,9 +21,9 @@ for pair in trading_client_binance.get_all_tickers():
 dynamic_stoploss_strategy(
 trading_client_binance,
 coin='XLM',
-bot_status_json_path=os.path.join(cfd, 'trade_bot_status_xlm.json'),
+bot_status_json_path=os.path.join(cfd, 'trade_bot_status_binance.json'),
 current_price=price_list['XLMBTC'],
-pct_gap=0.035,
-minimum_gain=0.0175,
-reinvest_gap=0.6
+pct_gap=0.09,
+minimum_gain=0.09,
+reinvest_gap=0.5
 )
