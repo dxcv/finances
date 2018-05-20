@@ -5,23 +5,24 @@ def buy_all_with_btc(trading_client, coin, btc_quantity):
     for pair in trading_client.get_all_tickers():
         price_list[pair['symbol']] = float(pair['price'])
     current_price= price_list[coin+'BTC']
-    amount_to_buy = round(btc_quantity/current_price, 3)
+    amount_to_buy = btc_quantity/current_price
 
     bought=False
     while not bought and amount_to_buy>0:
         try:
             trading_client.order_market_buy(
                 symbol=coin+'BTC',
-                quantity=amount_to_buy
+                quantity=int(amount_to_buy)
             )
             bought=True
             print('Bought {0} {1}'.format(amount_to_buy, coin))
         except:
-            amount_to_buy=round(0.9975*amount_to_buy,6)
+            amount_to_buy=0.9975*amount_to_buy
 
 def sell_all_for_btc(trading_client, coin):
     coin_available = float(trading_client.get_asset_balance(asset=coin)['free'])
     amount_to_sell = coin_available
+    print(amount_to_sell)
 
     sold=False
     while not sold and amount_to_sell>0:
@@ -33,7 +34,7 @@ def sell_all_for_btc(trading_client, coin):
             sold=True
             print('Sold {0} {1}'.format(amount_to_sell, coin))
         except:
-            amount_to_sell=round(amount_to_sell*0.9975, 6)
+            amount_to_sell=amount_to_sell*0.9975
     return amount_to_sell
 
 def decision_short(
@@ -114,6 +115,8 @@ def dynamic_stoploss_strategy(
         )
     print('Current position: {}'.format(position))
 
+    position='buy'
+
     if position == 'buy':
         buy_all_with_btc(trading_client=trading_client, coin=coin, btc_quantity=current_bot_status['btc'])
         current_bot_status['btc'] = 0
@@ -122,7 +125,7 @@ def dynamic_stoploss_strategy(
         top_price = reference_price*(1+minimum_gain)
 
     elif position == 'sell':
-        current_bot_status['btc'] = sell_all_for_btc(trading_client=trading_client, coin=coin)
+        current_bot_status['btc'] = sell_all_for_btc(trading_client=trading_client, coin=coin)*current_price
         reference_price = current_price
         bot_price = reference_price*(1-minimum_gain)
         top_price = reference_price*(1+pct_gap)
