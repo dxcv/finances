@@ -17,9 +17,9 @@ mkt=mkt_data.MarketData()
 
 results_df = pd.DataFrame()
 
-pct_gap_range = np.arange(0.01,0.1,0.01)
-times = ['4H', '6H', '8H', '12H']
-min_gain_range = np.arange(0.01,0.1,0.01)
+pct_gap_range = np.arange(0.01,0.11,0.01)
+times = ['4H', '6H', '8H', '12H', '24H']
+min_gain_range = np.arange(0.01,0.11,0.01)
 
 results_df_list=[]
 
@@ -29,8 +29,13 @@ for coin in ['BTC', 'ETH', 'LTC', 'XRP', 'BCH', 'XLM', 'ADA', 'TRX', 'NEO', 'IOT
         backtest_period=datetime.timedelta(days=30)
         n_dates = 100
 
+        start = datetime.datetime(2018,1,26)
+
+        if period == '24H':
+            start = datetime.datetime(2017,11,1)
+
         # select the dates to run the analysis into
-        price_data = mkt.crypto_data[coin].loc[datetime.datetime(2018,1,26):].resample(period).last()
+        price_data = mkt.crypto_data[coin].loc[start:].resample(period).last()
         start_dates = price_data.loc[:price_data.index[-1]-backtest_period].index
         random.seed(1234)
         selected_start_dates = random.sample(list(start_dates),n_dates)
