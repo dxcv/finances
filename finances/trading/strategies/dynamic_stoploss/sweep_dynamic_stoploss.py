@@ -32,7 +32,7 @@ for coin in ['BTC', 'ETH', 'LTC', 'XRP', 'BCH', 'XLM', 'ADA', 'TRX', 'NEO', 'IOT
         start = datetime.datetime(2018,1,26)
 
         if period == '24H':
-            start = datetime.datetime(2017,11,1)
+            start = datetime.datetime(2018,1,1)
 
         # select the dates to run the analysis into
         price_data = mkt.crypto_data[coin].loc[start:].resample(period).last()
