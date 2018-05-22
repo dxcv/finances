@@ -17,7 +17,7 @@ trading_client_eth,
 coin='eth',
 bot_status_json_path=os.path.join(cfd, 'trade_bot_status_eth.json'),
 current_price=float(trading_client_eth.ticker(base='eth', quote='eur')['last']),
-pct_gap=0.08,
-minimum_gain=0.09,
+pct_gap=0.03,
+minimum_gain=0.03,
 reinvest_gap=0.5
 )
