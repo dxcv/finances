@@ -121,9 +121,20 @@ class MarketData():
         # start organizing data to write csv
         current_prices['']=datetime.datetime.now().replace(second=0, microsecond=0)
         sorted_keys = sorted(list(current_prices.keys()))
-        with open(self.crypto_db_path, 'a') as csv_file:
-            writer = csv.DictWriter(csv_file, fieldnames=sorted_keys, dialect='excel')
-            writer.writerow(current_prices)
+
+        if sorted_keys == LISTOFKEYSFROMCSV:
+            with open(self.crypto_db_path, 'a') as csv_file:
+                writer = csv.DictWriter(csv_file, fieldnames=sorted_keys, dialect='excel')
+                writer.writerow(current_prices)
+
+        else:
+            self.load_crypto_data()
+            _temp_df = pd.DataFrame(
+                index=[datetime.datetime.now().replace(second=0, microsecond=0)],
+                data=current_prices.POP('')
+                )
+            self.crypto_data = data_base.append(_temp_df)
+            self.save_crypto_data
 
 
     def update_complete_data_base(self):
