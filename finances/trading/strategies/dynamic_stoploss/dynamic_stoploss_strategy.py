@@ -1,34 +1,6 @@
 import json
 import pandas as pd
 
-def buy_all(trading_client, coin):
-    current_price = float(trading_client.ticker(base=coin, quote='eur')['last'])
-    eur_available = float(trading_client.account_balance(base=coin, quote="eur")['eur_available'])
-    amount_to_buy = round(eur_available/current_price, 6)
-
-    bought=False
-    while not bought and amount_to_buy>0:
-        try:
-            trading_client.buy_market_order(amount=amount_to_buy, base=coin, quote="eur")
-            bought=True
-            print('Bought {0} {1} at {2} eur'.format(amount_to_buy, coin, current_price))
-        except:
-            amount_to_buy=round(0.9975*amount_to_buy,6)
-
-def sell_all(trading_client, coin):
-    current_price = float(trading_client.ticker(base=coin, quote='eur')['last'])
-    coin_available = float(trading_client.account_balance(base=coin, quote="eur")['{}_available'.format(coin)])
-    amount_to_sell = round(coin_available, 6)
-
-    sold=False
-    while not sold and amount_to_sell>0:
-        try:
-            trading_client.sell_market_order(amount=amount_to_sell, base=coin, quote="eur")
-            sold=True
-            print('Sold {0} {1} at {2} eur'.format(amount_to_sell, coin, current_price))
-        except:
-            amount_to_sell=round(amount_to_sell*0.9975, 6)
-
 def decision_short(
     minimum_gain,
     reference_price,
@@ -93,7 +65,7 @@ def dynamic_stoploss_strategy(
     reinvest_gap=0.35
     ):
 
-    if cash < 5:  # less than 5 euro
+    if cash == 0:
         decision_strategy = decision_long
     else:
         decision_strategy = decision_short
