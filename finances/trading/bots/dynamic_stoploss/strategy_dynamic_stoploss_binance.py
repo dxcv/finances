@@ -115,8 +115,6 @@ def dynamic_stoploss_strategy(
         )
     print('Current position: {}'.format(position))
 
-    position='buy'
-
     if position == 'buy':
         buy_all_with_btc(trading_client=trading_client, coin=coin, btc_quantity=current_bot_status['btc'])
         current_bot_status['btc'] = 0
