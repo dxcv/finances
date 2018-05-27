@@ -1,5 +1,7 @@
 import json
 
+from finances.trading.strategies.dynamic_stoploss.dynamic_stoploss_strategy import dynamic_stoploss_strategy
+
 def buy_all_with_btc(trading_client, coin, btc_quantity):
     price_list={}
     for pair in trading_client.get_all_tickers():
@@ -19,6 +21,7 @@ def buy_all_with_btc(trading_client, coin, btc_quantity):
         except:
             amount_to_buy=0.9975*amount_to_buy
 
+
 def sell_all_for_btc(trading_client, coin):
     coin_available = float(trading_client.get_asset_balance(asset=coin)['free'])
     amount_to_sell = coin_available
@@ -37,51 +40,8 @@ def sell_all_for_btc(trading_client, coin):
             amount_to_sell=amount_to_sell*0.9975
     return amount_to_sell
 
-def decision_short(
-    minimum_gain,
-    reference_price,
-    current_price,
-    top_price,
-    bot_price,
-    ):
 
-    decision = 'hold'
-
-    if current_price > top_price:
-        decision = 'buy'
-
-    elif current_price < bot_price:
-        bot_price = current_price
-
-    elif current_price > (reference_price-abs((reference_price-bot_price))*0.5) and current_price < reference_price*(1 - minimum_gain):
-        decision = 'buy'
-
-    return decision, top_price, bot_price
-
-
-def decision_long(
-    minimum_gain,
-    reference_price,
-    current_price,
-    top_price,
-    bot_price,
-    ):
-
-    decision='hold'
-
-    if current_price<bot_price:
-        decision='sell'
-
-    elif current_price>top_price:
-        top_price=current_price
-
-    elif current_price<(reference_price+abs((reference_price-top_price))*0.5) and current_price>reference_price*(1+minimum_gain):
-        decision='sell'
-
-    return decision, top_price, bot_price
-
-
-def dynamic_stoploss_strategy(
+def dynamic_stoploss_binance_bot(
     trading_client,
     coin,
     bot_status_json_path,
@@ -96,58 +56,27 @@ def dynamic_stoploss_strategy(
 
     current_bot_status = binance_bot_status[coin]
 
-    reference_price = current_bot_status['reference_price']
-    top_price = current_bot_status['top_price']
-    bot_price = current_bot_status['bot_price']
-
-    if current_bot_status['btc'] == 0:  # less than 5 euro
-        decision_strategy = decision_long
-    else:
-        decision_strategy = decision_short
-
-
-    position, top_price, bot_price = decision_strategy(
+    current_bot_status, position = dynamic_stoploss_strategy(
+        status_dict=current_bot_status,
+        cash=current_bot_status['cash'],
         current_price=current_price,
+        pct_gap=pct_gap,
         minimum_gain=minimum_gain,
-        reference_price=current_bot_status['reference_price'],
-        top_price=current_bot_status['top_price'],
-        bot_price=current_bot_status['bot_price'],
+        reinvest_gap=reinvest_gap
         )
-    print('Current position: {}'.format(position))
 
+    # perform the actual sell/buy options
     if position == 'buy':
-        buy_all_with_btc(trading_client=trading_client, coin=coin, btc_quantity=current_bot_status['btc'])
-        current_bot_status['btc'] = 0
-        reference_price = current_price
-        bot_price = reference_price*(1-pct_gap)
-        top_price = reference_price*(1+minimum_gain)
+        buy_all_with_btc(trading_client=trading_client, coin=coin, btc_quantity=current_bot_status['cash'])
+        current_bot_status['cash'] = 0
 
     elif position == 'sell':
-        current_bot_status['btc'] = sell_all_for_btc(trading_client=trading_client, coin=coin)*current_price
-        reference_price = current_price
-        bot_price = reference_price*(1-minimum_gain)
-        top_price = reference_price*(1+pct_gap)
+        current_bot_status['cash'] = sell_all_for_btc(trading_client=trading_client, coin=coin)*current_price
 
-    # reinvest?
-    elif current_price > reference_price*(1+reinvest_gap):
-        reference_price = current_price
-        bot_price = reference_price*(1-pct_gap)
-        top_price = reference_price*(1+minimum_gain)
-
-    elif current_price < reference_price*(1-reinvest_gap):
-        reference_price = current_price
-        bot_price = reference_price*(1+pct_gap)
-        top_price = reference_price*(1-minimum_gain)
-
-    current_bot_status['reference_price'] = reference_price
-    current_bot_status['top_price'] = top_price
-    current_bot_status['bot_price'] = bot_price
-
-    bot_status_file = bot_status_json_path
-
+    # save the new bot status dict
     binance_bot_status[coin] = current_bot_status
 
-    with open(bot_status_file, 'w') as f:
+    with open(bot_status_json_path, 'w') as f:
         json.dump(binance_bot_status, f)
 
 if __name__=='__main__':
