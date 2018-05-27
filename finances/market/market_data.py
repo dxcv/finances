@@ -118,7 +118,7 @@ class MarketData():
         # add the total market capitalization data
         current_prices['TotalMarketCap'] = self.get_total_market_cap(currency='eur')
 
-        # start organizing data to write csv
+        # prepare data to write csv
         current_prices['']=datetime.datetime.now().replace(second=0, microsecond=0)
         sorted_keys = sorted(list(current_prices.keys()))
 
