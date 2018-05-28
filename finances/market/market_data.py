@@ -91,7 +91,7 @@ class MarketData():
     def update_coin_full_data(self, crypto_code):
         coin_path = os.path.join(self.data_base_path, 'crypto_currencies', '{}_full_data.csv'.format(crypto_code))
         coin_full_data = self.get_coin_full_data(crypto_code)
-        
+
         try:
             coin_full_data['']=datetime.datetime.now().replace(second=0, microsecond=0)
             sorted_keys = sorted(list(coin_full_data.keys()))
