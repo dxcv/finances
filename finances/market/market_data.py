@@ -44,8 +44,8 @@ convert_name_dictionary={
     'STEEM': 'steem',
     'STRAAT': 'stratis',
     'XVG': 'verge',
-    # 'EOS': 'eos',
-    # 'ONT': 'ontology'
+    'EOS': 'eos',
+    'ONT': 'ontology'
 }
 
 
@@ -122,19 +122,26 @@ class MarketData():
         current_prices['']=datetime.datetime.now().replace(second=0, microsecond=0)
         sorted_keys = sorted(list(current_prices.keys()))
 
-        if sorted_keys == LISTOFKEYSFROMCSV:
+        # read header of the csv
+        with open(self.crypto_db_path) as f:
+            reader = csv.reader(f)
+            csv_header=next(reader)
+
+        # confirm that the header is the same as the sorted keys
+        if sorted_keys == csv_header:
             with open(self.crypto_db_path, 'a') as csv_file:
                 writer = csv.DictWriter(csv_file, fieldnames=sorted_keys, dialect='excel')
                 writer.writerow(current_prices)
 
         else:
             self.load_crypto_data()
+            current_prices.pop('')
             _temp_df = pd.DataFrame(
                 index=[datetime.datetime.now().replace(second=0, microsecond=0)],
-                data=current_prices.POP('')
+                data=current_prices
                 )
             self.crypto_data = data_base.append(_temp_df)
-            self.save_crypto_data
+            self.save_crypto_data()
 
 
     def update_complete_data_base(self):
