@@ -90,7 +90,7 @@ class PortFolio():
         asset_list = list(self.assets.keys())
         prices = self.market_data.get_crypto_price_data(symbols=asset_list)
         merged = prices.join(self.assets_data, lsuffix='_price', rsuffix='_quantity', how='outer')
-        return merged.fillna(method='ffill').dropna()
+        return merged.fillna(method='ffill').loc[self.assets_data.index[0]:]
 
     def get_values_data(self):
         prices_assets_df = self.get_full_asset_vs_price_df()
