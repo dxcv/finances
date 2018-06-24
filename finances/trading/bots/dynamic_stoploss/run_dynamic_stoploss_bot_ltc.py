@@ -19,7 +19,7 @@ trading_client_ltc,
 coin='ltc',
 bot_status_json_path=os.path.join(cfd, 'trade_bot_status_ltc.json'),
 current_price=float(trading_client_ltc.ticker(base='ltc', quote='eur')['last']),
-pct_gap=0.05,
-minimum_gain=0.08,
+pct_gap=0.01,
+minimum_gain=0.04,
 reinvest_gap=0.5
 )
