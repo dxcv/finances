@@ -2,7 +2,7 @@ import json
 
 from finances.trading.strategies.dynamic_stoploss.dynamic_stoploss_strategy import dynamic_stoploss_strategy
 
-def buy_all(trading_client, coin, eur_quantity):
+def buy_all(trading_client, eur_quantity, coin='btc'):
     current_price = float(trading_client.ticker(base=coin, quote='eur')['last'])
     eur_available = eur_quantity
     amount_to_buy = eur_available/current_price
@@ -16,7 +16,7 @@ def buy_all(trading_client, coin, eur_quantity):
         except:
             amount_to_buy=0.9975*amount_to_buy
 
-def sell_all(trading_client, coin):
+def sell_all(trading_client, coin='btc'):
     current_price = float(trading_client.ticker(base=coin, quote='eur')['last'])
     coin_available = float(trading_client.account_balance(base=coin, quote="eur")['{}_available'.format(coin)])
     amount_to_sell = coin_available
@@ -40,7 +40,7 @@ def dynamic_stoploss_bitstamp_bot(
     current_price,
     pct_gap,
     minimum_gain,
-    reinvest_gap=0.8
+    reinvest_gap=0.5
     ):
 
     with open(bot_status_json_path) as json_file:
