@@ -19,6 +19,9 @@ def buy_all(trading_client, eur_quantity, coin='btc'):
 def sell_all(trading_client, coin='btc'):
     current_price = float(trading_client.ticker(base=coin, quote='eur')['last'])
     coin_available = float(trading_client.account_balance(base=coin, quote="eur")['{}_available'.format(coin)])
+    """
+    Returns: the ammount of coin to be sold
+    """
     amount_to_sell = coin_available
 
     sold=False
