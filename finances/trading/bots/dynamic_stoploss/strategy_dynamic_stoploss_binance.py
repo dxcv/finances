@@ -1,43 +1,89 @@
 import json
+import time
 
 from finances.trading.strategies.dynamic_stoploss.dynamic_stoploss_strategy import dynamic_stoploss_strategy
 
-def buy_all_with_btc(trading_client, coin, btc_quantity):
+def buy_all(trading_client, coin, usd_quantity):
+
+    # get all the prices
     price_list={}
     for pair in trading_client.get_all_tickers():
         price_list[pair['symbol']] = float(pair['price'])
-    current_price= price_list[coin+'BTC']
-    amount_to_buy = btc_quantity/current_price
 
-    bought=False
-    while not bought and amount_to_buy>0:
+    # extract the relevant prices
+    current_btc_price = price_list['BTCUSD']
+    current_price_in_btc= price_list[coin+'BTC']
+    current_price_in_usd = (current_price_in_btc*current_btc_price)
+
+    # calculate the amount of both coin and btc to buy
+    amount_coin_to_buy = usd_quantity/current_price_in_usd
+    amount_btc_to_buy = usd_quantity/current_price_in_btc
+
+    bought_btc=False
+    bought_coin=False
+
+    # first buy the corresponding amount of btc
+    while not bought_btc and amount_btc_to_buy>0:
+        try:
+            trading_client.order_market_buy(
+                symbol='BTCUSD',
+                quantity=int(amount_btc_to_buy)  # <--------------- this is the thing that needs to be changed
+            )
+            bought_btc=True
+            print('Bought {0} BTC'.format(amount_btc_to_buy))
+        except:
+            amount_btc_to_buy=0.9975*amount_btc_to_buy
+
+    # then buy the corresponding amount of the required coin
+    time.sleep(10)  # wait a bit for the previous transaction take place
+    while not bought_coin and amount_coin_to_buy>0:
         try:
             trading_client.order_market_buy(
                 symbol=coin+'BTC',
-                quantity=int(amount_to_buy)
+                quantity=int(amount_coin_to_buy) # <--------------- this is the thing that needs to be changed
             )
-            bought=True
-            print('Bought {0} {1}'.format(amount_to_buy, coin))
+            bought_coin=True
+            print('Bought {0} {1}'.format(amount_coin_to_buy, coin))
         except:
-            amount_to_buy=0.9975*amount_to_buy
+            amount_coin_to_buy=0.9975*amount_coin_to_buy
 
 
-def sell_all_for_btc(trading_client, coin):
+def sell_all(trading_client, coin):
     coin_available = float(trading_client.get_asset_balance(asset=coin)['free'])
     amount_to_sell = coin_available
     print(amount_to_sell)
 
-    sold=False
-    while not sold and amount_to_sell>0:
+    sold_coin=False
+    sold_btc=False
+
+    # first sell all to btc
+    while not sold_coin and amount_to_sell>0:
         try:
             trading_client.order_market_sell(
                 symbol=coin+'BTC',
                 quantity=amount_to_sell
             )
-            sold=True
+            sold_coin=True
             print('Sold {0} {1}'.format(amount_to_sell, coin))
         except:
             amount_to_sell=amount_to_sell*0.9975
+
+    # then sell all btc to usd
+    time.sleep(10)  # wait a bit for the previous transaction take place
+    
+    btc_available = float(trading_client.get_asset_balance(asset='btc')['free'])
+    btc_to_sell = btc_available
+    while not sold_btc and btc_to_sell>0:
+        try:
+            trading_client.order_market_sell(
+                symbol='BTCUSD',
+                quantity=btc_to_sell
+            )
+            sold_coin=True
+            print('Sold {0} BTC'.format(btc_to_sell))
+        except:
+            btc_to_sell=btc_to_sell*0.9975
+
     return amount_to_sell
 
 
@@ -67,11 +113,11 @@ def dynamic_stoploss_binance_bot(
 
     # perform the actual sell/buy options
     if position == 'buy':
-        buy_all_with_btc(trading_client=trading_client, coin=coin, btc_quantity=current_bot_status['cash'])
+        buy_all(trading_client=trading_client, coin=coin, btc_quantity=current_bot_status['cash'])
         current_bot_status['cash'] = 0
 
     elif position == 'sell':
-        current_bot_status['cash'] = sell_all_for_btc(trading_client=trading_client, coin=coin)*current_price
+        current_bot_status['cash'] = sell_all(trading_client=trading_client, coin=coin)*current_price
 
     # save the new bot status dict
     binance_bot_status[coin] = current_bot_status
