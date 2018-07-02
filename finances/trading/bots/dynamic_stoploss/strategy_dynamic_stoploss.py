@@ -1,142 +1,79 @@
 import json
 
-def buy_all(trading_client, coin):
+from finances.trading.strategies.dynamic_stoploss.dynamic_stoploss_strategy import dynamic_stoploss_strategy
+
+def buy_all(trading_client, eur_quantity, coin='btc'):
     current_price = float(trading_client.ticker(base=coin, quote='eur')['last'])
-    eur_available = float(trading_client.account_balance(base=coin, quote="eur")['eur_available'])
-    amount_to_buy = round(eur_available/current_price, 6)
+    eur_available = eur_quantity
+    amount_to_buy = eur_available/current_price
 
     bought=False
     while not bought and amount_to_buy>0:
         try:
-            trading_client.buy_market_order(amount=amount_to_buy, base=coin, quote="eur")
+            trading_client.buy_market_order(amount=round(amount_to_buy,6), base=coin, quote="eur")
             bought=True
             print('Bought {0} {1} at {2} eur'.format(amount_to_buy, coin, current_price))
         except:
-            amount_to_buy=round(0.9975*amount_to_buy,6)
+            amount_to_buy=0.9975*amount_to_buy
 
-def sell_all(trading_client, coin):
+def sell_all(trading_client, coin='btc'):
     current_price = float(trading_client.ticker(base=coin, quote='eur')['last'])
     coin_available = float(trading_client.account_balance(base=coin, quote="eur")['{}_available'.format(coin)])
-    amount_to_sell = round(coin_available, 6)
+    """
+    Returns: the ammount of coin to be sold
+    """
+    amount_to_sell = coin_available
 
     sold=False
     while not sold and amount_to_sell>0:
         try:
-            trading_client.sell_market_order(amount=amount_to_sell, base=coin, quote="eur")
+            trading_client.sell_market_order(amount=round(amount_to_sell,6), base=coin, quote="eur")
             sold=True
             print('Sold {0} {1} at {2} eur'.format(amount_to_sell, coin, current_price))
         except:
-            amount_to_sell=round(amount_to_sell*0.9975, 6)
+            amount_to_sell=amount_to_sell*0.9975
 
-def decision_short(
-    minimum_gain,
-    reference_price,
-    current_price,
-    top_price,
-    bot_price,
-    ):
-
-    decision = 'hold'
-
-    if current_price > top_price:
-        decision = 'buy'
-
-    elif current_price < bot_price:
-        bot_price = current_price
-
-    elif current_price > (reference_price-abs((reference_price-bot_price))*0.5) and current_price < reference_price*(1 - minimum_gain):
-        decision = 'buy'
-
-    return decision, top_price, bot_price
+    return amount_to_sell
 
 
-def decision_long(
-    minimum_gain,
-    reference_price,
-    current_price,
-    top_price,
-    bot_price,
-    ):
-
-    decision='hold'
-
-    if current_price<bot_price:
-        decision='sell'
-
-    elif current_price>top_price:
-        top_price=current_price
-
-    elif current_price<(reference_price+abs((reference_price-top_price))*0.5) and current_price>reference_price*(1+minimum_gain):
-        decision='sell'
-
-    return decision, top_price, bot_price
-
-
-def dynamic_stoploss_strategy(
+def dynamic_stoploss_bitstamp_bot(
     trading_client,
     coin,
     bot_status_json_path,
     current_price,
     pct_gap,
     minimum_gain,
-    reinvest_gap=0.8
+    reinvest_gap=0.5
     ):
 
     with open(bot_status_json_path) as json_file:
-        current_bot_status = json.load(json_file)
+        binance_bot_status = json.load(json_file)
 
-    reference_price = current_bot_status['reference_price']
-    top_price = current_bot_status['top_price']
-    bot_price = current_bot_status['bot_price']
+    current_bot_status = binance_bot_status[coin]
 
-    cash = float(trading_client.account_balance(base=coin, quote="eur")['eur_available'])
-
-    if cash < 5:  # less than 5 euro
-        decision_strategy = decision_long
-    else:
-        decision_strategy = decision_short
-
-
-    position, top_price, bot_price = decision_strategy(
+    current_bot_status, position = dynamic_stoploss_strategy(
+        status_dict=current_bot_status,
+        cash=current_bot_status['cash'],
         current_price=current_price,
+        pct_gap=pct_gap,
         minimum_gain=minimum_gain,
-        reference_price=current_bot_status['reference_price'],
-        top_price=current_bot_status['top_price'],
-        bot_price=current_bot_status['bot_price'],
+        reinvest_gap=reinvest_gap
         )
-    print('Current position: {}'.format(position))
 
+    # perform the actual sell/buy options
     if position == 'buy':
-        buy_all(trading_client=trading_client, coin=coin)
-        reference_price = current_price
-        bot_price = reference_price*(1-pct_gap)
-        top_price = reference_price*(1+minimum_gain)
+        buy_all(trading_client=trading_client, coin=coin, eur_quantity=current_bot_status['cash'])
+        current_bot_status['cash'] = 0
 
     elif position == 'sell':
-        sell_all(trading_client=trading_client, coin=coin)
-        reference_price = current_price
-        bot_price = reference_price*(1-minimum_gain)
-        top_price = reference_price*(1+pct_gap)
+        current_bot_status['cash'] = sell_all(trading_client=trading_client, coin=coin)*current_price
 
-    # reinvest?
-    elif current_price > reference_price*(1+reinvest_gap):
-        reference_price = current_price
-        bot_price = reference_price*(1-pct_gap)
-        top_price = reference_price*(1+minimum_gain)
+    print(position)
+    # save the new bot status dict
+    binance_bot_status[coin] = current_bot_status
 
-    elif current_price < reference_price*(1-reinvest_gap):
-        reference_price = current_price
-        bot_price = reference_price*(1+pct_gap)
-        top_price = reference_price*(1-minimum_gain)
-
-    current_bot_status['reference_price'] = reference_price
-    current_bot_status['top_price'] = top_price
-    current_bot_status['bot_price'] = bot_price
-
-    bot_status_file = bot_status_json_path
-
-    with open(bot_status_file, 'w') as f:
-        json.dump(current_bot_status, f)
+    with open(bot_status_json_path, 'w') as f:
+        json.dump(binance_bot_status, f)
 
 if __name__=='__main__':
     import bitstamp.client as bts

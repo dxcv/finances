@@ -17,12 +17,14 @@ price_list={}
 for pair in trading_client_binance.get_all_tickers():
     price_list[pair['symbol']] = float(pair['price'])
 
+btc_price = price_list['BTCUSD']
+
 # STELLAR
 dynamic_stoploss_strategy(
 	trading_client_binance,
 	coin='XLM',
 	bot_status_json_path=os.path.join(cfd, 'trade_bot_status_binance.json'),
-	current_price=price_list['XLMBTC'],
+	current_price=price_list['XLMBTC']*btc_price,
 	pct_gap=0.09,
 	minimum_gain=0.09,
 	reinvest_gap=0.5
@@ -34,7 +36,7 @@ dynamic_stoploss_strategy(
 	trading_client_binance,
 	coin='ADA',
 	bot_status_json_path=os.path.join(cfd, 'trade_bot_status_binance.json'),
-	current_price=price_list['ADABTC'],
+	current_price=price_list['ADABTC']*btc_price,
 	pct_gap=0.09,
 	minimum_gain=0.09,
 	reinvest_gap=0.5
@@ -45,7 +47,7 @@ dynamic_stoploss_strategy(
 	trading_client_binance,
 	coin='TRX',
 	bot_status_json_path=os.path.join(cfd, 'trade_bot_status_binance.json'),
-	current_price=price_list['TRXBTC'],
+	current_price=price_list['TRXBTC']*btc_price,
 	pct_gap=0.09,
 	minimum_gain=0.09,
 	reinvest_gap=0.5

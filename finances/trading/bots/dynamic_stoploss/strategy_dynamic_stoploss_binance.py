@@ -1,87 +1,93 @@
 import json
+import time
 
-def buy_all_with_btc(trading_client, coin, btc_quantity):
+from finances.trading.strategies.dynamic_stoploss.dynamic_stoploss_strategy import dynamic_stoploss_strategy
+
+def buy_all(trading_client, coin, usd_quantity):
+
+    # get all the prices
     price_list={}
     for pair in trading_client.get_all_tickers():
         price_list[pair['symbol']] = float(pair['price'])
-    current_price= price_list[coin+'BTC']
-    amount_to_buy = btc_quantity/current_price
 
-    bought=False
-    while not bought and amount_to_buy>0:
+    # extract the relevant prices
+    current_btc_price = price_list['BTCUSD']
+    current_price_in_btc= price_list[coin+'BTC']
+    current_price_in_usd = (current_price_in_btc*current_btc_price)
+
+    # calculate the amount of both coin and btc to buy
+    amount_coin_to_buy = usd_quantity/current_price_in_usd
+    amount_btc_to_buy = usd_quantity/current_price_in_btc
+
+    bought_btc=False
+    bought_coin=False
+
+    # first buy the corresponding amount of btc
+    while not bought_btc and amount_btc_to_buy>0:
+        try:
+            trading_client.order_market_buy(
+                symbol='BTCUSD',
+                quantity=int(amount_btc_to_buy)  # <--------------- this is the thing that needs to be changed
+            )
+            bought_btc=True
+            print('Bought {0} BTC'.format(amount_btc_to_buy))
+        except:
+            amount_btc_to_buy=0.9975*amount_btc_to_buy
+
+    # then buy the corresponding amount of the required coin
+    time.sleep(10)  # wait a bit for the previous transaction take place
+    while not bought_coin and amount_coin_to_buy>0:
         try:
             trading_client.order_market_buy(
                 symbol=coin+'BTC',
-                quantity=int(amount_to_buy)
+                quantity=int(amount_coin_to_buy) # <--------------- this is the thing that needs to be changed
             )
-            bought=True
-            print('Bought {0} {1}'.format(amount_to_buy, coin))
+            bought_coin=True
+            print('Bought {0} {1}'.format(amount_coin_to_buy, coin))
         except:
-            amount_to_buy=0.9975*amount_to_buy
+            amount_coin_to_buy=0.9975*amount_coin_to_buy
 
-def sell_all_for_btc(trading_client, coin):
+
+def sell_all(trading_client, coin):
     coin_available = float(trading_client.get_asset_balance(asset=coin)['free'])
     amount_to_sell = coin_available
     print(amount_to_sell)
 
-    sold=False
-    while not sold and amount_to_sell>0:
+    sold_coin=False
+    sold_btc=False
+
+    # first sell all to btc
+    while not sold_coin and amount_to_sell>0:
         try:
             trading_client.order_market_sell(
                 symbol=coin+'BTC',
                 quantity=amount_to_sell
             )
-            sold=True
+            sold_coin=True
             print('Sold {0} {1}'.format(amount_to_sell, coin))
         except:
             amount_to_sell=amount_to_sell*0.9975
+
+    # then sell all btc to usd
+    time.sleep(10)  # wait a bit for the previous transaction take place
+    
+    btc_available = float(trading_client.get_asset_balance(asset='btc')['free'])
+    btc_to_sell = btc_available
+    while not sold_btc and btc_to_sell>0:
+        try:
+            trading_client.order_market_sell(
+                symbol='BTCUSD',
+                quantity=btc_to_sell
+            )
+            sold_coin=True
+            print('Sold {0} BTC'.format(btc_to_sell))
+        except:
+            btc_to_sell=btc_to_sell*0.9975
+
     return amount_to_sell
 
-def decision_short(
-    minimum_gain,
-    reference_price,
-    current_price,
-    top_price,
-    bot_price,
-    ):
 
-    decision = 'hold'
-
-    if current_price > top_price:
-        decision = 'buy'
-
-    elif current_price < bot_price:
-        bot_price = current_price
-
-    elif current_price > (reference_price-abs((reference_price-bot_price))*0.5) and current_price < reference_price*(1 - minimum_gain):
-        decision = 'buy'
-
-    return decision, top_price, bot_price
-
-
-def decision_long(
-    minimum_gain,
-    reference_price,
-    current_price,
-    top_price,
-    bot_price,
-    ):
-
-    decision='hold'
-
-    if current_price<bot_price:
-        decision='sell'
-
-    elif current_price>top_price:
-        top_price=current_price
-
-    elif current_price<(reference_price+abs((reference_price-top_price))*0.5) and current_price>reference_price*(1+minimum_gain):
-        decision='sell'
-
-    return decision, top_price, bot_price
-
-
-def dynamic_stoploss_strategy(
+def dynamic_stoploss_binance_bot(
     trading_client,
     coin,
     bot_status_json_path,
@@ -96,60 +102,27 @@ def dynamic_stoploss_strategy(
 
     current_bot_status = binance_bot_status[coin]
 
-    reference_price = current_bot_status['reference_price']
-    top_price = current_bot_status['top_price']
-    bot_price = current_bot_status['bot_price']
-
-    if current_bot_status['btc'] == 0:  # less than 5 euro
-        decision_strategy = decision_long
-    else:
-        decision_strategy = decision_short
-
-
-    position, top_price, bot_price = decision_strategy(
+    current_bot_status, position = dynamic_stoploss_strategy(
+        status_dict=current_bot_status,
+        cash=current_bot_status['cash'],
         current_price=current_price,
+        pct_gap=pct_gap,
         minimum_gain=minimum_gain,
-        reference_price=current_bot_status['reference_price'],
-        top_price=current_bot_status['top_price'],
-        bot_price=current_bot_status['bot_price'],
+        reinvest_gap=reinvest_gap
         )
-    print('Current position: {}'.format(position))
 
-    position='buy'
-
+    # perform the actual sell/buy options
     if position == 'buy':
-        buy_all_with_btc(trading_client=trading_client, coin=coin, btc_quantity=current_bot_status['btc'])
-        current_bot_status['btc'] = 0
-        reference_price = current_price
-        bot_price = reference_price*(1-pct_gap)
-        top_price = reference_price*(1+minimum_gain)
+        buy_all(trading_client=trading_client, coin=coin, btc_quantity=current_bot_status['cash'])
+        current_bot_status['cash'] = 0
 
     elif position == 'sell':
-        current_bot_status['btc'] = sell_all_for_btc(trading_client=trading_client, coin=coin)*current_price
-        reference_price = current_price
-        bot_price = reference_price*(1-minimum_gain)
-        top_price = reference_price*(1+pct_gap)
+        current_bot_status['cash'] = sell_all(trading_client=trading_client, coin=coin)*current_price
 
-    # reinvest?
-    elif current_price > reference_price*(1+reinvest_gap):
-        reference_price = current_price
-        bot_price = reference_price*(1-pct_gap)
-        top_price = reference_price*(1+minimum_gain)
-
-    elif current_price < reference_price*(1-reinvest_gap):
-        reference_price = current_price
-        bot_price = reference_price*(1+pct_gap)
-        top_price = reference_price*(1-minimum_gain)
-
-    current_bot_status['reference_price'] = reference_price
-    current_bot_status['top_price'] = top_price
-    current_bot_status['bot_price'] = bot_price
-
-    bot_status_file = bot_status_json_path
-
+    # save the new bot status dict
     binance_bot_status[coin] = current_bot_status
 
-    with open(bot_status_file, 'w') as f:
+    with open(bot_status_json_path, 'w') as f:
         json.dump(binance_bot_status, f)
 
 if __name__=='__main__':
