@@ -11,7 +11,7 @@ trading_client = bts.Trading(
    secret='u4eBOyegwk5VJLHqwlEaOjULUebOT9Yk'
    )
 
-
+print('BTC bot:')
 # BITCOIN
 dynamic_stoploss_bitstamp_bot(
     trading_client,
@@ -23,6 +23,7 @@ dynamic_stoploss_bitstamp_bot(
     reinvest_gap=0.5
     )
 
+print('ETH bot:')
 # ETHEREUM
 dynamic_stoploss_bitstamp_bot(
     trading_client,
@@ -34,6 +35,7 @@ dynamic_stoploss_bitstamp_bot(
     reinvest_gap=0.5
     )
 
+print('LTC bot:')
 # LITECOIN
 dynamic_stoploss_bitstamp_bot(
     trading_client,
@@ -45,7 +47,8 @@ dynamic_stoploss_bitstamp_bot(
     reinvest_gap=0.5
     )
 
-# RIPLLE
+print('XRP bot:')
+# RIPPLE
 dynamic_stoploss_bitstamp_bot(
     trading_client,
     coin='xrp',
@@ -56,6 +59,7 @@ dynamic_stoploss_bitstamp_bot(
     reinvest_gap=0.5
     )
 
+print('BCH bot:')
 # BITCOIN CASH
 dynamic_stoploss_bitstamp_bot(
     trading_client,
