@@ -73,7 +73,7 @@ def dynamic_stoploss_bitstamp_bot(
     binance_bot_status[coin] = current_bot_status
 
     with open(bot_status_json_path, 'w') as f:
-        json.dump(binance_bot_status, f)
+        json.dump(binance_bot_status, f, sort_keys=True, indent=4)
 
 if __name__=='__main__':
     import bitstamp.client as bts
