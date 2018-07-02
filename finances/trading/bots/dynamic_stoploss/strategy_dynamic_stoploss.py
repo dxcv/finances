@@ -1,4 +1,10 @@
 import json
+import os
+import sys
+
+cfp, cfn = os.path.split(os.path.abspath(__file__))
+
+sys.path.append(os.path.join(cfp, '..', '..', '..', '..'))   # <--------- this is to run in pythonanywhere
 
 from finances.trading.strategies.dynamic_stoploss.dynamic_stoploss_strategy import dynamic_stoploss_strategy
 
