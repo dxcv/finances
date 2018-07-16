@@ -66,6 +66,8 @@ def dynamic_stoploss_bitstamp_bot(
         reinvest_gap=reinvest_gap
         )
 
+    print('Position: '+position)
+
     # perform the actual sell/buy options
     if position == 'buy':
         buy_all(trading_client=trading_client, coin=coin, eur_quantity=current_bot_status['cash'])
@@ -74,7 +76,6 @@ def dynamic_stoploss_bitstamp_bot(
     elif position == 'sell':
         current_bot_status['cash'] = sell_all(trading_client=trading_client, coin=coin)*current_price
 
-    print(position)
     # save the new bot status dict
     binance_bot_status[coin] = current_bot_status
 
