@@ -12,10 +12,9 @@ trading_client = bts.Trading(
    secret='u4eBOyegwk5VJLHqwlEaOjULUebOT9Yk'
    )
 
-failed = True
 failed_times = 0
 
-while failed and failed_times<3:
+while failed_times<3:
     try:
         print('BTC bot:')
         # BITCOIN
@@ -77,7 +76,7 @@ while failed and failed_times<3:
             reinvest_gap=0.5
             )
 
-        failed = False
+        failed_times = 5
 
     except bts.BitstampError:
         failed_times +=1
