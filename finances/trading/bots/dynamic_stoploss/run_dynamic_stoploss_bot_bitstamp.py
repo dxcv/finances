@@ -78,7 +78,7 @@ while failed_times<3:
 
         failed_times = 5
 
-    except bts.BitstampError:
+    except bts.BitstampError as e:
+        print('Failed: {} | Repeating!'.format(e))
         failed_times +=1
-        print('Failed... repeating!')
-        time.sleep(10)
+        time.sleep(15)
