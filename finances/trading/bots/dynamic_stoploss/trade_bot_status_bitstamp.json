@@ -1,15 +1,15 @@
 {
     "bch": {
-        "bot_price": 627.7344,
-        "cash": 233.24153952,
-        "reference_price": 682.32,
-        "top_price": 716.436
+        "bot_price": 688.75,
+        "cash": 0,
+        "reference_price": 725.0,
+        "top_price": 783.0
     },
     "btc": {
         "bot_price": 5241.4435,
         "cash": 0,
         "reference_price": 5403.55,
-        "top_price": 6576.66
+        "top_price": 7072.96
     },
     "eth": {
         "bot_price": 380.43,
