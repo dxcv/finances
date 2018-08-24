@@ -6,25 +6,25 @@
         "top_price": 711.0915
     },
     "btc": {
-        "bot_price": 5533.5008,
+        "bot_price": 5482.5758000000005,
         "cash": 0,
-        "reference_price": 5704.64,
-        "top_price": 5761.6864000000005
+        "reference_price": 5652.14,
+        "top_price": 5708.6614
     },
     "eth": {
-        "bot_price": 231.53,
+        "bot_price": 228.84,
         "cash": 490.07376436,
         "reference_price": 380.26,
         "top_price": 391.6678
     },
     "ltc": {
-        "bot_price": 46.492799999999995,
-        "cash": 274.07613915147897,
-        "reference_price": 48.43,
-        "top_price": 48.9143
+        "bot_price": 47.4903,
+        "cash": 0,
+        "reference_price": 47.97,
+        "top_price": 49.8888
     },
     "xrp": {
-        "bot_price": 0.2821616,
+        "bot_price": 0.27325,
         "cash": 221.40938964696002,
         "reference_price": 0.28792,
         "top_price": 0.30231600000000003
