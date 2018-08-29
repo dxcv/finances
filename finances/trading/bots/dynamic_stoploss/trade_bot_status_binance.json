@@ -1,5 +1,1 @@
-{
-	"XLM": {"reference_price": 3.838e-05, "top_price": 4.183420000000001e-05, "bot_price": 3.4925800000000004e-05, "btc": 0},
-	"ADA": {"reference_price": 2.935e-05, "top_price": 3.19915e-05, "bot_price": 2.67085e-05, "btc": 0},
-	"TRX": {"reference_price": 8.8e-06, "top_price": 9.592e-06, "bot_price": 8.008e-06, "btc": 0}
-}
+{"XLM": {"reference_price": 0.2272717, "top_price": 0.247726153, "bot_price": 0.206817247, "cash": 0}, "TRX": {"reference_price": 0.02571425, "top_price": 0.0280285325, "bot_price": 0.0233999675, "cash": 0}, "ADA": {"reference_price": 0.1052523, "top_price": 0.114725007, "bot_price": 0.095779593, "cash": 0}, "IOTA": {"reference_price": 0.7464881999999999, "top_price": 0.8136721379999999, "bot_price": 0.6793042619999999, "cash": 0}, "EOS": {"reference_price": 6.2482105, "top_price": 6.810549445, "bot_price": 5.685871555, "cash": 0}}

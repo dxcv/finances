@@ -36,7 +36,7 @@ def buy_all(trading_client, coin, usd_quantity):
             btc_to_buy*=0.9975
 
     # then buy the corresponding amount of the required coin
-    time.sleep(3)  # wait a bit for the previous transaction take place
+    time.sleep(2)  # wait a bit for the previous transaction take place
     rounder=5
     
     while not bought_coin and amount_to_buy>0.0:
@@ -78,7 +78,7 @@ def sell_all(trading_client, coin):
                 amount_to_sell*=0.9975
 
     # then sell all btc to usd
-    time.sleep(3)  # wait a bit for the previous transaction take place
+    time.sleep(2)  # wait a bit for the previous transaction take place
     
     btc_available = float(trading_client.get_asset_balance(asset='btc')['free'])
     btc_to_sell = btc_available
@@ -103,7 +103,7 @@ def dynamic_stoploss_binance_bot(
     current_price,
     pct_gap,
     minimum_gain,
-    reinvest_gap=0.8
+    reinvest_gap=0.5
     ):
 
     with open(bot_status_json_path) as json_file:
