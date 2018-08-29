@@ -23,7 +23,7 @@ min_gain_range = np.arange(0.01,0.11,0.01)
 
 results_df_list=[]
 
-for coin in ['BTC', 'ETH', 'LTC', 'XRP', 'BCH', 'XLM', 'ADA', 'TRX', 'NEO', 'IOTA']:
+for coin in ['BTC', 'ETH', 'LTC', 'XRP', 'BCH', 'XLM', 'ADA', 'TRX', 'NEO', 'IOTA', 'XMR', 'DASH']:
     for period in times:
 
         backtest_period=datetime.timedelta(days=30)
