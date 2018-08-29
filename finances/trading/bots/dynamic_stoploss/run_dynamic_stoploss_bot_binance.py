@@ -36,8 +36,9 @@ btc_price = price_list['BTCUSDT']
 #     return d
 
 # from pprint import pprint
-# print(create_dict(['XLM', 'TRX', 'ADA', 'IOTA', 'EOS']))
+# print(create_dict(['XLM', 'TRX', 'ADA', 'IOTA', 'EOS', 'XMR', 'DASH']))
 
+# exit(0)
 # STELLAR
 dynamic_stoploss_binance_bot(
     trading_client_binance,
@@ -48,7 +49,6 @@ dynamic_stoploss_binance_bot(
     minimum_gain=0.09,
     reinvest_gap=0.5
 )
-
 
 # CARDANO
 dynamic_stoploss_binance_bot(
@@ -78,6 +78,28 @@ dynamic_stoploss_binance_bot(
     coin='EOS',
     bot_status_json_path=os.path.join(cfd, 'trade_bot_status_binance.json'),
     current_price=price_list['EOSBTC']*btc_price,
+    pct_gap=0.09,
+    minimum_gain=0.09,
+    reinvest_gap=0.5
+)
+
+# XMR
+dynamic_stoploss_binance_bot(
+    trading_client_binance,
+    coin='XMR',
+    bot_status_json_path=os.path.join(cfd, 'trade_bot_status_binance.json'),
+    current_price=price_list['XMRBTC']*btc_price,
+    pct_gap=0.09,
+    minimum_gain=0.09,
+    reinvest_gap=0.5
+)
+
+# DASH
+dynamic_stoploss_binance_bot(
+    trading_client_binance,
+    coin='DASH',
+    bot_status_json_path=os.path.join(cfd, 'trade_bot_status_binance.json'),
+    current_price=price_list['DASHBTC']*btc_price,
     pct_gap=0.09,
     minimum_gain=0.09,
     reinvest_gap=0.5

@@ -8,9 +8,9 @@ sys.path.append(os.path.join(cfp, '..', '..', '..', '..'))   # <--------- this i
 
 from finances.trading.strategies.dynamic_stoploss.dynamic_stoploss_strategy import dynamic_stoploss_strategy
 
-def buy_all(trading_client, eur_quantity, coin='btc'):
+def buy_all(trading_client, cash_quantity, coin='btc'):
     current_price = float(trading_client.ticker(base=coin, quote='eur')['last'])
-    eur_available = eur_quantity
+    eur_available = cash_quantity
     amount_to_buy = eur_available/current_price
 
     bought=False
@@ -53,9 +53,9 @@ def dynamic_stoploss_bitstamp_bot(
     ):
 
     with open(bot_status_json_path) as json_file:
-        binance_bot_status = json.load(json_file)
+        bitstamp_bot_status = json.load(json_file)
 
-    current_bot_status = binance_bot_status[coin]
+    current_bot_status = bitstamp_bot_status[coin]
 
     current_bot_status, position = dynamic_stoploss_strategy(
         status_dict=current_bot_status,
@@ -70,17 +70,17 @@ def dynamic_stoploss_bitstamp_bot(
 
     # perform the actual sell/buy options
     if position == 'buy':
-        buy_all(trading_client=trading_client, coin=coin, eur_quantity=current_bot_status['cash'])
+        buy_all(trading_client=trading_client, coin=coin, cash_quantity=current_bot_status['cash'])
         current_bot_status['cash'] = 0
 
     elif position == 'sell':
         current_bot_status['cash'] = sell_all(trading_client=trading_client, coin=coin)*current_price
 
     # save the new bot status dict
-    binance_bot_status[coin] = current_bot_status
+    bitstamp_bot_status[coin] = current_bot_status
 
     with open(bot_status_json_path, 'w') as f:
-        json.dump(binance_bot_status, f, sort_keys=True, indent=4)
+        json.dump(bitstamp_bot_status, f, sort_keys=True, indent=4)
 
 if __name__=='__main__':
     import bitstamp.client as bts

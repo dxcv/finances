@@ -4,7 +4,7 @@ import time
 from finances.trading.strategies.dynamic_stoploss.dynamic_stoploss_strategy import dynamic_stoploss_strategy
 from binance.exceptions import BinanceAPIException
 
-def buy_all(trading_client, coin, usd_quantity):
+def buy_all(trading_client, coin, cash_quantity):
 
     # get all the prices
     price_list={}
@@ -17,8 +17,8 @@ def buy_all(trading_client, coin, usd_quantity):
     current_price_in_usd = (current_price_in_btc*current_btc_price)
 
     # calculate the amount of both coin and btc to buy
-    amount_to_buy = usd_quantity/current_price_in_usd
-    btc_to_buy = usd_quantity/current_btc_price
+    amount_to_buy = cash_quantity/current_price_in_usd
+    btc_to_buy = cash_quantity/current_btc_price
 
     bought_btc=False
     bought_coin=False
@@ -120,9 +120,11 @@ def dynamic_stoploss_binance_bot(
         reinvest_gap=reinvest_gap
         )
 
+    print('Position: '+position)
+
     # perform the actual sell/buy options
     if position == 'buy':
-        buy_all(trading_client=trading_client, coin=coin, btc_quantity=current_bot_status['cash'])
+        buy_all(trading_client=trading_client, coin=coin, cash_quantity=current_bot_status['cash'])
         current_bot_status['cash'] = 0
 
     elif position == 'sell':
@@ -132,7 +134,7 @@ def dynamic_stoploss_binance_bot(
     binance_bot_status[coin] = current_bot_status
 
     with open(bot_status_json_path, 'w') as f:
-        json.dump(binance_bot_status, f)
+        json.dump(binance_bot_status, f, sort_keys=True, indent=4)
 
 if __name__=='__main__':
     from binance.client import Client
