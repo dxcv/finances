@@ -36,71 +36,90 @@ btc_price = price_list['BTCUSDT']
 #     return d
 
 # from pprint import pprint
-# print(create_dict(['XLM', 'TRX', 'ADA', 'IOTA', 'EOS', 'XMR', 'DASH']))
+# print(create_dict(['XLM', 'TRX', 'ADA', 'IOTA', 'EOS', 'XMR', 'DASH', 'NEO']))
 
 # exit(0)
+
 # STELLAR
+print('XLM')
 dynamic_stoploss_binance_bot(
     trading_client_binance,
     coin='XLM',
     bot_status_json_path=os.path.join(cfd, 'trade_bot_status_binance.json'),
     current_price=price_list['XLMBTC']*btc_price,
-    pct_gap=0.09,
-    minimum_gain=0.09,
+    pct_gap=0.04,
+    minimum_gain=0.02,
     reinvest_gap=0.5
 )
 
 # CARDANO
+print('ADA')
 dynamic_stoploss_binance_bot(
     trading_client_binance,
     coin='ADA',
     bot_status_json_path=os.path.join(cfd, 'trade_bot_status_binance.json'),
     current_price=price_list['ADABTC']*btc_price,
-    pct_gap=0.09,
-    minimum_gain=0.09,
+    pct_gap=0.05,
+    minimum_gain=0.01,
     reinvest_gap=0.5
 )
 
 # TRON
+print('TRX')
 dynamic_stoploss_binance_bot(
     trading_client_binance,
     coin='TRX',
     bot_status_json_path=os.path.join(cfd, 'trade_bot_status_binance.json'),
     current_price=price_list['TRXBTC']*btc_price,
-    pct_gap=0.09,
-    minimum_gain=0.09,
+    pct_gap=0.03,
+    minimum_gain=0.01,
     reinvest_gap=0.5
 )
 
-# EOS
+# IOTA
+print('IOTA')
 dynamic_stoploss_binance_bot(
     trading_client_binance,
-    coin='EOS',
+    coin='IOTA',
     bot_status_json_path=os.path.join(cfd, 'trade_bot_status_binance.json'),
-    current_price=price_list['EOSBTC']*btc_price,
-    pct_gap=0.09,
-    minimum_gain=0.09,
+    current_price=price_list['IOTABTC']*btc_price,
+    pct_gap=0.04,
+    minimum_gain=0.02,
+    reinvest_gap=0.5
+)
+
+# NEO
+print('NEO')
+dynamic_stoploss_binance_bot(
+    trading_client_binance,
+    coin='NEO',
+    bot_status_json_path=os.path.join(cfd, 'trade_bot_status_binance.json'),
+    current_price=price_list['NEOBTC']*btc_price,
+    pct_gap=0.04,
+    minimum_gain=0.02,
     reinvest_gap=0.5
 )
 
 # XMR
+print('XMR')
 dynamic_stoploss_binance_bot(
     trading_client_binance,
     coin='XMR',
     bot_status_json_path=os.path.join(cfd, 'trade_bot_status_binance.json'),
     current_price=price_list['XMRBTC']*btc_price,
-    pct_gap=0.09,
-    minimum_gain=0.09,
+    pct_gap=0.05,
+    minimum_gain=0.02,
     reinvest_gap=0.5
 )
 
 # DASH
+print('DASH')
 dynamic_stoploss_binance_bot(
     trading_client_binance,
     coin='DASH',
     bot_status_json_path=os.path.join(cfd, 'trade_bot_status_binance.json'),
     current_price=price_list['DASHBTC']*btc_price,
-    pct_gap=0.09,
-    minimum_gain=0.09,
+    pct_gap=0.05,
+    minimum_gain=0.02,
     reinvest_gap=0.5
 )

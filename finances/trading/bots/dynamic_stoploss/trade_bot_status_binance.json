@@ -23,6 +23,12 @@
         "reference_price": 0.7484187931999999,
         "top_price": 0.815776484588
     },
+    "NEO": {
+        "bot_price": 17.4973646211,
+        "cash": 0,
+        "reference_price": 19.22787321,
+        "top_price": 20.9583817989
+    },
     "TRX": {
         "bot_price": 0.02337665057,
         "cash": 0,
