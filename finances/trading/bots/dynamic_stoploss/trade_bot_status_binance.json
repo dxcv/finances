@@ -1,15 +1,15 @@
 {
     "ADA": {
-        "bot_price": 0.096004381382,
+        "bot_price": 0.10086263999999999,
         "cash": 0,
-        "reference_price": 0.1054993202,
-        "top_price": 0.114994259018
+        "reference_price": 0.1061712,
+        "top_price": 0.107232912
     },
     "DASH": {
-        "bot_price": 169.6120101494,
+        "bot_price": 200.788522316,
         "cash": 0,
-        "reference_price": 186.38682433999998,
-        "top_price": 203.1616385306
+        "reference_price": 211.35633928000001,
+        "top_price": 218.63219235
     },
     "EOS": {
         "bot_price": 5.6616326312,
@@ -24,27 +24,27 @@
         "top_price": 0.815776484588
     },
     "NEO": {
-        "bot_price": 17.4973646211,
+        "bot_price": 20.411194003200002,
         "cash": 0,
-        "reference_price": 19.22787321,
-        "top_price": 20.9583817989
+        "reference_price": 21.261660420000002,
+        "top_price": 24.972351
     },
     "TRX": {
-        "bot_price": 0.02337665057,
+        "bot_price": 0.024745262599999998,
         "cash": 0,
-        "reference_price": 0.025688627,
-        "top_price": 0.02800060343
+        "reference_price": 0.025510579999999998,
+        "top_price": 0.025765685799999997
     },
     "XLM": {
-        "bot_price": 0.206803300522,
-        "cash": 0,
-        "reference_price": 0.22725637419999997,
-        "top_price": 0.24770944787799998
+        "bot_price": 0.22933863959999998,
+        "cash": 109.35123757049999,
+        "reference_price": 0.23401902,
+        "top_price": 0.2433797808
     },
     "XMR": {
         "bot_price": 93.4041292912,
         "cash": 0,
         "reference_price": 102.64190031999999,
-        "top_price": 111.8796713488
+        "top_price": 138.20462772
     }
 }

@@ -1,6 +1,12 @@
+import sys
+import os
+
+cfp, cfn = os.path.split(os.path.abspath(__file__))
+
+sys.path.append(os.path.join(cfp, '..', '..', '..', '..'))   # <--------- this is to run in pythonanywhere
+
 import json
 import time
-
 from finances.trading.strategies.dynamic_stoploss.dynamic_stoploss_strategy import dynamic_stoploss_strategy
 from binance.exceptions import BinanceAPIException
 
@@ -31,14 +37,14 @@ def buy_all(trading_client, coin, cash_quantity):
                 quantity=round(btc_to_buy, 5)
             )
             bought_btc=True
-            print('Bought {0} BTC'.format(btc_to_buy))
+            # print('Bought {0} BTC'.format(btc_to_buy))
         except BinanceAPIException as e:
             btc_to_buy*=0.9975
 
     # then buy the corresponding amount of the required coin
     time.sleep(2)  # wait a bit for the previous transaction take place
     rounder=5
-    
+
     while not bought_coin and amount_to_buy>0.0:
         try:
             trading_client.order_market_buy(
@@ -46,7 +52,7 @@ def buy_all(trading_client, coin, cash_quantity):
                 quantity=round(amount_to_buy, rounder)
             )
             bought_coin=True
-            print('Bought {0} {1}'.format(amount_to_buy, coin))
+            print('Bought {0} {1} at {2} USD'.format(amount_to_buy, coin, current_price_in_usd))
         except BinanceAPIException as e:
             if 'LOT_SIZE' in str(e):
                 rounder -=1
@@ -55,6 +61,17 @@ def buy_all(trading_client, coin, cash_quantity):
 
 
 def sell_all(trading_client, coin):
+    # get all the prices
+    price_list={}
+    for pair in trading_client.get_all_tickers():
+        price_list[pair['symbol']] = float(pair['price'])
+
+    # extract the relevant prices
+    current_btc_price = price_list['BTCUSDT']
+    current_price_in_btc= price_list[coin+'BTC']
+    current_price_in_usd = (current_price_in_btc*current_btc_price)
+
+    # calculate the sell
     coin_available = float(trading_client.get_asset_balance(asset=coin)['free'])
     amount_to_sell = coin_available
 
@@ -70,7 +87,7 @@ def sell_all(trading_client, coin):
                 quantity=round(amount_to_sell, rounder)
             )
             sold_coin=True
-            print('Sold {0} {1}'.format(amount_to_sell, coin))
+            print('Sold {0} {1} at {2} USD'.format(amount_to_sell, coin, current_price_in_usd))
         except BinanceAPIException as e:
             if 'LOT_SIZE' in str(e):
                 rounder -=1
@@ -79,7 +96,7 @@ def sell_all(trading_client, coin):
 
     # then sell all btc to usd
     time.sleep(2)  # wait a bit for the previous transaction take place
-    
+
     btc_available = float(trading_client.get_asset_balance(asset='btc')['free'])
     btc_to_sell = btc_available
     while not sold_btc and btc_to_sell>0:
@@ -89,7 +106,7 @@ def sell_all(trading_client, coin):
                 quantity=round(btc_to_sell, 5)
             )
             sold_btc=True
-            print('Sold {0} BTC'.format(btc_to_sell))
+            # print('Sold {0} BTC'.format(btc_to_sell))
         except BinanceAPIException as e:
             btc_to_sell=btc_to_sell*0.9975
 
