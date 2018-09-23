@@ -1,15 +1,15 @@
 {
     "ADA": {
-        "bot_price": 0.096004381382,
+        "bot_price": 0.08043268802999999,
         "cash": 0,
-        "reference_price": 0.1054993202,
-        "top_price": 0.114994259018
+        "reference_price": 0.08466598739999999,
+        "top_price": 0.09090911
     },
     "DASH": {
-        "bot_price": 169.6120101494,
+        "bot_price": 198.36655785,
         "cash": 0,
-        "reference_price": 186.38682433999998,
-        "top_price": 203.1616385306
+        "reference_price": 208.806903,
+        "top_price": 212.98304106
     },
     "EOS": {
         "bot_price": 5.6616326312,
@@ -18,33 +18,33 @@
         "top_price": 6.7815160088
     },
     "IOTA": {
-        "bot_price": 0.681061101812,
+        "bot_price": 0.5630805976319999,
         "cash": 0,
-        "reference_price": 0.7484187931999999,
-        "top_price": 0.815776484588
+        "reference_price": 0.5865422892,
+        "top_price": 0.62376184
     },
     "NEO": {
-        "bot_price": 17.4973646211,
+        "bot_price": 18.90370368,
         "cash": 0,
-        "reference_price": 19.22787321,
-        "top_price": 20.9583817989
+        "reference_price": 19.691358,
+        "top_price": 20.08518516
     },
     "TRX": {
-        "bot_price": 0.02337665057,
+        "bot_price": 0.018627540112,
         "cash": 0,
-        "reference_price": 0.025688627,
-        "top_price": 0.02800060343
+        "reference_price": 0.0192036496,
+        "top_price": 0.0258583822
     },
     "XLM": {
-        "bot_price": 0.206803300522,
+        "bot_price": 0.201777849504,
         "cash": 0,
-        "reference_price": 0.22725637419999997,
-        "top_price": 0.24770944787799998
+        "reference_price": 0.2101852599,
+        "top_price": 0.27239038000000004
     },
     "XMR": {
-        "bot_price": 93.4041292912,
+        "bot_price": 105.60819407599999,
         "cash": 0,
-        "reference_price": 102.64190031999999,
-        "top_price": 111.8796713488
+        "reference_price": 111.16652008,
+        "top_price": 127.084062
     }
 }
