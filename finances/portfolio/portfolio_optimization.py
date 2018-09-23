@@ -112,7 +112,6 @@ if __name__=='__main__':
     returns_data = mkt.crypto_returns_data(
         symbols= ['BTC', 'ETH', 'LTC', 'XRP', 'DASH', 'XMR', 'IOTA', 'ADA', 'XLM', 'TRX', 'BCH', 'FUN', 'EMC2', 'UBQ', 'BIS', 'ADST', 'NEO', 'NEM']
         ).dropna()
-    print(returns_data.tail())
 
     import seaborn as sns
     sns.set()

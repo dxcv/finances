@@ -1,0 +1,11 @@
+Install packages:
+
+1) Start by selecting the environment to install:
+    workon $ENVIRONMENT_NAME$
+    example:
+        workon finances
+
+2) Install the package from pip:
+    pip install $PACKAGE_NAME$
+    Example:
+        pip install binance
