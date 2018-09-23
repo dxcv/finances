@@ -1,15 +1,15 @@
 {
     "ADA": {
-        "bot_price": 0.10086263999999999,
+        "bot_price": 0.08043268802999999,
         "cash": 0,
-        "reference_price": 0.1061712,
-        "top_price": 0.107232912
+        "reference_price": 0.08466598739999999,
+        "top_price": 0.09090911
     },
     "DASH": {
-        "bot_price": 200.788522316,
+        "bot_price": 198.36655785,
         "cash": 0,
-        "reference_price": 211.35633928000001,
-        "top_price": 218.63219235
+        "reference_price": 208.806903,
+        "top_price": 212.98304106
     },
     "EOS": {
         "bot_price": 5.6616326312,
@@ -18,33 +18,33 @@
         "top_price": 6.7815160088
     },
     "IOTA": {
-        "bot_price": 0.681061101812,
+        "bot_price": 0.5630805976319999,
         "cash": 0,
-        "reference_price": 0.7484187931999999,
-        "top_price": 0.815776484588
+        "reference_price": 0.5865422892,
+        "top_price": 0.62376184
     },
     "NEO": {
-        "bot_price": 20.411194003200002,
+        "bot_price": 18.90370368,
         "cash": 0,
-        "reference_price": 21.261660420000002,
-        "top_price": 24.972351
+        "reference_price": 19.691358,
+        "top_price": 20.08518516
     },
     "TRX": {
-        "bot_price": 0.024745262599999998,
+        "bot_price": 0.018627540112,
         "cash": 0,
-        "reference_price": 0.025510579999999998,
-        "top_price": 0.025765685799999997
+        "reference_price": 0.0192036496,
+        "top_price": 0.0258583822
     },
     "XLM": {
-        "bot_price": 0.22933863959999998,
-        "cash": 109.35123757049999,
-        "reference_price": 0.23401902,
-        "top_price": 0.2433797808
+        "bot_price": 0.201777849504,
+        "cash": 0,
+        "reference_price": 0.2101852599,
+        "top_price": 0.27239038000000004
     },
     "XMR": {
-        "bot_price": 93.4041292912,
+        "bot_price": 105.60819407599999,
         "cash": 0,
-        "reference_price": 102.64190031999999,
-        "top_price": 138.20462772
+        "reference_price": 111.16652008,
+        "top_price": 127.084062
     }
 }
