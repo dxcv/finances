@@ -6,10 +6,10 @@
         "top_price": 432.31
     },
     "btc": {
-        "bot_price": 5418.24,
-        "cash": 0.0,
-        "reference_price": 5644,
-        "top_price": 5762.0
+        "bot_price": 5372.73,
+        "cash": 454.58,
+        "reference_price": 5427,
+        "top_price": 5698.35
     },
     "eth": {
         "bot_price": 172.58239999999998,
@@ -24,9 +24,9 @@
         "top_price": 52.8
     },
     "xrp": {
-        "bot_price": 0.45504999999999995,
+        "bot_price": 0.43092949999999997,
         "cash": 0,
-        "reference_price": 0.479,
-        "top_price": 0.49859
+        "reference_price": 0.45361,
+        "top_price": 0.4581461
     }
 }
