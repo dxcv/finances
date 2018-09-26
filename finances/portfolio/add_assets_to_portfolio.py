@@ -42,7 +42,7 @@ if __name__=='__main__':
         # assets_prices = assets_effective_price
         )
 
-    myportfolio.insert_assets_at_date(assets=new_portfolio_assets, date=datetime.datetime(2018,8,24))
+    myportfolio.insert_assets_at_date(assets=new_portfolio_assets, date=datetime.datetime(2018,9,23))
     myportfolio.update_data()
     myportfolio.save_data()
     
