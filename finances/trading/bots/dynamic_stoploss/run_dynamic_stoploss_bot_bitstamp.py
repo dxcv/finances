@@ -8,8 +8,8 @@ cfd, cfn = os.path.split(os.path.abspath(__file__))
 
 trading_client = bts.Trading(
    username='769101',
-   key='oHBLylRtmUfRY2A9JLeKOeIGAaKHmnvj',
-   secret='u4eBOyegwk5VJLHqwlEaOjULUebOT9Yk'
+   key='4nQhUh2D19mPIH3JIVKBZpt0xeDiCEbJ',
+   secret='mRCjoLbJtKUzn3sZ7q1bB38NsbsIgPke'
    )
 
 failed_times = 0
