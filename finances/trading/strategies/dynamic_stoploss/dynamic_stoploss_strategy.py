@@ -2,11 +2,10 @@ import json
 import pandas as pd
 
 def decision_short(
-    minimum_gain,
     reference_price,
     current_price,
     top_price,
-    bot_price,
+    bot_price
     ):
 
     decision = 'hold'
@@ -16,19 +15,17 @@ def decision_short(
 
     elif current_price < bot_price:
         bot_price = current_price
+        stoploss_price = (reference_price-abs((reference_price-bot_price))*0.5)
+        decision='update_stoploss_buy'
 
-    elif current_price > (reference_price-abs((reference_price-bot_price))*0.5) and current_price < reference_price*(1 - minimum_gain):
-        decision = 'buy'
-
-    return decision, top_price, bot_price
+    return decision, top_price, bot_price, stoploss_price
 
 
 def decision_long(
-    minimum_gain,
     reference_price,
     current_price,
     top_price,
-    bot_price,
+    bot_price
     ):
 
     decision='hold'
@@ -37,23 +34,11 @@ def decision_long(
         decision='sell'
 
     elif current_price>top_price:
+        stoploss_price = reference_price+abs((reference_price-top_price))*0.5
         top_price=current_price
+        decision='update_stoploss_sell'
 
-    elif current_price<(reference_price+abs((reference_price-top_price))*0.5) and current_price>reference_price*(1+minimum_gain):
-        decision='sell'
-
-    return decision, top_price, bot_price
-
-
-###
-    with open(bot_status_json_path) as json_file:
-        current_bot_status = json.load(json_file)
-
-    reference_price = current_bot_status['reference_price']
-    top_price = current_bot_status['top_price']
-    bot_price = current_bot_status['bot_price']
-
-    cash = float(trading_client.account_balance(base=coin, quote="eur")['eur_available'])
+    return decision, top_price, bot_price, stoploss_price
 
 
 def dynamic_stoploss_strategy(
@@ -73,16 +58,21 @@ def dynamic_stoploss_strategy(
     reference_price= status_dict['reference_price']
     top_price=status_dict['top_price']
     bot_price=status_dict['bot_price']
+    stoploss_price_old=status_dict['stoploss_price']
 
-    position, top_price, bot_price = decision_strategy(
+    position, top_price, bot_price, stoploss_price = decision_strategy(
         current_price=current_price,
-        minimum_gain=minimum_gain,
         reference_price=reference_price,
         top_price=top_price,
         bot_price=bot_price,
         )
 
-    if position == 'buy':
+    if position=='update_stoploss_sell':
+        print('Create stoploss sell order at'.format(stoploss_price))
+    elif position=='update_stoploss_buy':
+        print('Create stoploss buy order at'.format(stoploss_price))
+
+    elif position == 'buy':
         reference_price = current_price
         bot_price = reference_price*(1-pct_gap)
         top_price = reference_price*(1+minimum_gain)
