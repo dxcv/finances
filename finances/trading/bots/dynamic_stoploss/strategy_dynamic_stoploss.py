@@ -14,12 +14,14 @@ def buy_all(trading_client, cash_quantity, coin='btc'):
     amount_to_buy = eur_available/current_price
 
     bought=False
-    while not bought and amount_to_buy>0:
+    counter=0
+    while not bought and amount_to_buy>0 and counter < 20:
         try:
             trading_client.buy_market_order(amount=round(amount_to_buy,6), base=coin, quote="eur")
             bought=True
             print('Bought {0} {1} at {2} eur'.format(amount_to_buy, coin, current_price))
         except:
+            counter+=1
             amount_to_buy=0.9975*amount_to_buy
 
 def sell_all(trading_client, coin='btc'):
@@ -31,13 +33,15 @@ def sell_all(trading_client, coin='btc'):
     amount_to_sell = coin_available
 
     sold=False
-    while not sold and amount_to_sell>0:
+    counter = 0
+    while not sold and amount_to_sell>0 and counter < 20:
         try:
             trading_client.sell_market_order(amount=round(amount_to_sell,6), base=coin, quote="eur")
             sold=True
             print('Sold {0} {1} at {2} eur'.format(amount_to_sell, coin, current_price))
         except:
             amount_to_sell=amount_to_sell*0.9975
+            counter+=1
 
     return amount_to_sell
 

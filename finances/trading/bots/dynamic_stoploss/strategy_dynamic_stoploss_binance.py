@@ -28,9 +28,10 @@ def buy_all(trading_client, coin, cash_quantity):
 
     bought_btc=False
     bought_coin=False
+    counter=0
 
     # first buy the corresponding amount of btc
-    while not bought_btc and btc_to_buy>0:
+    while not bought_btc and btc_to_buy>0 and counter < 20:
         try:
             trading_client.order_market_buy(
                 symbol='BTCUSDT',
@@ -40,12 +41,14 @@ def buy_all(trading_client, coin, cash_quantity):
             # print('Bought {0} BTC'.format(btc_to_buy))
         except BinanceAPIException as e:
             btc_to_buy*=0.9975
+            counter+=1
 
     # then buy the corresponding amount of the required coin
     time.sleep(2)  # wait a bit for the previous transaction take place
     rounder=5
+    counter=0
 
-    while not bought_coin and amount_to_buy>0.0:
+    while not bought_coin and amount_to_buy>0.0 and counter<20:
         try:
             trading_client.order_market_buy(
                 symbol=coin+'BTC',
@@ -58,6 +61,7 @@ def buy_all(trading_client, coin, cash_quantity):
                 rounder -=1
             if 'insufficient balance' in str(e):
                 amount_to_buy*=0.9975
+                counter+=1
 
 
 def sell_all(trading_client, coin):
@@ -78,9 +82,10 @@ def sell_all(trading_client, coin):
     sold_coin=False
     rounder = 5
     sold_btc=False
+    counter=0
 
     # first sell all to btc
-    while not sold_coin and amount_to_sell>0:
+    while not sold_coin and amount_to_sell>0 and counter <20:
         try:
             trading_client.order_market_sell(
                 symbol=coin+'BTC',
@@ -92,6 +97,7 @@ def sell_all(trading_client, coin):
             if 'LOT_SIZE' in str(e):
                 rounder -=1
             if 'insufficient balance' in str(e):
+                counter+=1
                 amount_to_sell*=0.9975
 
     # then sell all btc to usd
