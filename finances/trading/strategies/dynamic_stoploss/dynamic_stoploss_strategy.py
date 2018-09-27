@@ -15,13 +15,16 @@ def decision_short(
 
     elif current_price < bot_price:
         bot_price = current_price
-        stoploss_price = (reference_price-abs((reference_price-bot_price))*0.5)
+
+    stoploss_price = reference_price-abs((reference_price-bot_price))*0.5
+    if stoploss_price < reference_price*(1-minimum_gain):
         decision='update_stoploss_buy'
 
-    return decision, top_price, bot_price, stoploss_price
+    return decision, top_price, bot_price, stoploss_price*(stoploss_price < reference_price*(1-minimum_gain))
 
 
 def decision_long(
+    minimum_gain,
     reference_price,
     current_price,
     top_price,
@@ -34,12 +37,16 @@ def decision_long(
         decision='sell'
 
     elif current_price>top_price:
-        stoploss_price = reference_price+abs((reference_price-top_price))*0.5
         top_price=current_price
+
+    stoploss_price = reference_price+abs((reference_price-top_price))*0.5
+    if stoploss_price > reference_price*(1+minimum_gain):
         decision='update_stoploss_sell'
 
-    return decision, top_price, bot_price, stoploss_price
+    return decision, top_price, bot_price, stoploss_price*(stoploss_price > reference_price*(1+minimum_gain))
 
+
+# NEED TO DEFINE THESE DECISIONS ABOVE
 
 def dynamic_stoploss_strategy(
     status_dict,
@@ -50,15 +57,24 @@ def dynamic_stoploss_strategy(
     reinvest_gap=0.35
     ):
 
-    if cash == 0:
-        decision_strategy = decision_long
-    else:
-        decision_strategy = decision_short
-
     reference_price= status_dict['reference_price']
     top_price=status_dict['top_price']
     bot_price=status_dict['bot_price']
-    stoploss_price_old=status_dict['stoploss_price']
+    stoploss_price=status_dict['stoploss_price']
+
+    # first we need to check if there was a stoploss transaction:
+    if cash == 0:
+        decision_strategy = decision_long
+        if (stoploss_price - reference_price)>0:
+            reference_price = stoploss_price
+            bot_price = reference_price*(1-pct_gap)
+            top_price = reference_price*(1+minimum_gain)
+    else:
+        decision_strategy = decision_short
+        if (stoploss_price - reference_price)<0
+            reference_price = stoploss_price
+            bot_price = reference_price*(1-minimum_gain)
+            top_price = reference_price*(1+pct_gap)
 
     position, top_price, bot_price, stoploss_price = decision_strategy(
         current_price=current_price,
