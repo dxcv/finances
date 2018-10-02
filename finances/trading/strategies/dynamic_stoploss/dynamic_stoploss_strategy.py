@@ -1,6 +1,12 @@
 import json
 import pandas as pd
 
+def update_price_levels(price, bot_lvl, top_lvl):
+    bot_price = reference_price*(1-bot_lvl)
+    top_price = reference_price*(1+top_lvl)
+    return price, bot_price, top_price
+
+
 def decision_short(
     reference_price,
     current_price,
@@ -10,17 +16,21 @@ def decision_short(
 
     decision = 'hold'
 
+    buy_price = reference_price+abs((reference_price-top_price))*0.5
+
     if current_price > top_price:
         decision = 'buy'
 
     elif current_price < bot_price:
         bot_price = current_price
-
-    stoploss_price = reference_price-abs((reference_price-bot_price))*0.5
-    if stoploss_price < reference_price*(1-minimum_gain):
+        buy_price = reference_price-abs((reference_price-bot_price))*0.5
         decision='update_stoploss_buy'
 
-    return decision, top_price, bot_price, stoploss_price*(stoploss_price < reference_price*(1-minimum_gain))
+    if stoploss_price > reference_price*(1-minimum_gain):
+        decision='hold'
+        buy_price=0
+
+    return decision, top_price, bot_price, buy_price
 
 
 def decision_long(
@@ -33,17 +43,21 @@ def decision_long(
 
     decision='hold'
 
+    sell_price = reference_price+abs((reference_price-top_price))*0.5
+
     if current_price<bot_price:
         decision='sell'
 
     elif current_price>top_price:
         top_price=current_price
-
-    stoploss_price = reference_price+abs((reference_price-top_price))*0.5
-    if stoploss_price > reference_price*(1+minimum_gain):
+        sell_price = reference_price+abs((reference_price-top_price))*0.5
         decision='update_stoploss_sell'
 
-    return decision, top_price, bot_price, stoploss_price*(stoploss_price > reference_price*(1+minimum_gain))
+    if sell_price < reference_price*(1+minimum_gain):
+        decision='hold'
+        sell_price=0
+
+    return decision, top_price, bot_price, sell_price
 
 
 # NEED TO DEFINE THESE DECISIONS ABOVE
@@ -66,15 +80,12 @@ def dynamic_stoploss_strategy(
     if cash == 0:
         decision_strategy = decision_long
         if (stoploss_price - reference_price)>0:
-            reference_price = stoploss_price
-            bot_price = reference_price*(1-pct_gap)
-            top_price = reference_price*(1+minimum_gain)
+            reference_price, bot_price, top_price = update_price_levels(stoploss_price, pct_gap, minimum_gain)
+
     else:
         decision_strategy = decision_short
         if (stoploss_price - reference_price)<0
-            reference_price = stoploss_price
-            bot_price = reference_price*(1-minimum_gain)
-            top_price = reference_price*(1+pct_gap)
+            reference_price, bot_price, top_price = update_price_levels(stoploss_price, minimum_gain, pct_gap)
 
     position, top_price, bot_price, stoploss_price = decision_strategy(
         current_price=current_price,
@@ -85,29 +96,22 @@ def dynamic_stoploss_strategy(
 
     if position=='update_stoploss_sell':
         print('Create stoploss sell order at'.format(stoploss_price))
+        
     elif position=='update_stoploss_buy':
         print('Create stoploss buy order at'.format(stoploss_price))
 
     elif position == 'buy':
-        reference_price = current_price
-        bot_price = reference_price*(1-pct_gap)
-        top_price = reference_price*(1+minimum_gain)
+        reference_price, bot_price, top_price = update_price_levels(current_price, pct_gap, minimum_gain)
 
     elif position == 'sell':
-        reference_price = current_price
-        bot_price = reference_price*(1-minimum_gain)
-        top_price = reference_price*(1+pct_gap)
+        reference_price, bot_price, top_price = update_price_levels(current_price, minimum_gain, pct_gap)
 
     # reinvest?
     elif current_price > reference_price*(1+reinvest_gap):
-        reference_price = current_price
-        bot_price = reference_price*(1-pct_gap)
-        top_price = reference_price*(1+minimum_gain)
+        reference_price, bot_price, top_price = update_price_levels(current_price, pct_gap, minimum_gain)
 
     elif current_price < reference_price*(1-reinvest_gap):
-        reference_price = current_price
-        bot_price = reference_price*(1+pct_gap)
-        top_price = reference_price*(1-minimum_gain)
+        reference_price, bot_price, top_price = update_price_levels(current_price, minimum_gain, pct_gap)
 
     status_dict['reference_price'] = reference_price
     status_dict['top_price'] = top_price
