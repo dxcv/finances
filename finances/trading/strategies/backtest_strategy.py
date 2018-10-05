@@ -10,12 +10,12 @@ from finances.trading.strategies.dynamic_stoploss.dynamic_stoploss_strategy impo
 cfd, cfn = os.path.split(os.path.abspath(__file__))
 
 
-def backtest_strategy(price_data, strategy_run, initial_investment=100):
+def backtest_strategy(price_data, strategy_run, initial_investment=100, debug=False):
     backtest_df = pd.DataFrame()
     backtest_df['price'] = price_data
     backtest_df['hold'] = price_data*initial_investment/price_data.iloc[0]
 
-    strategy_result=strategy_run(price_series=price_data, invested_value=initial_investment)
+    strategy_result=strategy_run(price_series=price_data, invested_value=initial_investment, debug=debug)
     backtest_df['strategy'] = strategy_result
 
     return backtest_df
@@ -114,7 +114,7 @@ if __name__=='__main__':
 
     price_data = mkt.crypto_data['XRP'].loc[datetime.datetime(2018,4,10):].resample('8H').last()
 
-    backtest_df=backtest_strategy(price_data,strategy_run=run_dynamic_stoploss_strategy)
+    backtest_df=backtest_strategy(price_data,strategy_run=run_dynamic_stoploss_strategy, debug=True)
 
     fig, ax = plt.subplots(2,1, sharex=True)
     backtest_df[['strategy', 'hold']].plot(ax=ax[0])
