@@ -79,12 +79,12 @@ def dynamic_stoploss_strategy(
     # first we need to check if there was a stoploss transaction:
     if cash == 0:
         decision_strategy = decision_long
-        if (stoploss_price - reference_price)>0:
+        if (stoploss_price - reference_price)>0 and stoploss_price>0:
             reference_price, bot_price, top_price = update_price_levels(stoploss_price, pct_gap, minimum_gain)
 
     else:
         decision_strategy = decision_short
-        if (stoploss_price - reference_price)<0
+        if (stoploss_price - reference_price)<0  and stoploss_price>0:
             reference_price, bot_price, top_price = update_price_levels(stoploss_price, minimum_gain, pct_gap)
 
     position, top_price, bot_price, stoploss_price = decision_strategy(
@@ -94,13 +94,7 @@ def dynamic_stoploss_strategy(
         bot_price=bot_price,
         )
 
-    if position=='update_stoploss_sell':
-        print('Create stoploss sell order at'.format(stoploss_price))
-        
-    elif position=='update_stoploss_buy':
-        print('Create stoploss buy order at'.format(stoploss_price))
-
-    elif position == 'buy':
+    if position == 'buy':
         reference_price, bot_price, top_price = update_price_levels(current_price, pct_gap, minimum_gain)
 
     elif position == 'sell':
@@ -116,6 +110,7 @@ def dynamic_stoploss_strategy(
     status_dict['reference_price'] = reference_price
     status_dict['top_price'] = top_price
     status_dict['bot_price'] = bot_price
+    status_dict['stoploss_price'] = stoploss_price
 
     return status_dict, position
 

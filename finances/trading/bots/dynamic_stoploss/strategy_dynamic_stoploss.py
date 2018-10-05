@@ -24,6 +24,7 @@ def buy_all(trading_client, cash_quantity, coin='btc'):
             counter+=1
             amount_to_buy=0.9975*amount_to_buy
 
+
 def sell_all(trading_client, coin='btc'):
     current_price = float(trading_client.ticker(base=coin, quote='eur')['last'])
     coin_available = float(trading_client.account_balance(base=coin, quote="eur")['{}_available'.format(coin)])
@@ -45,6 +46,21 @@ def sell_all(trading_client, coin='btc'):
 
     return amount_to_sell
 
+def check_cash(trading_client, coin, stored_cash):
+    current_price = float(trading_client.ticker(base=coin, quote='eur')['last'])
+    coin_available = float(trading_client.account_balance(base=coin, quote="eur")['{}_available'.format(coin)])
+    value = coin_available*current_price
+    if value < 5:  # se o valor for inferior a 5€
+        value = 0
+
+    if stored_cash==0 and value >0:
+        cash = value
+    elif stored_cash>0 and value == 0:
+        cash = 0
+    else:
+        cash = stored_cash
+    return cash
+
 
 def dynamic_stoploss_bitstamp_bot(
     trading_client,
@@ -61,9 +77,11 @@ def dynamic_stoploss_bitstamp_bot(
 
     current_bot_status = bitstamp_bot_status[coin]
 
+    cash = check_cash(trading_client, coin, stored_cash=current_bot_status['cash'])
+
     current_bot_status, position = dynamic_stoploss_strategy(
         status_dict=current_bot_status,
-        cash=current_bot_status['cash'],
+        cash=cash,
         current_price=current_price,
         pct_gap=pct_gap,
         minimum_gain=minimum_gain,
@@ -74,11 +92,20 @@ def dynamic_stoploss_bitstamp_bot(
 
     # perform the actual sell/buy options
     if position == 'buy':
-        buy_all(trading_client=trading_client, coin=coin, cash_quantity=current_bot_status['cash'])
+        print('buy')
+        # buy_all(trading_client=trading_client, coin=coin, cash_quantity=current_bot_status['cash'])
         current_bot_status['cash'] = 0
 
     elif position == 'sell':
-        current_bot_status['cash'] = sell_all(trading_client=trading_client, coin=coin)*current_price
+        print('sell')
+        # current_bot_status['cash'] = sell_all(trading_client=trading_client, coin=coin)*current_price
+
+
+    if position=='update_stoploss_sell':
+        print('Create stoploss sell order of {} at {}'.format(coin, current_bot_status['stoploss_price']))
+        
+    elif position=='update_stoploss_buy':
+        print('Create stoploss buy order of {} at {}'.format(coin, current_bot_status['stoploss_price']))
 
     # save the new bot status dict
     bitstamp_bot_status[coin] = current_bot_status
