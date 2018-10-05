@@ -92,13 +92,11 @@ def dynamic_stoploss_bitstamp_bot(
 
     # perform the actual sell/buy options
     if position == 'buy':
-        print('buy')
-        # buy_all(trading_client=trading_client, coin=coin, cash_quantity=current_bot_status['cash'])
+        buy_all(trading_client=trading_client, coin=coin, cash_quantity=current_bot_status['cash'])
         current_bot_status['cash'] = 0
 
     elif position == 'sell':
-        print('sell')
-        # current_bot_status['cash'] = sell_all(trading_client=trading_client, coin=coin)*current_price
+        current_bot_status['cash'] = sell_all(trading_client=trading_client, coin=coin)*current_price
 
 
     if position=='update_stoploss_sell':

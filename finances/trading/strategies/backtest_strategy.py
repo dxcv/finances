@@ -112,9 +112,9 @@ if __name__=='__main__':
 
     mkt=mkt_data.MarketData()
 
-    price_data = mkt.crypto_data['XRP'].loc[datetime.datetime(2018,4,10):].resample('8H').last()
+    price_data = mkt.crypto_data['BTC'].loc[datetime.datetime(2018,7,10):].resample('8H').last()
 
-    backtest_df=backtest_strategy(price_data,strategy_run=run_dynamic_stoploss_strategy, debug=True)
+    backtest_df=backtest_strategy(price_data,strategy_run=run_dynamic_stoploss_strategy)
 
     fig, ax = plt.subplots(2,1, sharex=True)
     backtest_df[['strategy', 'hold']].plot(ax=ax[0])

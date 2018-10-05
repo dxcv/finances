@@ -18,14 +18,14 @@ def decision_short(
 
     decision = 'hold'
 
-    buy_price = reference_price+abs((reference_price-top_price))*0.5
-
     if current_price > top_price:
         decision = 'buy'
+        return decision, top_price, bot_price, 0
 
-    elif current_price < bot_price:
+    buy_price = reference_price+abs((reference_price-top_price))*0.5
+    if current_price < bot_price:
         bot_price = current_price
-        buy_price = reference_price-abs((reference_price-bot_price))*0.5
+        buy_price = reference_price+abs((reference_price-bot_price))*0.5
         decision='update_stoploss_buy'
 
     if buy_price > reference_price*(1-minimum_gain):
@@ -45,12 +45,12 @@ def decision_long(
 
     decision='hold'
 
-    sell_price = reference_price+abs((reference_price-top_price))*0.5
-
     if current_price<bot_price:
         decision='sell'
+        return decision, top_price, bot_price, 0
 
-    elif current_price>top_price:
+    sell_price = reference_price+abs((reference_price-top_price))*0.5
+    if current_price>top_price:
         top_price=current_price
         sell_price = reference_price+abs((reference_price-top_price))*0.5
         decision='update_stoploss_sell'
@@ -81,12 +81,12 @@ def dynamic_stoploss_strategy(
     # first we need to check if there was a stoploss transaction:
     if cash == 0:
         decision_strategy = decision_long
-        if (stoploss_price - reference_price)>0 and stoploss_price>0:
+        if stoploss_price < reference_price and stoploss_price>0:
             reference_price, bot_price, top_price = update_price_levels(stoploss_price, pct_gap, minimum_gain)
 
     else:
         decision_strategy = decision_short
-        if (stoploss_price - reference_price)<0  and stoploss_price>0:
+        if stoploss_price > reference_price  and stoploss_price>0:
             reference_price, bot_price, top_price = update_price_levels(stoploss_price, minimum_gain, pct_gap)
 
     position, top_price, bot_price, stoploss_price = decision_strategy(
@@ -133,8 +133,8 @@ def run_dynamic_stoploss_strategy(
 
     status_dict={}
     status_dict['reference_price']=price_series.iloc[0]
-    status_dict['top_price']=price_series.iloc[0]*(1-pct_gap)
-    status_dict['bot_price']=price_series.iloc[0]*(1+minimum_gain)
+    status_dict['bot_price']=price_series.iloc[0]*(1-pct_gap)
+    status_dict['top_price']=price_series.iloc[0]*(1+minimum_gain)
     status_dict['stoploss_price']=0
 
     trading_value = [invested_value]
@@ -146,9 +146,9 @@ def run_dynamic_stoploss_strategy(
             fig, ax = plt.subplots(2,1, sharex=True)
             ax[0].plot(price_series.index[:k], price_series.values[:k], '-o')
             ax[1].plot(price_series.index[:k], trading_value[:k], '-o')
-            print('Position: {}'.format(position))
             print(status_dict)
-            plt.show()
+            print('cash: {}'.format(current_cash))
+
 
         if current_cash >0  and current_price>status_dict['stoploss_price'] and status_dict['stoploss_price']>0:
             price=status_dict['stoploss_price']
@@ -176,6 +176,11 @@ def run_dynamic_stoploss_strategy(
             current_cash = coin_amount*current_price*(1-fee)
             coin_amount = 0
 
+        if debug:
+            print('Current Price: {}'.format(current_price))
+            print('Position: {}'.format(position))
+            print('------')
+            plt.show()
 
         value = coin_amount*current_price+current_cash
         trading_value.append(value)
