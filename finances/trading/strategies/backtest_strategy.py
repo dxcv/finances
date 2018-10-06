@@ -112,7 +112,7 @@ if __name__=='__main__':
 
     mkt=mkt_data.MarketData()
 
-    price_data = mkt.crypto_data['BTC'].loc[datetime.datetime(2018,7,10):].resample('8H').last()
+    price_data = mkt.crypto_data['TRX'].loc[datetime.datetime(2018,2,10):].resample('8H').last()
 
     backtest_df=backtest_strategy(price_data,strategy_run=run_dynamic_stoploss_strategy)
 

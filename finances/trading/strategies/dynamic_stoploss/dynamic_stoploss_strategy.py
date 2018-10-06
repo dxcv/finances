@@ -120,8 +120,8 @@ def dynamic_stoploss_strategy(
 
 def run_dynamic_stoploss_strategy(
     price_series,
-    pct_gap=0.035,
-    minimum_gain=0.0175,
+    pct_gap=0.03,
+    minimum_gain=0.01,
     fee=0.0025,
     invested_value=100,
     debug=False):

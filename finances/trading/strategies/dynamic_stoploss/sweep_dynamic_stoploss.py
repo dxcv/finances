@@ -17,17 +17,17 @@ mkt=mkt_data.MarketData()
 
 results_df = pd.DataFrame()
 
-pct_gap_range = np.arange(0.01,0.11,0.01)
-times = ['4H', '6H', '8H', '12H', '24H']
-min_gain_range = np.arange(0.01,0.11,0.01)
+pct_gap_range = np.arange(0.01,0.12,0.02)
+times = ['1H', '2H', '8H', '12H']
+min_gain_range = np.arange(0.01,0.12,0.02)
 
 results_df_list=[]
 
 for coin in ['BTC', 'ETH', 'LTC', 'XRP', 'BCH', 'XLM', 'ADA', 'TRX', 'NEO', 'IOTA', 'XMR', 'DASH']:
     for period in times:
 
-        backtest_period=datetime.timedelta(days=30)
-        n_dates = 100
+        backtest_period=datetime.timedelta(days=15)
+        n_dates = 200
 
         start = datetime.datetime(2018,1,26)
 
@@ -42,13 +42,13 @@ for coin in ['BTC', 'ETH', 'LTC', 'XRP', 'BCH', 'XLM', 'ADA', 'TRX', 'NEO', 'IOT
             for min_gain in min_gain_range:
                 print(coin, period, pct_gap, min_gain)
 
-                def strategy_to_sweep(price_series, invested_value=100):
+                def strategy_to_sweep(price_series, invested_value=100, debug=False):
                     return run_dynamic_stoploss_strategy(
                         price_series,
                         pct_gap=pct_gap,
                         minimum_gain=min_gain,
                         fee=0.0025,
-                        invested_value=invested_value)
+                        invested_value=invested_value,)
 
                 df = backtest_dates_set(
                     price_data,
@@ -62,7 +62,7 @@ for coin in ['BTC', 'ETH', 'LTC', 'XRP', 'BCH', 'XLM', 'ADA', 'TRX', 'NEO', 'IOT
                 df['period'] = period
                 results_df_list.append(df[['strategy', 'min_gain', 'pct_gap', 'period']])
                 results_df = pd.concat(results_df_list)
-                results_df.to_csv(os.path.join(cfd, 'dynamic_stoploss_strategy_{}_Setembro.csv'.format(coin)))
+                results_df.to_csv(os.path.join(cfd, 'dynamic_stoploss_strategy_{}_Outubro.csv'.format(coin)))
 
         # add hold strategy
         df['pct_gap'] = 0
@@ -73,4 +73,4 @@ for coin in ['BTC', 'ETH', 'LTC', 'XRP', 'BCH', 'XLM', 'ADA', 'TRX', 'NEO', 'IOT
         results_df = pd.concat(results_df_list)
 
         # save the file
-        results_df.to_csv(os.path.join(cfd, 'dynamic_stoploss_strategy_{}_Setembro.csv'.format(coin)))
+        results_df.to_csv(os.path.join(cfd, 'dynamic_stoploss_strategy_{}_Outubro.csv'.format(coin)))
