@@ -23,7 +23,7 @@ while failed_times<3:
             coin='btc',
             bot_status_json_path=os.path.join(cfd, 'trade_bot_status_bitstamp.json'),
             current_price=float(trading_client.ticker(base='btc', quote='eur')['last']),
-            pct_gap=0.04,
+            pct_gap=0.05,
             minimum_gain=0.01,
             reinvest_gap=0.5
             )
@@ -35,8 +35,8 @@ while failed_times<3:
             coin='eth',
             bot_status_json_path=os.path.join(cfd, 'trade_bot_status_bitstamp.json'),
             current_price=float(trading_client.ticker(base='eth', quote='eur')['last']),
-            pct_gap=0.03,
-            minimum_gain=0.03,
+            pct_gap=0.01,
+            minimum_gain=0.01,
             reinvest_gap=0.5
             )
 
@@ -47,8 +47,8 @@ while failed_times<3:
             coin='ltc',
             bot_status_json_path=os.path.join(cfd, 'trade_bot_status_bitstamp.json'),
             current_price=float(trading_client.ticker(base='ltc', quote='eur')['last']),
-            pct_gap=0.05,
-            minimum_gain=0.1,
+            pct_gap=0.01,
+            minimum_gain=0.01,
             reinvest_gap=0.5
             )
 
@@ -59,7 +59,7 @@ while failed_times<3:
             coin='xrp',
             bot_status_json_path=os.path.join(cfd, 'trade_bot_status_bitstamp.json'),
             current_price=float(trading_client.ticker(base='xrp', quote='eur')['last']),
-            pct_gap=0.05,
+            pct_gap=0.01,
             minimum_gain=0.01,
             reinvest_gap=0.5
             )
@@ -71,8 +71,8 @@ while failed_times<3:
             coin='bch',
             bot_status_json_path=os.path.join(cfd, 'trade_bot_status_bitstamp.json'),
             current_price=float(trading_client.ticker(base='bch', quote='eur')['last']),
-            pct_gap=0.04,
-            minimum_gain=0.02,
+            pct_gap=0.01,
+            minimum_gain=0.01,
             reinvest_gap=0.5
             )
 
