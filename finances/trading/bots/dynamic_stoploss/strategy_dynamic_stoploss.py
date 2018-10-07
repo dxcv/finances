@@ -53,12 +53,20 @@ def check_cash(trading_client, coin, stored_cash):
     if value < 5:  # se o valor for inferior a 5€
         value = 0
 
-    if stored_cash==0 and value >0:
-        cash = value
-    elif stored_cash>0 and value == 0:
-        cash = 0
+    if stored_cash==0 and value == 0:
+        # in this case, there was a stoploss sell transaction and we need to check for how much
+        last_transaction=abs(float(trading_client.user_transactions(
+                offset=0,
+                limit=1,
+                descending=True,
+                base=coin,
+                quote='eur')[0]['eur']))
+        return last_transaction
+    elif stored_cash>0 and value >0:
+        # in this case, there was a stoploss buy transaction
+        return 0
     else:
-        cash = stored_cash
+        return stored_cash
     return cash
 
 
@@ -103,7 +111,7 @@ def dynamic_stoploss_bitstamp_bot(
         print('Create stoploss sell order of {} at {}'.format(coin, current_bot_status['stoploss_price']))
         
     elif position=='update_stoploss_buy':
-        print('Create stoploss buy order of {} at {}'.format(coin, current_bot_status['stoploss_price']))
+        print('Create stoploss buy order of {} at {} with {} eur'.format(coin, current_bot_status['stoploss_price'], cash))
 
     # save the new bot status dict
     bitstamp_bot_status[coin] = current_bot_status

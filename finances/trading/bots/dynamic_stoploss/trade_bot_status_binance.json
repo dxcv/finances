@@ -31,7 +31,7 @@
         "bot_price": 17.5941216,
         "cash": 0,
         "reference_price": 18.32721,
-        "stoploss_price": 0,
+        "stoploss_price": 18.5104821,
         "top_price": 18.6937542
     },
     "TRX": {
@@ -52,7 +52,7 @@
         "bot_price": 109.91882194499999,
         "cash": 0,
         "reference_price": 115.7040231,
-        "stoploss_price": 0,
+        "stoploss_price": 116.861063331,
         "top_price": 118.01810356200001
     }
 }
