@@ -1,6 +1,6 @@
 import json
 import pandas as pd
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 
 def update_price_levels(price, bot_lvl, top_lvl):
     bot_price = price*(1-bot_lvl)
