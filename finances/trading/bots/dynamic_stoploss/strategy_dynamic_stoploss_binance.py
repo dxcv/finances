@@ -170,7 +170,7 @@ def dynamic_stoploss_binance_bot(
 
     current_bot_status, position = dynamic_stoploss_strategy(
         status_dict=current_bot_status,
-        cash=current_bot_status['cash'],
+        cash=cash,
         current_price=current_price,
         pct_gap=pct_gap,
         minimum_gain=minimum_gain,
