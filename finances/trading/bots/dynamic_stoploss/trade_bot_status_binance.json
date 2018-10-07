@@ -4,7 +4,7 @@
         "cash": 0,
         "reference_price": 0.0819144458,
         "stoploss_price": 0,
-        "top_price": 0.08275365
+        "top_price": 0.08313643999999999
     },
     "DASH": {
         "bot_price": 176.36226815999999,
@@ -38,8 +38,8 @@
         "bot_price": 0.022117559372,
         "cash": 0,
         "reference_price": 0.0228016076,
-        "stoploss_price": 0.0234813841,
-        "top_price": 0.0241611606
+        "stoploss_price": 0.02419355505,
+        "top_price": 0.0255855025
     },
     "XLM": {
         "bot_price": 0.23642695295999994,
