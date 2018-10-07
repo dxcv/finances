@@ -118,6 +118,38 @@ def sell_all(trading_client, coin):
 
     return amount_to_sell
 
+def check_cash(trading_client, coin, stored_cash):
+    # get all the prices
+    price_list={}
+    for pair in trading_client.get_all_tickers():
+        price_list[pair['symbol']] = float(pair['price'])
+
+    # extract the relevant prices
+    current_btc_price = price_list['BTCUSDT']
+    current_price_in_btc= price_list[coin+'BTC']
+    current_price_in_usd = (current_price_in_btc*current_btc_price)
+
+    #
+    coin_available = float(trading_client.get_asset_balance(asset=coin)['free'])
+    value = coin_available*current_price_in_usd
+    print(value)
+    if value < 5:  # se o valor for inferior a 5€
+        value = 0
+
+    if stored_cash==0 and value == 0:
+        # in this case, there was a stoploss sell transaction and we need to check for how much
+        last_transaction_quantity=float(trading_client_binance.get_my_trades(
+            symbol=coin+'BTC',
+            limit=1)[0]['qty']
+        )
+        return last_transaction*current_price_in_usd
+    elif stored_cash>0 and value >0:
+        # in this case, there was a stoploss buy transaction
+        return 0
+    else:
+        return stored_cash
+    return cash
+
 
 def dynamic_stoploss_binance_bot(
     trading_client,
@@ -132,7 +164,9 @@ def dynamic_stoploss_binance_bot(
     with open(bot_status_json_path) as json_file:
         binance_bot_status = json.load(json_file)
 
-    current_bot_status = binance_bot_status[coin]
+    current_bot_status = bitstamp_bot_status[coin]
+
+    cash = check_cash(trading_client, coin, stored_cash=current_bot_status['cash'])
 
     current_bot_status, position = dynamic_stoploss_strategy(
         status_dict=current_bot_status,
@@ -155,6 +189,14 @@ def dynamic_stoploss_binance_bot(
 
     # save the new bot status dict
     binance_bot_status[coin] = current_bot_status
+
+
+    if position=='update_stoploss_sell':
+        print('Create stoploss sell order of {} at {}'.format(coin, current_bot_status['stoploss_price']))
+        
+    elif position=='update_stoploss_buy':
+        print('Create stoploss buy order of {} at {}'.format(coin, current_bot_status['stoploss_price']))
+
 
     with open(bot_status_json_path, 'w') as f:
         json.dump(binance_bot_status, f, sort_keys=True, indent=4)

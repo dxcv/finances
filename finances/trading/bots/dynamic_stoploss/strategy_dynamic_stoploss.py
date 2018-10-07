@@ -111,7 +111,7 @@ def dynamic_stoploss_bitstamp_bot(
         print('Create stoploss sell order of {} at {}'.format(coin, current_bot_status['stoploss_price']))
         
     elif position=='update_stoploss_buy':
-        print('Create stoploss buy order of {} at {} with {} eur'.format(coin, current_bot_status['stoploss_price'], cash))
+        print('Create stoploss buy order of {} at {}'.format(coin, current_bot_status['stoploss_price']))
 
     # save the new bot status dict
     bitstamp_bot_status[coin] = current_bot_status
