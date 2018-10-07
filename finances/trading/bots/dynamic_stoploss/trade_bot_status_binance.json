@@ -3,55 +3,56 @@
         "bot_price": 0.07781872350999999,
         "cash": 0,
         "reference_price": 0.0819144458,
+        "stoploss_price": 0,
         "top_price": 0.08275365
     },
     "DASH": {
         "bot_price": 176.36226815999999,
         "cash": 21.2359499004136,
         "reference_price": 196.6146017,
-        "top_price": 206.445331785,
-        "stoploss_price": 0
+        "stoploss_price": 0,
+        "top_price": 206.445331785
     },
     "EOS": {
         "bot_price": 5.6616326312,
         "cash": 0,
         "reference_price": 6.221574319999999,
-        "top_price": 6.7815160088,
-        "stoploss_price": 0
+        "stoploss_price": 0,
+        "top_price": 6.7815160088
     },
     "IOTA": {
         "bot_price": 0.5465503435,
         "cash": 35.1450598053664,
         "reference_price": 0.5626180192,
-        "top_price": 0.585122739968,
-        "stoploss_price": 0
+        "stoploss_price": 0,
+        "top_price": 0.585122739968
     },
     "NEO": {
         "bot_price": 17.5941216,
         "cash": 0,
         "reference_price": 18.32721,
-        "top_price": 18.6937542,
-        "stoploss_price": 0
+        "stoploss_price": 0,
+        "top_price": 18.6937542
     },
     "TRX": {
         "bot_price": 0.022117559372,
         "cash": 0,
         "reference_price": 0.0228016076,
-        "top_price": 0.0234659892,
-        "stoploss_price": 0
+        "stoploss_price": 0.0234813841,
+        "top_price": 0.0241611606
     },
     "XLM": {
         "bot_price": 0.23642695295999994,
         "cash": 0,
         "reference_price": 0.24627807599999996,
-        "top_price": 0.25120363751999997,
-        "stoploss_price": 0
+        "stoploss_price": 0,
+        "top_price": 0.25120363751999997
     },
     "XMR": {
         "bot_price": 109.91882194499999,
         "cash": 0,
         "reference_price": 115.7040231,
-        "top_price": 118.01810356200001,
-        "stoploss_price": 0
+        "stoploss_price": 0,
+        "top_price": 118.01810356200001
     }
 }
