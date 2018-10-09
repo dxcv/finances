@@ -132,17 +132,16 @@ def check_cash(trading_client, coin, stored_cash):
     #
     coin_available = float(trading_client.get_asset_balance(asset=coin)['free'])
     value = coin_available*current_price_in_usd
-    print(value)
     if value < 5:  # se o valor for inferior a 5€
         value = 0
 
     if stored_cash==0 and value == 0:
         # in this case, there was a stoploss sell transaction and we need to check for how much
-        last_transaction_quantity=float(trading_client_binance.get_my_trades(
+        last_transaction_quantity=float(trading_client.get_my_trades(
             symbol=coin+'BTC',
             limit=1)[0]['qty']
         )
-        return last_transaction*current_price_in_usd
+        return last_transaction_quantity*current_price_in_usd
     elif stored_cash>0 and value >0:
         # in this case, there was a stoploss buy transaction
         return 0
@@ -164,13 +163,13 @@ def dynamic_stoploss_binance_bot(
     with open(bot_status_json_path) as json_file:
         binance_bot_status = json.load(json_file)
 
-    current_bot_status = bitstamp_bot_status[coin]
+    current_bot_status = binance_bot_status[coin]
 
-    cash = check_cash(trading_client, coin, stored_cash=current_bot_status['cash'])
+    current_bot_status['cash'] = check_cash(trading_client, coin, stored_cash=current_bot_status['cash'])
 
     current_bot_status, position = dynamic_stoploss_strategy(
         status_dict=current_bot_status,
-        cash=cash,
+        cash=current_bot_status['cash'],
         current_price=current_price,
         pct_gap=pct_gap,
         minimum_gain=minimum_gain,
@@ -193,7 +192,7 @@ def dynamic_stoploss_binance_bot(
 
     if position=='update_stoploss_sell':
         print('Create stoploss sell order of {} at {}'.format(coin, current_bot_status['stoploss_price']))
-        
+
     elif position=='update_stoploss_buy':
         print('Create stoploss buy order of {} at {}'.format(coin, current_bot_status['stoploss_price']))
 

@@ -47,8 +47,8 @@ dynamic_stoploss_binance_bot(
     coin='XLM',
     bot_status_json_path=os.path.join(cfd, 'trade_bot_status_binance.json'),
     current_price=price_list['XLMBTC']*btc_price,
-    pct_gap=0.04,
-    minimum_gain=0.02,
+    pct_gap=0.01,
+    minimum_gain=0.01,
     reinvest_gap=0.5
 )
 

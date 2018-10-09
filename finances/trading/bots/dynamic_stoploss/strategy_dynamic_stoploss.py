@@ -48,13 +48,14 @@ def sell_all(trading_client, coin='btc'):
 
 def check_cash(trading_client, coin, stored_cash):
     current_price = float(trading_client.ticker(base=coin, quote='eur')['last'])
-    coin_available = float(trading_client.account_balance(base=coin, quote="eur")['{}_available'.format(coin)])
+    coin_available = float(trading_client.account_balance(base=coin, quote="eur")['{}_balance'.format(coin)])
     value = coin_available*current_price
-    if value < 5:  # se o valor for inferior a 5€
+    if value < 10:  # se o valor for inferior a 5€
         value = 0
 
     if stored_cash==0 and value == 0:
         # in this case, there was a stoploss sell transaction and we need to check for how much
+        print('Sell stoploss detected')
         last_transaction=abs(float(trading_client.user_transactions(
                 offset=0,
                 limit=1,
@@ -63,11 +64,12 @@ def check_cash(trading_client, coin, stored_cash):
                 quote='eur')[0]['eur']))
         return last_transaction
     elif stored_cash>0 and value >0:
+        print('Buy stoploss detected')
         # in this case, there was a stoploss buy transaction
         return 0
     else:
         return stored_cash
-    return cash
+
 
 
 def dynamic_stoploss_bitstamp_bot(
@@ -85,11 +87,11 @@ def dynamic_stoploss_bitstamp_bot(
 
     current_bot_status = bitstamp_bot_status[coin]
 
-    cash = check_cash(trading_client, coin, stored_cash=current_bot_status['cash'])
+    current_bot_status['cash'] = check_cash(trading_client, coin, stored_cash=current_bot_status['cash'])
 
     current_bot_status, position = dynamic_stoploss_strategy(
         status_dict=current_bot_status,
-        cash=cash,
+        cash=current_bot_status['cash'],
         current_price=current_price,
         pct_gap=pct_gap,
         minimum_gain=minimum_gain,
@@ -109,7 +111,7 @@ def dynamic_stoploss_bitstamp_bot(
 
     if position=='update_stoploss_sell':
         print('Create stoploss sell order of {} at {}'.format(coin, current_bot_status['stoploss_price']))
-        
+
     elif position=='update_stoploss_buy':
         print('Create stoploss buy order of {} at {}'.format(coin, current_bot_status['stoploss_price']))
 
