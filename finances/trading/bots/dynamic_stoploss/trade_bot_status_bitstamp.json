@@ -14,7 +14,7 @@
         "top_price": 5781.49
     },
     "eth": {
-        "bot_price": 194.06,
+        "bot_price": 193.94,
         "cash": 296.7438947,
         "reference_price": 196.85,
         "stoploss_price": 0,
@@ -28,10 +28,10 @@
         "top_price": 51.24235
     },
     "xrp": {
-        "bot_price": 0.40244,
+        "bot_price": 0.40138,
         "cash": 277.66491206136203,
         "reference_price": 0.4178,
-        "stoploss_price": 0.41012000000000004,
+        "stoploss_price": 0.40959,
         "top_price": 0.421978
     }
 }

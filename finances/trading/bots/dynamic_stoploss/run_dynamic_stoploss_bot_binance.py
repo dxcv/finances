@@ -57,7 +57,7 @@ dynamic_stoploss_binance_bot(
 )
 
 # IOTA
-print(---------- 'IOTA')
+print('---------- IOTA')
 dynamic_stoploss_binance_bot(
     trading_client_binance,
     coin='IOTA',
