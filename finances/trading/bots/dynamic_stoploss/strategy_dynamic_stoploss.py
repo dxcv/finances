@@ -98,7 +98,7 @@ def dynamic_stoploss_bitstamp_bot(
         reinvest_gap=reinvest_gap
         )
 
-    print('Position: '+position)
+    print('POSITION: '+position)
 
     # perform the actual sell/buy options
     if position == 'buy':

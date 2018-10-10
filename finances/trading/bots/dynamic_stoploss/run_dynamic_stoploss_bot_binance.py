@@ -20,28 +20,8 @@ for pair in trading_client_binance.get_all_tickers():
 btc_price = price_list['BTCUSDT']
 
 
-# def create_dict(coins):
-#     d = {}
-#     for coin in coins:
-#         current_btc_price = price_list['BTCUSDT']
-#         current_price_in_btc= price_list[coin+'BTC']
-#         current_price_in_usd = (current_price_in_btc*current_btc_price)
-
-#         d[coin] = {
-#             "reference_price": current_price_in_usd,
-#             "top_price": current_price_in_usd*1.09,
-#             "bot_price": current_price_in_usd*0.91,
-#             "cash": 0}
-
-#     return d
-
-# from pprint import pprint
-# print(create_dict(['XLM', 'TRX', 'ADA', 'IOTA', 'EOS', 'XMR', 'DASH', 'NEO']))
-
-# exit(0)
-
 # STELLAR
-print('XLM')
+print('---------- XLM')
 dynamic_stoploss_binance_bot(
     trading_client_binance,
     coin='XLM',
@@ -53,7 +33,7 @@ dynamic_stoploss_binance_bot(
 )
 
 # CARDANO
-print('ADA')
+print('---------- ADA')
 dynamic_stoploss_binance_bot(
     trading_client_binance,
     coin='ADA',
@@ -65,7 +45,7 @@ dynamic_stoploss_binance_bot(
 )
 
 # TRON
-print('TRX')
+print('---------- TRX')
 dynamic_stoploss_binance_bot(
     trading_client_binance,
     coin='TRX',
@@ -77,7 +57,7 @@ dynamic_stoploss_binance_bot(
 )
 
 # IOTA
-print('IOTA')
+print(---------- 'IOTA')
 dynamic_stoploss_binance_bot(
     trading_client_binance,
     coin='IOTA',
@@ -89,7 +69,7 @@ dynamic_stoploss_binance_bot(
 )
 
 # NEO
-print('NEO')
+print('---------- NEO')
 dynamic_stoploss_binance_bot(
     trading_client_binance,
     coin='NEO',
@@ -101,7 +81,7 @@ dynamic_stoploss_binance_bot(
 )
 
 # XMR
-print('XMR')
+print('---------- XMR')
 dynamic_stoploss_binance_bot(
     trading_client_binance,
     coin='XMR',
@@ -113,7 +93,7 @@ dynamic_stoploss_binance_bot(
 )
 
 # DASH
-print('DASH')
+print('---------- DASH')
 dynamic_stoploss_binance_bot(
     trading_client_binance,
     coin='DASH',

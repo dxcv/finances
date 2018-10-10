@@ -6,7 +6,7 @@ def update_price_levels(price, bot_lvl, top_lvl):
     bot_price = price*(1-bot_lvl)
     top_price = price*(1+top_lvl)
     return price, bot_price, top_price
-    
+
 
 def decision_short(
     minimum_gain,
@@ -22,10 +22,10 @@ def decision_short(
         decision = 'buy'
         return decision, top_price, bot_price, 0
 
-    buy_price = reference_price+abs((reference_price-top_price))*0.5
+    buy_price = reference_price-abs((reference_price-bot_price))*0.5
     if current_price < bot_price:
         bot_price = current_price
-        buy_price = reference_price+abs((reference_price-bot_price))*0.5
+        buy_price = reference_price-abs((reference_price-bot_price))*0.5
         decision='update_stoploss_buy'
 
     if buy_price > reference_price*(1-minimum_gain):
@@ -62,8 +62,6 @@ def decision_long(
     return decision, top_price, bot_price, sell_price
 
 
-# NEED TO DEFINE THESE DECISIONS ABOVE
-
 def dynamic_stoploss_strategy(
     status_dict,
     cash,
@@ -82,11 +80,13 @@ def dynamic_stoploss_strategy(
     if cash == 0:
         decision_strategy = decision_long
         if stoploss_price < reference_price and stoploss_price>0:
+            print('!!! Stoploss buy transaction detected !!!')
             reference_price, bot_price, top_price = update_price_levels(stoploss_price, pct_gap, minimum_gain)
 
     else:
         decision_strategy = decision_short
         if stoploss_price > reference_price  and stoploss_price>0:
+            print('!!! Stoploss sell transaction detected !!!')
             reference_price, bot_price, top_price = update_price_levels(stoploss_price, minimum_gain, pct_gap)
 
     position, top_price, bot_price, stoploss_price = decision_strategy(
