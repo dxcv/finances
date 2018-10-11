@@ -71,7 +71,6 @@ def check_cash(trading_client, coin, stored_cash):
         return stored_cash
 
 
-
 def dynamic_stoploss_bitstamp_bot(
     trading_client,
     coin,
