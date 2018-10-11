@@ -1,37 +1,37 @@
 {
     "bch": {
-        "bot_price": 440.0,
-        "cash": 201.82,
-        "reference_price": 453.535,
-        "stoploss_price": 446.76750000000004,
-        "top_price": 458.07035
+        "bot_price": 383.13,
+        "cash": 185.6935134,
+        "reference_price": 387.0,
+        "stoploss_price": 0,
+        "top_price": 390.87
     },
     "btc": {
-        "bot_price": 5425.45,
-        "cash": 0,
-        "reference_price": 5711,
+        "bot_price": 5336.6346,
+        "cash": 429.9893064906,
+        "reference_price": 5390.54,
         "stoploss_price": 0,
-        "top_price": 5781.49
+        "top_price": 5660.067
     },
     "eth": {
-        "bot_price": 193.94,
-        "cash": 296.7438947,
-        "reference_price": 196.85,
+        "bot_price": 171.37890000000002,
+        "cash": 277.32222,
+        "reference_price": 173.11,
         "stoploss_price": 0,
-        "top_price": 198.8185
+        "top_price": 174.8411
     },
     "ltc": {
-        "bot_price": 49.73,
-        "cash": 193.65,
-        "reference_price": 50.735,
+        "bot_price": 44.5203,
+        "cash": 182.068906893741,
+        "reference_price": 44.97,
         "stoploss_price": 0,
-        "top_price": 51.24235
+        "top_price": 45.4197
     },
     "xrp": {
-        "bot_price": 0.40138,
-        "cash": 277.66491206136203,
-        "reference_price": 0.4178,
-        "stoploss_price": 0.40959,
-        "top_price": 0.421978
+        "bot_price": 0.34803449999999997,
+        "cash": 252.5886751019495,
+        "reference_price": 0.35155,
+        "stoploss_price": 0,
+        "top_price": 0.3550655
     }
 }
