@@ -21,17 +21,17 @@
         "top_price": 177.8812
     },
     "ltc": {
-        "bot_price": 46.331999999999994,
-        "cash": 0,
-        "reference_price": 46.8,
+        "bot_price": 45.1539,
+        "cash": 165.24351405130798,
+        "reference_price": 45.61,
         "stoploss_price": 0,
-        "top_price": 47.268
+        "top_price": 46.0661
     },
     "xrp": {
-        "bot_price": 0.3829617,
-        "cash": 293.1354671754121,
-        "reference_price": 0.38683,
+        "bot_price": 0.3925647,
+        "cash": 0,
+        "reference_price": 0.39653,
         "stoploss_price": 0,
-        "top_price": 0.3906983
+        "top_price": 0.4004953
     }
 }
