@@ -86,35 +86,35 @@ def dynamic_stoploss_bitstamp_bot(
 
     current_bot_status = bitstamp_bot_status[coin]
 
-    current_bot_status['cash'] = check_cash(trading_client, coin, stored_cash=current_bot_status['cash'])
-
+    current_cash = check_cash(trading_client, coin, stored_cash=current_bot_status['cash'])
     current_bot_status, position = dynamic_stoploss_strategy(
         status_dict=current_bot_status,
-        cash=current_bot_status['cash'],
+        cash=current_cash,
         current_price=current_price,
         pct_gap=pct_gap,
         minimum_gain=minimum_gain,
         reinvest_gap=reinvest_gap
         )
 
-    print('POSITION: '+position)
+    print('------>'+position)
 
     # perform the actual sell/buy options
     if position == 'buy':
-        buy_all(trading_client=trading_client, coin=coin, cash_quantity=current_bot_status['cash'])
-        current_bot_status['cash'] = 0
+        buy_all(trading_client=trading_client, coin=coin, cash_quantity=current_cash)
+        current_cash = 0
 
     elif position == 'sell':
-        current_bot_status['cash'] = sell_all(trading_client=trading_client, coin=coin)*current_price
+        current_cash = sell_all(trading_client=trading_client, coin=coin)*current_price
 
 
     elif position=='update_stoploss_sell':
-        print('*************** Create stoploss sell order: {} at {} Eur'.format(current_bot_status['cash'], coin, current_bot_status['stoploss_price']))
+        print('STOPLOSS SELL ORDER: {} at {} Eur'.format(current_cash, coin, current_bot_status['stoploss_price']))
 
     elif position=='update_stoploss_buy':
-        print('*************** Create stoploss buy order: {} Eur for {} at {} Eur'.format(current_bot_status['cash'],coin, current_bot_status['stoploss_price']))
+        print('STOPLOSS BUY ORDER: {} Eur for {} at {} Eur ('.format(current_cash, coin, current_bot_status['stoploss_price']))
 
     # save the new bot status dict
+    current_bot_status['cash'] = current_cash
     bitstamp_bot_status[coin] = current_bot_status
 
     with open(bot_status_json_path, 'w') as f:

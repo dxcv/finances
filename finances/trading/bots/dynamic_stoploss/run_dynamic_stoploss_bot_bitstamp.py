@@ -16,7 +16,7 @@ failed_times = 0
 
 while failed_times<3:
     try:
-        print('---------- BTC bot:')
+        print('::: BTC :::')
         # BITCOIN
         dynamic_stoploss_bitstamp_bot(
             trading_client,
@@ -28,7 +28,7 @@ while failed_times<3:
             reinvest_gap=0.5
             )
 
-        print('---------- ETH bot:')
+        print('::: ETH :::')
         # ETHEREUM
         dynamic_stoploss_bitstamp_bot(
             trading_client,
@@ -40,7 +40,7 @@ while failed_times<3:
             reinvest_gap=0.5
             )
 
-        print('---------- LTC bot:')
+        print('::: LTC :::')
         # LITECOIN
         dynamic_stoploss_bitstamp_bot(
             trading_client,
@@ -52,7 +52,7 @@ while failed_times<3:
             reinvest_gap=0.5
             )
 
-        print('---------- XRP bot:')
+        print('::: XRP :::')
         # RIPPLE
         dynamic_stoploss_bitstamp_bot(
             trading_client,
@@ -64,7 +64,7 @@ while failed_times<3:
             reinvest_gap=0.5
             )
 
-        print('---------- BCH bot:')
+        print('::: BCH :::')
         # BITCOIN CASH
         dynamic_stoploss_bitstamp_bot(
             trading_client,

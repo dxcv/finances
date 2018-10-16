@@ -11,26 +11,12 @@ from finances.trading.strategies.dynamic_stoploss.dynamic_stoploss_strategy impo
 from binance.exceptions import BinanceAPIException
 from binance.client import Client
 
-# get all the prices
-# PRICE_LIST={}
-# for pair in trading_client.get_all_tickers():
-#     PRICE_LIST[pair['symbol']] = float(pair['price'])
-
-
-
-td = Client(
-    api_key='69SJ6W75YXxMqeM2uOHsYPidRHHc1tDuVa723QjcP7p8xKQOCvqi80QnoYoWFqdM',
-    api_secret='6n3h0d7FvGiWTjF8Tm3NskURNpa2NnXbmqQfDinwOV0buPzE2W4aFDefkxpkgSco'
-    )
-
-# td.order_limit_buy(symbol='XLMUSDT', quantity=10, price=0.06, stopPrice=0.059)
-# from pprint import pprint
-# pprint(td.get_exchange_info())
-# td.create_order(symbol='ADAUSDT', side='BUY', type='STOP_LOSS_LIMIT', quantity=200.0, price=0.08, stopPrice=0.079,timeInForce='GTC')
-print(td.get_asset_balance(asset='ADA'))
-exit(0)
 
 def buy_all(trading_client, coin, cash_quantity):
+    # get all the prices
+    PRICE_LIST={}
+    for pair in trading_client.get_all_tickers():
+        PRICE_LIST[pair['symbol']] = float(pair['price'])
 
     # extract the relevant prices
     current_btc_price = PRICE_LIST['BTCUSDT']
@@ -72,14 +58,18 @@ def buy_all(trading_client, coin, cash_quantity):
             bought_coin=True
             print('Bought {0} {1} at {2} USD'.format(amount_to_buy, coin, current_price_in_usd))
         except BinanceAPIException as e:
+            counter+=1
             if 'LOT_SIZE' in str(e):
                 rounder -=1
             if 'insufficient balance' in str(e):
                 amount_to_buy*=0.9975
-                counter+=1
 
 
 def sell_all(trading_client, coin):
+    # get all the prices
+    PRICE_LIST={}
+    for pair in trading_client.get_all_tickers():
+        PRICE_LIST[pair['symbol']] = float(pair['price'])
     # extract the relevant prices
     current_btc_price = PRICE_LIST['BTCUSDT']
     current_price_in_btc= PRICE_LIST[coin+'BTC']
@@ -104,10 +94,10 @@ def sell_all(trading_client, coin):
             sold_coin=True
             print('Sold {0} {1} at {2} USD'.format(amount_to_sell, coin, current_price_in_usd))
         except BinanceAPIException as e:
+            counter+=1
             if 'LOT_SIZE' in str(e):
                 rounder -=1
             if 'insufficient balance' in str(e):
-                counter+=1
                 amount_to_sell*=0.9975
 
     # then sell all btc to usd
@@ -129,13 +119,25 @@ def sell_all(trading_client, coin):
     return amount_to_sell
 
 def update_stoploss(trading_client, coin, price, cash=0):
+    # get all price list
+    PRICE_LIST={}
+    for pair in trading_client.get_all_tickers():
+        PRICE_LIST[pair['symbol']] = float(pair['price'])
+
+    # perform update stoploss
     symbol=coin+'USDT'
-    # first cancel the existing order
-    orders = trading_client.get_all_orders(symbol)
-    trading_client.cancel_order(symbol=symbol, orderId=orders[0]['orderId'])
+
+    if coin+'USDT' not in PRICE_LIST.keys():
+        print('Cannot create stoploss for '+symbol)
+        return
+
+     # first cancel the existing order       
+    orders = trading_client.get_all_orders(symbol=symbol)
+    if len(orders)>0  and orders[-1]['status'] == 'NEW':
+        trading_client.cancel_order(symbol=symbol, orderId=orders[-1]['orderId'])
 
     # quantity to buy:
-    if cash!=0:
+    if cash > 0:
         quantity = cash/price
         order_type = 'BUY'
 
@@ -144,15 +146,29 @@ def update_stoploss(trading_client, coin, price, cash=0):
         balance = trading_client.get_asset_balance(asset=coin)
         quantity = float(balance['free'])
 
-    # order
-    trading_client.create_order(
-        symbol=coin+'USDT',
-        side=order_type,
-        type='STOP_LOSS_LIMIT',
-        quantity=quantity,
-        price=price,
-        stopPrice=price,
-        timeInForce='GTC')
+    # create the order itself, avoiding errors
+    create_order=False
+    rounder = 5
+    counter=0
+    while not create_order and quantity>0 and counter <20:
+        try:
+            # order
+            trading_client.create_order(
+                symbol=coin+'USDT',
+                side=order_type,
+                type='STOP_LOSS_LIMIT',
+                quantity=round(quantity, rounder),
+                price=price,
+                stopPrice=price,
+                timeInForce='GTC')
+            create_order=True
+            print('Create Stoploss {0} of {1} {2} at {3} USD'.format(order_type, coin, quantity, price))
+        except BinanceAPIException as e:
+            counter+=1
+            if 'LOT_SIZE' in str(e):
+                rounder -=1
+            if 'insufficient balance' in str(e):
+                quantity*=0.9975
 
 
 
@@ -199,59 +215,46 @@ def dynamic_stoploss_binance_bot(
 
     current_bot_status = binance_bot_status[coin]
 
-    current_bot_status['cash'] = check_cash(trading_client, coin, stored_cash=current_bot_status['cash'])
+    current_cash = check_cash(trading_client, coin, stored_cash=current_bot_status['cash'])
 
     current_bot_status, position = dynamic_stoploss_strategy(
         status_dict=current_bot_status,
-        cash=current_bot_status['cash'],
+        cash=current_cash,
         current_price=current_price,
         pct_gap=pct_gap,
         minimum_gain=minimum_gain,
         reinvest_gap=reinvest_gap
         )
 
-    print('POSITION: '+position)
+    print('------>'+position)
 
     # perform the actual sell/buy options
     if position == 'buy':
-        buy_all(trading_client=trading_client, coin=coin, cash_quantity=current_bot_status['cash'])
-        current_bot_status['cash'] = 0
+        buy_all(trading_client=trading_client, coin=coin, cash_quantity=current_cash)
+        current_cash = 0
 
     elif position == 'sell':
-        current_bot_status['cash'] = sell_all(trading_client=trading_client, coin=coin)*current_price
+        current_cash = sell_all(trading_client=trading_client, coin=coin)*current_price
+
+    if position=='update_stoploss_sell':
+            update_stoploss(
+            trading_client,
+            coin,
+            price=current_bot_status['stoploss_price'],
+            cash=0
+            )
+
+    elif position=='update_stoploss_buy':
+        update_stoploss(
+            trading_client,
+            coin,
+            price=current_bot_status['stoploss_price'],
+            cash=current_cash
+            )
 
     # save the new bot status dict
     binance_bot_status[coin] = current_bot_status
-
-
-    if position=='update_stoploss_sell':
-        if coin+'USDT' in PRICE_LIST.keys():
-            #CANCEL ALL ORDERS FOR THIS COIN FIRST
-            balance = trading_client.get_asset_balance(asset=coin)
-            coin_available = float(balance['free'])
-            trading_client.create_order(
-                symbol=coin+'USDT',
-                side='SELL',
-                type='STOP_LOSS_LIMIT',
-                quantity=coin_available,
-                price=current_bot_status['stoploss_price'],
-                stopPrice=current_bot_status['stoploss_price'],
-                timeInForce='GTC')
-        else:
-            print('Create stoploss sell order of {} at {}'.format(coin, current_bot_status['stoploss_price']))
-
-    elif position=='update_stoploss_buy':
-        if coin+'USDT' in PRICE_LIST.keys():
-            trading_client.create_order(
-                symbol=coin+'USDT',
-                side='BUY',
-                type='STOP_LOSS_LIMIT',
-                quantity=current_bot_status['cash']/current_bot_status['stoploss_price'],
-                price=current_bot_status['stoploss_price'],
-                stopPrice=current_bot_status['stoploss_price'],
-                timeInForce='GTC')
-        print('Create stoploss buy order of {} at {}'.format(coin, current_bot_status['stoploss_price']))
-
+    current_bot_status['cash'] = current_cash
 
     with open(bot_status_json_path, 'w') as f:
         json.dump(binance_bot_status, f, sort_keys=True, indent=4)

@@ -21,7 +21,7 @@ btc_price = price_list['BTCUSDT']
 
 
 # STELLAR
-print('---------- XLM')
+print('::: XLM :::')
 dynamic_stoploss_binance_bot(
     trading_client_binance,
     coin='XLM',
@@ -33,7 +33,7 @@ dynamic_stoploss_binance_bot(
 )
 
 # CARDANO
-print('---------- ADA')
+print('::: ADA :::')
 dynamic_stoploss_binance_bot(
     trading_client_binance,
     coin='ADA',
@@ -45,7 +45,7 @@ dynamic_stoploss_binance_bot(
 )
 
 # TRON
-print('---------- TRX')
+print('::: TRX :::')
 dynamic_stoploss_binance_bot(
     trading_client_binance,
     coin='TRX',
@@ -57,7 +57,7 @@ dynamic_stoploss_binance_bot(
 )
 
 # IOTA
-print('---------- IOTA')
+print('::: IOTA :::')
 dynamic_stoploss_binance_bot(
     trading_client_binance,
     coin='IOTA',
@@ -69,7 +69,7 @@ dynamic_stoploss_binance_bot(
 )
 
 # NEO
-print('---------- NEO')
+print('::: NEO :::')
 dynamic_stoploss_binance_bot(
     trading_client_binance,
     coin='NEO',
@@ -81,7 +81,7 @@ dynamic_stoploss_binance_bot(
 )
 
 # XMR
-print('---------- XMR')
+print('::: XMR :::')
 dynamic_stoploss_binance_bot(
     trading_client_binance,
     coin='XMR',
@@ -93,7 +93,7 @@ dynamic_stoploss_binance_bot(
 )
 
 # DASH
-print('---------- DASH')
+print('::: DASH :::')
 dynamic_stoploss_binance_bot(
     trading_client_binance,
     coin='DASH',
