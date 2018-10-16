@@ -143,6 +143,7 @@ def update_stoploss(trading_client, coin, price, cash=0):
 
     # quantity to sell:
     else:
+        order_type='SELL'
         balance = trading_client.get_asset_balance(asset=coin)
         quantity = float(balance['free'])
 
@@ -158,21 +159,28 @@ def update_stoploss(trading_client, coin, price, cash=0):
                 side=order_type,
                 type='STOP_LOSS_LIMIT',
                 quantity=round(quantity, rounder),
-                price=price,
-                stopPrice=price,
+                price=round(price,4),
+                stopPrice=round(price,4),
                 timeInForce='GTC')
             create_order=True
             print('Create Stoploss {0} of {1} {2} at {3} USD'.format(order_type, coin, quantity, price))
+            return
         except BinanceAPIException as e:
             counter+=1
             if 'LOT_SIZE' in str(e):
                 rounder -=1
+
             if 'insufficient balance' in str(e):
                 quantity*=0.9975
-
+    print('ERROR: Could not create stoploss order')
 
 
 def check_cash(trading_client, coin, stored_cash):
+    # get all price list
+    PRICE_LIST={}
+    for pair in trading_client.get_all_tickers():
+        PRICE_LIST[pair['symbol']] = float(pair['price'])
+
     # extract the relevant prices
     current_btc_price = PRICE_LIST['BTCUSDT']
     current_price_in_btc= PRICE_LIST[coin+'BTC']

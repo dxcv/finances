@@ -80,26 +80,26 @@ dynamic_stoploss_binance_bot(
     reinvest_gap=0.5
 )
 
-# XMR
-print('::: XMR :::')
-dynamic_stoploss_binance_bot(
-    trading_client_binance,
-    coin='XMR',
-    bot_status_json_path=os.path.join(cfd, 'trade_bot_status_binance.json'),
-    current_price=price_list['XMRBTC']*btc_price,
-    pct_gap=0.01,
-    minimum_gain=0.01,
-    reinvest_gap=0.5
-)
+# # XMR
+# print('::: XMR :::')
+# dynamic_stoploss_binance_bot(
+#     trading_client_binance,
+#     coin='XMR',
+#     bot_status_json_path=os.path.join(cfd, 'trade_bot_status_binance.json'),
+#     current_price=price_list['XMRBTC']*btc_price,
+#     pct_gap=0.01,
+#     minimum_gain=0.01,
+#     reinvest_gap=0.5
+# )
 
-# DASH
-print('::: DASH :::')
-dynamic_stoploss_binance_bot(
-    trading_client_binance,
-    coin='DASH',
-    bot_status_json_path=os.path.join(cfd, 'trade_bot_status_binance.json'),
-    current_price=price_list['DASHBTC']*btc_price,
-    pct_gap=0.01,
-    minimum_gain=0.01,
-    reinvest_gap=0.5
-)
+# # DASH
+# print('::: DASH :::')
+# dynamic_stoploss_binance_bot(
+#     trading_client_binance,
+#     coin='DASH',
+#     bot_status_json_path=os.path.join(cfd, 'trade_bot_status_binance.json'),
+#     current_price=price_list['DASHBTC']*btc_price,
+#     pct_gap=0.01,
+#     minimum_gain=0.01,
+#     reinvest_gap=0.5
+# )

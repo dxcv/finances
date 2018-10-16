@@ -42,11 +42,11 @@
         "top_price": 0.027610118712000004
     },
     "XLM": {
-        "bot_price": 0.22805824932,
-        "cash": 104.05420756068723,
-        "reference_price": 0.230361868,
+        "bot_price": 0.23205424987800002,
+        "cash": 0,
+        "reference_price": 0.23439823220000003,
         "stoploss_price": 0,
-        "top_price": 0.23266548668
+        "top_price": 0.23674221452200003
     },
     "XMR": {
         "bot_price": 102.83126921099999,
