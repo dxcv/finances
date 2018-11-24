@@ -108,10 +108,10 @@ def dynamic_stoploss_bitstamp_bot(
 
 
     elif position=='update_stoploss_sell':
-        print('STOPLOSS SELL ORDER: {} at {} Eur'.format(current_cash, coin, current_bot_status['stoploss_price']))
+        print('STOPLOSS SELL ORDER: {} at {} Eur'.format(coin, current_bot_status['stoploss_price']))
 
     elif position=='update_stoploss_buy':
-        print('STOPLOSS BUY ORDER: {} Eur for {} at {} Eur ('.format(current_cash, coin, current_bot_status['stoploss_price']))
+        print('STOPLOSS BUY ORDER: {} Eur for {} at {} Eur'.format(current_cash, coin, current_bot_status['stoploss_price']))
 
     # save the new bot status dict
     current_bot_status['cash'] = current_cash

@@ -1,10 +1,10 @@
 {
     "ADA": {
-        "bot_price": 0.07603336720000001,
-        "cash": 49.42176369,
-        "reference_price": 0.0775268559,
-        "stoploss_price": 0,
-        "top_price": 0.07830212445899999
+        "bot_price": 0.0430283781,
+        "cash": 6.379337235305582,
+        "reference_price": 0.0764014068,
+        "stoploss_price": 0.05971489245,
+        "top_price": 0.077165420868
     },
     "DASH": {
         "bot_price": 158.1763489,
@@ -21,32 +21,32 @@
         "top_price": 6.7815160088
     },
     "IOTA": {
-        "bot_price": 0.49015883610000005,
+        "bot_price": 0.30522849479999997,
         "cash": 34.8043165536,
         "reference_price": 0.5991570697999999,
-        "stoploss_price": 0.54465795295,
+        "stoploss_price": 0.45219278229999993,
         "top_price": 0.605148640498
     },
     "NEO": {
-        "bot_price": 16.6526910396,
-        "cash": 12.6170207020032,
-        "reference_price": 16.82090004,
-        "stoploss_price": 0,
-        "top_price": 16.989109040400002
+        "bot_price": 8.7211748,
+        "cash": 11.745354898367246,
+        "reference_price": 12.63842928,
+        "stoploss_price": 10.67980204,
+        "top_price": 12.764813572800001
     },
     "TRX": {
-        "bot_price": 0.0245757764,
-        "cash": 33.890047092299994,
-        "reference_price": 0.025039273299999998,
-        "stoploss_price": 0,
-        "top_price": 0.025289666032999997
+        "bot_price": 0.0135628221,
+        "cash": 30.571433073160566,
+        "reference_price": 0.0228785536,
+        "stoploss_price": 0.01822068785,
+        "top_price": 0.023107339136
     },
     "XLM": {
-        "bot_price": 0.2390373104,
-        "cash": 105.89368922759999,
-        "reference_price": 0.24265173850000005,
-        "stoploss_price": 0,
-        "top_price": 0.24507825588500004
+        "bot_price": 0.18214720850000002,
+        "cash": 58.252911393249484,
+        "reference_price": 0.2367411672,
+        "stoploss_price": 0.20944418785000002,
+        "top_price": 0.239108578872
     },
     "XMR": {
         "bot_price": 102.83126921099999,
