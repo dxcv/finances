@@ -114,8 +114,9 @@ if __name__=='__main__':
         ).dropna()
 
     import seaborn as sns
-    sns.set()
-    sns.set_palette('YlOrRd', 12)
+    sns.set_style('whitegrid')
+    sns.set_context('talk')
+    sns.set_palette('dark', 12)
     for days in [14]:#range(1,30, 5):
         monthly_returns = generate_projected_normal_sample(returns_data, days)
         rewards, risks = markowitz_efficient_frontier(monthly_returns)
@@ -125,9 +126,4 @@ if __name__=='__main__':
         plt.plot(sharpe[1], sharpe[0], 'ko')
     plt.legend()
     
-    plt.show()
-
-    sns.set()
-    f = norm.pdf(np.arange(-1.0, 1.50, 0.001), 0.25, 0.125)
-    plt.plot(np.arange(-1.0, 1.50, 0.001), f)
     plt.show()
