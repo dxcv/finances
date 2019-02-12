@@ -14,3 +14,29 @@ dependencies:
 #   
 # - jupyter
 
+
+# # actual sequence:
+
+# - conda install -c conda-forge cvxopt
+# - conda install pandas
+# - conda install cython
+# - pip install portfolioopt
+# - pip install coinmarketcap
+# - conda install quandl
+# - conda install scipy
+# - conda install jupyter
+# - conda install matplotlib
+# - conda install seaborn
+# - pip install BitstampClient
+
+
+# # the total_finance sequence:
+
+# - conda create --name total_finance python=3.5
+# - conda install -c Quantopian zipline
+# - conda install -c quantopian pyfolio
+# - conda install -c conda-forge cvxopt
+# - conda install quandl
+# - pip install portfolioopt
+# - pip install coinmarketcap
+# - pip install BitstampClient
