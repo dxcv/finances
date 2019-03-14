@@ -39,6 +39,10 @@ def mean_gamma(mean, cov, T):
 
 
 def shrinked_estimate_multivariate(data):
+    """
+    It reproduces the steps from page 356 of Meucci's book
+        to calculate the shrinkage estimators for the normal distribution.
+    """
 
     # sample estimate the mean and the covariance
     S = data.cov()
@@ -71,7 +75,10 @@ N_DAYS = 15
 # Load data from statsmodels datasets
 start = datetime(2014, 9, 1)
 end = datetime(2019, 9, 1)
-df = web.DataReader(['AMZN','GOOGL','SPY','AMT','AAPL','MSFT','MMM','VOO','ABMD','ABBV'], 'tiingo', start, end)
+df = web.DataReader([
+    'AMZN','GOOGL','SPY','AMT','AAPL','MSFT','MMM','VOO','ABMD','ABBV',
+    'BA'
+    ], 'tiingo', start, end)
 df['logP'] = np.log(df['close'])
 df['cum_rets'] = df['logP'].rolling(2).apply(lambda x: x[-1]-x[0], raw=True).dropna()
 data = df['cum_rets'].unstack('symbol').dropna()
