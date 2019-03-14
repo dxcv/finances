@@ -102,16 +102,35 @@ current_prices = df['close'].unstack('symbol').dropna().iloc[-1]
 
 exp_hor, cov_hori = prices_at_horizon(current_prices,mean=shrinked_mean,cov=shrinked_cov,n_periods=120)
 
-alpha = get_optimized_allocation(
-    cov_mat=cov_hori,
-    exp_vect=exp_hor,
-    target_mean=120000.0,
-    budget=100000.0,
-    current_prices=current_prices)
 
-print(alpha)
+expt_list = []
+std_list = []
+for e in np.arange(1000,1300,10):
+    alpha = get_optimized_allocation(
+        cov_mat=cov_hori,
+        exp_vect=exp_hor,
+        target_mean=e,
+        budget=1000.0,
+        current_prices=current_prices)
 
-expected_val = np.sum(alpha.values*exp_hor)
+    print(alpha)
 
-a1,a2 = np.meshgrid(alpha, alpha)
-std = np.sqrt(np.sum(np.sum(a1*cov_hori*a2)))
+    expected_val = np.sum(alpha.values*exp_hor)
+
+    a1,a2 = np.meshgrid(alpha, alpha)
+    std = np.sqrt(np.sum(np.sum(a1*cov_hori*a2)))
+
+    expt_list.append(expected_val)
+    std_list.append(std)
+
+
+import seaborn as sns
+
+np.random.seed(seed=233423)
+
+sns.set_style('whitegrid')
+sns.set_context('talk')
+sns.set_palette('dark')
+
+plt.plot(std_list, expt_list)
+plt.show()
