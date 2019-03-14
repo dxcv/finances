@@ -76,8 +76,9 @@ N_DAYS = 15
 start = datetime(2014, 9, 1)
 end = datetime(2019, 9, 1)
 df = web.DataReader([
-    'AMZN','GOOGL','SPY','AMT','AAPL','MSFT','MMM','VOO','ABMD','ABBV',
-    'BA'
+    'AMZN','GOOGL','SPY','AMT',
+    'AAPL','MSFT','MMM','VOO',
+    'ABMD','ABBV','BA'
     ], 'tiingo', start, end)
 df['logP'] = np.log(df['close'])
 df['cum_rets'] = df['logP'].rolling(2).apply(lambda x: x[-1]-x[0], raw=True).dropna()
@@ -86,6 +87,7 @@ data = df['cum_rets'].unstack('symbol').dropna()
 import time
 start = time.time()
 mean, cov = shrinked_estimate_multivariate(data)
-print(time.time()-start)
+
 
 print(mean, cov)
+print(time.time()-start)
