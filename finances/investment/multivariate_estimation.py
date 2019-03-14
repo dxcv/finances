@@ -7,13 +7,6 @@ import pandas_datareader.data as web
 import scipy.stats as st
 from datetime import datetime
 import matplotlib.pyplot as plt
-import seaborn as sns
-
-np.random.seed(seed=233423)
-
-sns.set_style('whitegrid')
-sns.set_context('talk')
-sns.set_palette('dark')
 
 
 def shrinkage_weight(vector,cov):
@@ -35,7 +28,6 @@ def mean_gamma(mean, cov, T):
     numerator = len(w)*np.mean(w)-2*np.max(w)
     denominator = np.sum((mean - mean_b(mean, cov))**2)
     return 1/T*numerator/denominator
-
 
 
 def shrinked_estimate_multivariate(data):
@@ -68,26 +60,35 @@ def shrinked_estimate_multivariate(data):
     return shrinked_mean, shrinked_cov
 
 
-os.environ['TIINGO_API_KEY'] = 'ba62a0fba810f937382b5e772f8f152b58c4ebfc'
+if __name__ == '__main__':
+    import seaborn as sns
 
-N_DAYS = 15
+    np.random.seed(seed=233423)
 
-# Load data from statsmodels datasets
-start = datetime(2014, 9, 1)
-end = datetime(2019, 9, 1)
-df = web.DataReader([
-    'AMZN','GOOGL','SPY','AMT',
-    'AAPL','MSFT','MMM','VOO',
-    'ABMD','ABBV','BA'
-    ], 'tiingo', start, end)
-df['logP'] = np.log(df['close'])
-df['cum_rets'] = df['logP'].rolling(2).apply(lambda x: x[-1]-x[0], raw=True).dropna()
-data = df['cum_rets'].unstack('symbol').dropna()
+    sns.set_style('whitegrid')
+    sns.set_context('talk')
+    sns.set_palette('dark')
 
-import time
-start = time.time()
-mean, cov = shrinked_estimate_multivariate(data)
+    os.environ['TIINGO_API_KEY'] = 'ba62a0fba810f937382b5e772f8f152b58c4ebfc'
+
+    N_DAYS = 15
+
+    # Load data from statsmodels datasets
+    start = datetime(2014, 9, 1)
+    end = datetime(2019, 9, 1)
+    df = web.DataReader([
+        'AMZN','GOOGL','SPY','AMT',
+        'AAPL','MSFT','MMM','VOO',
+        'ABMD','ABBV','BA'
+        ], 'tiingo', start, end)
+    df['logP'] = np.log(df['close'])
+    df['cum_rets'] = df['logP'].rolling(2).apply(lambda x: x[-1]-x[0], raw=True).dropna()
+    data = df['cum_rets'].unstack('symbol').dropna()
+
+    import time
+    start = time.time()
+    mean, cov = shrinked_estimate_multivariate(data)
 
 
-print(mean, cov)
-print(time.time()-start)
+    print(mean, cov)
+    print(time.time()-start)
