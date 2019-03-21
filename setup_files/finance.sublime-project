@@ -86,6 +86,9 @@
 		},
 		{
 			"path": "C:\\Anaconda3\\envs\\finance\\Lib\\site-packages\\binance"
+		},
+		{
+			"path": "C:\\Anaconda3\\envs\\finance\\Lib\\site-packages\\pypfopt"
 		}
 	]
 }
