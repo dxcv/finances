@@ -3,6 +3,23 @@ import numpy as np
 import pandas as pd
 
 class AssetsData(object):
+    """
+    Class that processes the data from the stock market and gets the relevant statistical quantities
+        for portfolio optimization.
+
+    Attributes:
+        stock_data (DataFrame): pandas Dataframe containing at least a column "close" and with a multiindex
+            ['symbol', 'time']
+        estimation_period (float): time over which the properties of the stock market are estimated (defaults to 1 day)
+        N_horizon (float): the number of "estimation_period"s is the investment horizon (defaults to 120 days)
+        assets (float): the list of assets considered (taken from the stock_data dataframe)
+        mu_cumm_rets (Series): the estimated mean of the estimation period (index are the "assets")
+        cov_cumm_rets (Dataframe): the estimated covariance matrix of the estimation period (columns and index are the "assets")
+        mu_linear_rets (Series): the estimated mean of the estimation period (index are the "assets")
+        cov_linear_rets (Dataframe): the estimated covariance matrix of the estimation period (columns and index are the "assets")
+        latest_prices (Series): the latest prices of the "assets" present in the "stock_data"
+
+    """
     stock_data = None
     mu_cumm_rets = None
     cov_cumm_rets = None
@@ -14,9 +31,12 @@ class AssetsData(object):
         self.stock_data = stock_data
         self.estimation_period = estimation_period
         self.N_horizon = N_horizon
+        self.assets = stock_data.index.get_level_values('symbol').unique()
 
     @property
     def latest_prices(self):
+        """
+        """
         return self.stock_data['close'].unstack('symbol').dropna().iloc[-1]
     
     @property
@@ -31,12 +51,18 @@ class AssetsData(object):
         self.linear_returns_data = linear.dropna()
         return self.linear_returns_data
 
-    def stats_horizon_cumm_rets(self):
+    def estimate_mu_cumm_rets(self, mu):
+        self.mu_cumm_rets = mu
+
+    def estimate_cov_cumm_rets(self, cov):
+        self.cov_cumm_rets = cov
+
+    def stats_cumm_rets_at_horizon(self):
         mean = self.mu_cumm_rets
         cov = self.cov_cumm_rets
         return mean*self.N_horizon, cov*self.N_horizon
 
-    def stats_horizon_prices(self):
+    def stats_prices_at_horizon(self):
         mean = self.mu_cumm_rets
         cov = self.cov_cumm_rets
 
@@ -46,8 +72,8 @@ class AssetsData(object):
         cov_hori = Ln*Lm*(np.exp(self.N_horizon*cov)-1)
         return mean_hori, cov_hori
 
-    def stats_horizon_linear_rets(self):
-        mean_prices, cov_prices = self.stats_horizon_prices()
+    def stats_linear_rets_at_horizon(self):
+        mean_prices, cov_prices = self.stats_prices_at_horizon()
         inv_prices = 1/self.latest_prices
         mean_hori = inv_prices*mean_prices - 1
 
