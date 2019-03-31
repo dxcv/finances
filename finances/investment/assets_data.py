@@ -36,26 +36,56 @@ class AssetsData(object):
     @property
     def latest_prices(self):
         """
+        Returns the latest values of the 'close' prices within the stock_data dataframe.
         """
         return self.stock_data['close'].unstack('symbol').dropna().iloc[-1]
     
     @property
     def cumm_returns(self):
+        """
+        Returns (DataFrame): columns are the "assets", index is the date and the values are the cummulative returns
+            for the estimation period considered
+        """
         rets_data = self.stock_data['logP'].unstack('symbol').iloc[::self.estimation_period].rolling(2).apply(lambda x: x[-1]-x[0], raw=True)
         self.cumm_returns_data = rets_data.dropna()
         return self.cumm_returns_data
 
     @property
     def linear_returns(self):
+        """
+        Returns (DataFrame): columns are the "assets", index is the date and the values are the linear returns
+            for the estimation period considered
+        """
         linear = self.stock_data['close'].unstack('symbol').iloc[::self.estimation_period].rolling(2).apply(lambda x: x[-1]/x[0]-1, raw=True)
         self.linear_returns_data = linear.dropna()
         return self.linear_returns_data
 
-    def estimate_mu_cumm_rets(self, mu):
-        self.mu_cumm_rets = mu
+    def set_estimated_mu_cumm_rets(self, estimated_mean):
+        """
+        This sets the value of the mean vector value of the cumestimated_meanlative returns.
+        """
+        if not isinstance(estimated_mean, (pd.Series, list, np.ndarray)):
+            raise TypeError("estimated_mean is not a series, list or array")
+        # format into a series, in case it is an array
+        if isinstance(estimated_mean, (np.ndarray, list)):
+            estimated_mean = pd.Series(estimated_mean, index=assets)
 
-    def estimate_cov_cumm_rets(self, cov):
-        self.cov_cumm_rets = cov
+        self.mu_cumm_rets = estimated_mean
+
+    def set_estimated_cov_cumm_rets(self, estimated_cov):
+        """
+        This sets the value of the covariance matrix value of the cumestimated_covlative returns.
+        """
+        if not isinstance(estimated_cov, (pd.DataFrame, np.ndarray)):
+            raise TypeError("estimated_cov_matrix is not a dataframe or array")
+        # format into a series, in case it is an array
+        if isinstance(estimated_cov, (np.ndarray, list)):
+            estimated_cov = pd.Dataframe(estimated_cov,
+                index=assets,
+                columns=assets
+                )
+
+        self.cov_cumm_rets = estimated_cov
 
     def stats_cumm_rets_at_horizon(self):
         mean = self.mu_cumm_rets
