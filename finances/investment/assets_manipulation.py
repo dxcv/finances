@@ -6,7 +6,7 @@ import pandas_datareader.data as web
 import matplotlib.pyplot as plt
 from datetime import datetime
 
-from finances.investment.multivariate_estimation import shrinked_estimate_multivariate
+from finances.investment.multivariate_estimation import shrinked_estimate_multivariate, mean_b, mean_gamma
 
 from finances.investment.assets_data import AssetsData
 import seaborn as sns
@@ -17,36 +17,37 @@ np.random.seed(seed=233423)
 # sns.set_context('talk')
 # sns.set_palette('dark')
 
-os.environ['TIINGO_API_KEY'] = 'ba62a0fba810f937382b5e772f8f152b58c4ebfc'
+# os.environ['TIINGO_API_KEY'] = 'ba62a0fba810f937382b5e772f8f152b58c4ebfc'
 
-# # Load data from statsmodels datasets
-start = datetime(2014, 9, 1)
-end = datetime(2019, 9, 1)
-df = web.DataReader([
-'MSFT',
-'AAPL',
-'AMZN',
-'FB',
-'JNJ',
-'GOOG',
-'GOOGL',
-'JPM',
-'XOM',
-'V',
-'BAC',
-'PG',
-'INTC',
-'PFE',
-'VZ',
-'CVX',
-'UNH',
-'CSCO',
-'VOO',
-'T',
-'MRK',
-'WFC',
-'HD',
-'MA',
+# # # # Load data from statsmodels datasets
+# start = datetime(2014, 9, 1)
+# end = datetime(2018, 9, 1)
+# df = web.DataReader([
+# 'MSFT',
+# 'AAPL',
+# 'AMZN',
+# 'VOO',
+# 'AMT',
+# 'GOOGL',
+# 'FB',
+# 'JNJ',
+# 'GOOG',
+# 'JPM',
+# 'XOM',
+# 'V',
+# 'BAC',
+# 'PG',
+# 'INTC',
+# 'PFE',
+# 'VZ',
+# 'CVX',
+# 'UNH',
+# 'CSCO',
+# 'T',
+# 'MRK',
+# 'WFC',
+# 'HD',
+# 'MA',
 # 'BA',
 # 'CMCSA',
 # 'KO',
@@ -85,42 +86,64 @@ df = web.DataReader([
 # 'SBUX',
 # 'GE',
 # 'GILD',
-'BMY',
-'AMT',
-'LOW',
-'BKNG',
-'DHR',
-'CAT',
-'USB',
-'AXP',
-'ANTM',
-'COP',
-'UPS',
-'LMT',
-'CVS',
-'MDLZ',
-    ], 'tiingo', start, end)
-df['logP'] = np.log(df['close'])
-df['cum_rets'] = df['logP'].rolling(2).apply(lambda x: x[-1]-x[0], raw=True).dropna()
-df.to_csv('data_test2.csv')
+# 'BMY',
+# 'LOW',
+# 'BKNG',
+# 'DHR',
+# 'CAT',
+# 'USB',
+# 'AXP',
+# 'ANTM',
+# 'COP',
+# 'UPS',
+# 'LMT',
+# 'CVS',
+# 'MDLZ',
+#     ], 'tiingo', start, end)
+# df['logP'] = np.log(df['close'])
+# df['cum_rets'] = df['logP'].rolling(2).apply(lambda x: x[-1]-x[0], raw=True).dropna()
+# df.to_csv('data_test_medium.csv')
 
+# print(df)
 
-df = pd.read_csv('data_test2.csv', index_col=['symbol', 'date'])
+df = pd.read_csv('data_test_medium.csv', index_col=['symbol', 'date'])
 
 stocks = AssetsData(stock_data=df, N_horizon=126)
+from sklearn import covariance
 
-stocks.mu_cumm_rets, stocks.cov_cumm_rets = shrinked_estimate_multivariate(stocks.cumm_returns)
+matrix_cov = covariance.ledoit_wolf(stocks.cumm_returns)[0]
+
+stocks.set_estimated_cov_cumm_rets(
+    pd.DataFrame(
+        matrix_cov,
+        index=stocks.assets,
+        columns=stocks.assets)
+)
+
+# now calculate the shrinked mean
+m = stocks.cumm_returns.mean()
+
+# now calculate the shrinked mean
+T = len(df)
+gamma = mean_gamma(m, matrix_cov, T)
+b = mean_b(m, matrix_cov)
+print(gamma)
+print(m)
+print(b)
+stocks.set_estimated_mu_cumm_rets((1-gamma)*m+gamma*b)
 
 
-mean_hori, cov_hori = stocks.stats_horizon_cumm_rets()
+mean_hori, cov_hori = stocks.stats_linear_rets_at_horizon()
+
 
 print(mean_hori)
 print(cov_hori)
 
 from pypfopt.efficient_frontier import EfficientFrontier
 
+
 ef = EfficientFrontier(mean_hori, cov_hori)
-weights = ef.efficient_return(0.2)
+weights = ef.efficient_return(0.20)
 cleaned_weights = ef.clean_weights()
 print(cleaned_weights)
 ef.portfolio_performance(verbose=True)
