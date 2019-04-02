@@ -62,7 +62,9 @@ class AssetsData(object):
 
     def set_estimated_mu_cumm_rets(self, estimated_mean):
         """
-        This sets the value of the mean vector value of the cumestimated_meanlative returns.
+        Sets the value of mu of the cummulative returns at the horizon.
+        This is done with an external estimator.
+        It is required to use the "propagation to horizon" methods.
         """
         if not isinstance(estimated_mean, (pd.Series, list, np.ndarray)):
             raise TypeError("estimated_mean is not a series, list or array")
@@ -74,7 +76,9 @@ class AssetsData(object):
 
     def set_estimated_cov_cumm_rets(self, estimated_cov):
         """
-        This sets the value of the covariance matrix value of the cumestimated_covlative returns.
+        Sets the value of the covariance of the cummulative returns at the horizon.
+        This is done with an external estimator.
+        It is required to use the "propagation to horizon" methods.
         """
         if not isinstance(estimated_cov, (pd.DataFrame, np.ndarray)):
             raise TypeError("estimated_cov_matrix is not a dataframe or array")
@@ -88,11 +92,19 @@ class AssetsData(object):
         self.cov_cumm_rets = estimated_cov
 
     def stats_cumm_rets_at_horizon(self):
+        """
+        Propagates the mean and covariance of cummulative returns at horizon.
+        Returns (float, float): mean of assets cumm_rets at horizon, covariance of assets cumm_rets at horizon
+        """
         mean = self.mu_cumm_rets
         cov = self.cov_cumm_rets
         return mean*self.N_horizon, cov*self.N_horizon
 
     def stats_prices_at_horizon(self):
+        """
+        Calculates the mean and covariance of the prices at horizon.
+        Returns (float, float): mean of assets prices at horizon, covariance of assets prices at horizon
+        """
         mean = self.mu_cumm_rets
         cov = self.cov_cumm_rets
 
@@ -103,6 +115,10 @@ class AssetsData(object):
         return mean_hori, cov_hori
 
     def stats_linear_rets_at_horizon(self):
+        """
+        Calculates the mean and covariance of the linear returns at horizon.
+        Returns (float, float): mean of assets linear_rets at horizon, covariance of assets linear_rets at horizon
+        """
         mean_prices, cov_prices = self.stats_prices_at_horizon()
         inv_prices = 1/self.latest_prices
         mean_hori = inv_prices*mean_prices - 1
