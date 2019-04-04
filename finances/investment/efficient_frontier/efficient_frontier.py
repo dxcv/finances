@@ -39,27 +39,102 @@ class EfficientFrontier(OriginalEF):
     def create_mv_frontier(self, n_points):
 
         min_vol_weigths = self.min_volatility()
-        min_er = np.sum(self.weights*self.expected_returns.values)
+        min_er = max(np.sum(self.weights*self.expected_returns.values),0)
 
         max_er = max(self.expected_returns)
         er_list = np.linspace(min_er, max_er, n_points)
-        mv_frontier = {'expected_returns': er_list, 'volatility': [], 'weights': []}
+
+        port_returns = []
+        port_volatility = []
+        stock_weights = []
 
         for er in er_list:
             self.efficient_return(target_return=er, market_neutral=False)
             weights = self.clean_weights()
             vol = volatility(self.weights, self.cov_matrix, gamma=0)
-            mv_frontier['volatility'].append(vol)
-            mv_frontier['weights'].append(weights)
+            port_returns.append(er)
+            port_volatility.append(vol)
+            stock_weights.append(weights)
 
-        self.mv_frontier = mv_frontier
+        stock_weights = {k: [dic[k] for dic in stock_weights] for k in stock_weights[0]}
+        # a dictionary for Returns and Risk values of each portfolio
+        mv_dict = {
+            'expected_returns': port_returns,
+            'volatility': port_volatility,
+            **stock_weights
+            }
 
-        return mv_frontier
+        # make a nice dataframe of the extended dictionary
+        df = pd.DataFrame(mv_dict)
+
+        self.efficient_frontier = df
+
+        return df
 
 
     def plot_mv_frontier(self):
+        fig, ax = plt.subplots(2,1, sharex=True)
+        df = self.efficient_frontier
+        df = df.set_index('volatility')
+        
+        df['expected_returns'].plot(style='-o', ax=ax[0])
+
+        weights = df.drop('expected_returns', axis=1).T
+        to_plot = weights.rolling(len(weights), min_periods=1).sum().T
+
+        for col in to_plot.columns[::-1]:
+            ax[1].fill_between(to_plot.index, 0, to_plot[col], label=col)
+
+        ax[1].legend(ncol=4)
+
+        return ax
+
+
+    def create_portfolio_scatter(self,num_portfolios):
+        # empty lists to store returns, volatility and weights of imiginary portfolios
+        port_returns = []
+        port_volatility = []
+        stock_weights = []
+
+        # set the number of combinations for imaginary portfolios
+        num_assets = self.n_assets
+
+        # populate the empty lists with each portfolios returns,risk and weights
+        for single_portfolio in range(num_portfolios):
+            weights = np.random.random(num_assets)
+            weights *= 1/np.sum(weights)
+            returns = np.dot(weights, self.expected_returns)
+            vol = volatility(weights, self.cov_matrix)
+            port_returns.append(returns)
+            port_volatility.append(vol)
+            stock_weights.append(weights)
+
+        # a dictionary for Returns and Risk values of each portfolio
+        portfolio = {'Returns': port_returns,
+                     'Volatility': port_volatility}
+
+        # extend original dictionary to accomodate each ticker and weight in the portfolio
+        for counter,symbol in enumerate(self.tickers):
+            portfolio[symbol+' weight'] = [weight[counter] for weight in stock_weights]
+
+        # make a nice dataframe of the extended dictionary
+        df = pd.DataFrame(portfolio)
+
+        # get better labels for desired arrangement of columns
+        column_order = ['Returns', 'Volatility'] + [stock+' weight' for stock in self.tickers]
+
+        # reorder dataframe columns
+        df = df[column_order]
+
+        return df
+
+    def plot_scatter_efficient(self, num_portfolios):
+        fig, ax = plt.subplots(1,1, sharex=True)
         x = self.mv_frontier['volatility']
         y = self.mv_frontier['expected_returns']
+        
+        ax.plot(x,y, 'k--')
 
-        ax = plt.plot(x,y, '-o')
+        df_monte_carlo = self.create_portfolio_scatter(num_portfolios)
+        df_monte_carlo.plot.scatter(x='Volatility', y='Returns', ax=ax)
         return ax
