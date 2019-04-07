@@ -109,7 +109,7 @@ os.environ['TIINGO_API_KEY'] = 'ba62a0fba810f937382b5e772f8f152b58c4ebfc'
 
 # # df.to_csv('data_test_full.csv')
 
-df = pd.read_csv('data_test.csv', index_col=['symbol', 'date'])
+df = pd.read_csv('data_test_medium.csv', index_col=['symbol', 'date'])
 
 stocks = AssetsData(stock_data=df, N_horizon=126)
 from sklearn import covariance
@@ -138,7 +138,19 @@ ef = EfficientFrontier(mean_hori, cov_hori)
 
 MV = ef.create_mv_frontier(500)
 
+weights_mv = ef.efficient_frontier[ef.tickers]
+ww = weights_mv.iloc[-200]
+
+Ret = np.dot(ww, ef.expected_returns)
+Vol = np.sqrt(np.dot(ww,np.dot(ef.cov_matrix, ww)))
+
+print(Vol, Ret)
+
 ef.plot_mv_frontier()
 
-ef.plot_scatter_efficient(6000)
+ax = ef.plot_scatter_efficient(10000)
+
+ax.plot(Vol, Ret, 'bo')
+
+
 plt.show()
