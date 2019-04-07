@@ -10,6 +10,8 @@ import scipy.optimize as sco
 import matplotlib.pyplot as plt
 from pypfopt.efficient_frontier import EfficientFrontier as OriginalEF
 
+import cvxopt as opt
+import cvxopt.solvers as optsolvers
 
 
 def volatility(weights, cov_matrix, gamma=0):
@@ -56,59 +58,145 @@ class EfficientFrontier(OriginalEF):
         return dict(zip(self.tickers, self.weights))
 
 
-    def efficient_return(self, target_return, market_neutral=False):
-        """
-        Calculate the 'Markowitz portfolio', minimising volatility for a given target return.
+    # def efficient_return(self, target_return, market_neutral=False):
+    #     """
+    #     Calculate the 'Markowitz portfolio', minimising volatility for a given target return.
 
-        :param target_return: the desired return of the resulting portfolio.
-        :type target_return: float
-        :param market_neutral: whether the portfolio should be market neutral (weights sum to zero),
-                               defaults to False. Requires negative lower weight bound.
-        :type market_neutral: bool, optional
-        :raises ValueError: if ``target_return`` is not a positive float
-        :return: asset weights for the Markowitz portfolio
-        :rtype: dict
-        """
-        if not isinstance(target_return, float) or target_return < 0:
-            raise ValueError("target_risk should be a positive float")
+    #     :param target_return: the desired return of the resulting portfolio.
+    #     :type target_return: float
+    #     :param market_neutral: whether the portfolio should be market neutral (weights sum to zero),
+    #                            defaults to False. Requires negative lower weight bound.
+    #     :type market_neutral: bool, optional
+    #     :raises ValueError: if ``target_return`` is not a positive float
+    #     :return: asset weights for the Markowitz portfolio
+    #     :rtype: dict
+    #     """
+    #     if not isinstance(target_return, float) or target_return < 0:
+    #         raise ValueError("target_risk should be a positive float")
 
-        args = (self.cov_matrix, self.gamma)
-        target_constraint = {
-            "type": "eq",
-            "fun": lambda w: w.dot(self.expected_returns) - target_return,
-        }
-        # The equality constraint is either "weights sum to 1" (default), or
-        # "weights sum to 0" (market neutral).
-        if market_neutral:
-            if self.bounds[0][0] is not None and self.bounds[0][0] >= 0:
-                warnings.warn(
-                    "Market neutrality requires shorting - bounds have been amended",
-                    RuntimeWarning,
-                )
-                self.bounds = self._make_valid_bounds((-1, 1))
-            constraints = [
-                {"type": "eq", "fun": lambda x: np.sum(x)},
-                target_constraint,
-            ]
+    #     args = (self.cov_matrix, self.gamma)
+    #     target_constraint = {
+    #         "type": "eq",
+    #         "fun": lambda w: w.dot(self.expected_returns) - target_return,
+    #     }
+    #     # The equality constraint is either "weights sum to 1" (default), or
+    #     # "weights sum to 0" (market neutral).
+    #     if market_neutral:
+    #         if self.bounds[0][0] is not None and self.bounds[0][0] >= 0:
+    #             warnings.warn(
+    #                 "Market neutrality requires shorting - bounds have been amended",
+    #                 RuntimeWarning,
+    #             )
+    #             self.bounds = self._make_valid_bounds((-1, 1))
+    #         constraints = [
+    #             {"type": "eq", "fun": lambda x: np.sum(x)},
+    #             target_constraint,
+    #         ]
+    #     else:
+    #         constraints = self.constraints + [target_constraint]
+
+    #     result = sco.minimize(
+    #         volatility,
+    #         x0=self.initial_guess,
+    #         args=args,
+    #         method="SLSQP",
+    #         bounds=self.bounds,
+    #         constraints=constraints,
+    #     )
+    #     self.weights = result["x"]
+    #     return dict(zip(self.tickers, self.weights))
+
+
+    def efficient_return(self, target_return,
+                            allow_short=False, market_neutral=False):
+        """
+        Computes a Markowitz portfolio.
+
+        Parameters
+        ----------
+        cov_mat: pandas.DataFrame
+            Covariance matrix of asset returns.
+        exp_rets: pandas.Series
+            Expected asset returns (often historical returns).
+        target_return: float
+            Target return of portfolio.
+        allow_short: bool, optional
+            If 'False' construct a long-only portfolio.
+            If 'True' allow shorting, i.e. negative weights.
+        market_neutral: bool, optional
+            If 'False' sum of weights equals one.
+            If 'True' sum of weights equal zero, i.e. create a
+                market neutral portfolio (implies allow_short=True).
+                
+        Returns
+        -------
+        weights: pandas.Series
+            Optimal asset weights.
+        """
+
+        cov_mat = self.cov_matrix
+        exp_rets = self.expected_returns
+
+        if not isinstance(cov_mat, pd.DataFrame):
+            raise ValueError("Covariance matrix is not a DataFrame")
+
+        if not isinstance(exp_rets, pd.Series):
+            raise ValueError("Expected returns is not a Series")
+
+        if not isinstance(target_return, float):
+            raise ValueError("Target return is not a float")
+
+        if not cov_mat.index.equals(exp_rets.index):
+            raise ValueError("Indices do not match")
+
+        if market_neutral and not allow_short:
+            warnings.warn("A market neutral portfolio implies shorting")
+            allow_short=True
+
+
+        n = len(cov_mat)
+
+        P = opt.matrix(cov_mat.values)
+        q = opt.matrix(0.0, (n, 1))
+
+        # Constraints Gx <= h
+        if not allow_short:
+            # exp_rets*x >= target_return and x >= 0
+            G = opt.matrix(np.vstack((-exp_rets.values,
+                                      -np.identity(n))))
+            h = opt.matrix(np.vstack((-target_return,
+                                      +np.zeros((n, 1)))))
         else:
-            constraints = self.constraints + [target_constraint]
+            # exp_rets*x >= target_return
+            G = opt.matrix(-exp_rets.values).T
+            h = opt.matrix(-target_return)
 
-        result = sco.minimize(
-            volatility,
-            x0=self.initial_guess,
-            args=args,
-            method="SLSQP",
-            bounds=self.bounds,
-            constraints=constraints,
-        )
-        self.weights = result["x"]
-        return dict(zip(self.tickers, self.weights))
+        # Constraints Ax = b
+        # sum(x) = 1
+        A = opt.matrix(1.0, (1, n))
+
+        if not market_neutral:
+            b = opt.matrix(1.0)
+        else:
+            b = opt.matrix(0.0)
+
+        # Solve
+        optsolvers.options['show_progress'] = False
+        sol = optsolvers.qp(P, q, G, h, A, b)
+
+        if sol['status'] != 'optimal':
+            warnings.warn("Convergence problem")
+
+        # Put weights into a labeled series
+        weights = pd.Series(sol['x'], index=cov_mat.index)
+        self.weights = weights
+        return weights
+
 
     def create_mv_frontier(self, n_points):
 
         min_vol_weigths = pd.Series(self.min_volatility())
         min_er = max(np.sum(min_vol_weigths*self.expected_returns.values),0)
-        print(volatility(min_vol_weigths, self.cov_matrix, gamma=0))
 
         max_er = max(self.expected_returns)
         er_list = np.linspace(min_er, max_er, n_points)
@@ -198,8 +286,6 @@ class EfficientFrontier(OriginalEF):
         return df
 
     def plot_scatter_efficient(self, num_portfolios):
-        fig = plt.figure()
-
         df = self.efficient_frontier
 
         # generate the random portfolios
@@ -231,4 +317,4 @@ class EfficientFrontier(OriginalEF):
         ax = df.plot(x='volatility', y='expected_returns', style='k-')
 
         ax.scatter(vol_arr, ret_arr, c=sharpe_arr, cmap='viridis')
-        return fig
+        return ax
