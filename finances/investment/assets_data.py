@@ -84,21 +84,45 @@ class AssetsData(object):
             raise TypeError("estimated_cov_matrix is not a dataframe or array")
         # format into a series, in case it is an array
         if isinstance(estimated_cov, (np.ndarray, list)):
-            estimated_cov = pd.Dataframe(estimated_cov,
-                index=assets,
-                columns=assets
+            estimated_cov = pd.DataFrame(estimated_cov,
+                index=self.assets,
+                columns=self.assets
                 )
 
         self.cov_cumm_rets = estimated_cov
 
-    def stats_cumm_rets_at_horizon(self):
+    def stats_at_horizon(self, data='cumm'):
         """
         Propagates the mean and covariance of cummulative returns at horizon.
         Returns (float, float): mean of assets cumm_rets at horizon, covariance of assets cumm_rets at horizon
         """
+
         mean = self.mu_cumm_rets
         cov = self.cov_cumm_rets
-        return mean*self.N_horizon, cov*self.N_horizon
+
+        mean_hori = mean*self.N_horizon
+        cov_hori = cov*self.N_horizon
+
+        if data=='cumm':
+            return mean_hori, cov_hori
+
+        K = np.diagonal(cov)
+        mean_prices_hori = self.latest_prices*np.exp(self.N_horizon*(mean + 0.5*K))
+        Pn,Pm = np.meshgrid(mean_prices_hori,mean_prices_hori)
+        cov_prices_hori = Pn*Pm*(np.exp(cov_hori)-1)
+
+        if data=='prices':
+            return mean_prices_hori, cov_prices_hori
+
+        inv_prices = 1/self.latest_prices
+        mean_linear_hori = inv_prices*mean_prices_hori - 1
+
+        inv_prices_n, inv_prices_m = np.meshgrid(inv_prices, inv_prices)
+        cov_linear_hori = inv_prices_n*cov_prices_hori*inv_prices_m
+
+        if data=='linear':
+            return mean_linear_hori, cov_linear_hori
+
 
     def stats_prices_at_horizon(self):
         """
@@ -124,6 +148,6 @@ class AssetsData(object):
         mean_hori = inv_prices*mean_prices - 1
 
         inv_prices_n, inv_prices_m = np.meshgrid(inv_prices, inv_prices)
-        cov_hori = inv_prices_n*cov_prices*inv_prices_n
+        cov_hori = inv_prices_n*cov_prices*inv_prices_m
 
         return mean_hori, cov_hori

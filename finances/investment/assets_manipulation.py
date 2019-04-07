@@ -109,27 +109,30 @@ os.environ['TIINGO_API_KEY'] = 'ba62a0fba810f937382b5e772f8f152b58c4ebfc'
 
 # # df.to_csv('data_test_full.csv')
 
-df = pd.read_csv('data_test_medium.csv', index_col=['symbol', 'date'])
+df = pd.read_csv('data_test_full.csv', index_col=['symbol', 'date'])
 
 stocks = AssetsData(stock_data=df, N_horizon=126)
 from sklearn import covariance
 
-matrix_cov = covariance.ledoit_wolf(stocks.cumm_returns)[0]
 
-stocks.set_estimated_cov_cumm_rets(
-    pd.DataFrame(
-        matrix_cov,
-        index=stocks.assets,
-        columns=stocks.assets)
-)
+# set estimated covariance
+matrix_cov = covariance.ledoit_wolf(stocks.cumm_returns)[0]
+stocks.set_estimated_cov_cumm_rets(stocks.cumm_returns.cov())
+
 
 # now calculate the shrinked mean
 m = stocks.cumm_returns.mean()
 
-matrix_cov = stocks.cumm_returns.cov()
+T = len(df)
+gamma = mean_gamma(m, matrix_cov, T)
+b = mean_b(m, matrix_cov)
+stocks.set_estimated_mu_cumm_rets(m)
 
-mean_hori, cov_hori = m, matrix_cov
 
+mean_hori, cov_hori = stocks.stats_at_horizon(data='linear')
+# print(stocks.stats_at_horizon(data='cumm'))
+# print(stocks.stats_at_horizon(data='prices'))
+# print(stocks.stats_at_horizon(data='linear'))
 
 from finances.investment.efficient_frontier.efficient_frontier import EfficientFrontier
 
@@ -138,14 +141,25 @@ ef = EfficientFrontier(mean_hori, cov_hori)
 
 MV = ef.create_mv_frontier(500)
 
+# print some weigths performance
 weights_mv = ef.efficient_frontier[ef.tickers]
 ww = weights_mv.iloc[-200]
 
 Ret = np.dot(ww, ef.expected_returns)
 Vol = np.sqrt(np.dot(ww,np.dot(ef.cov_matrix, ww)))
 
-print(Vol, Ret)
+ef.efficient_return(0.3)
+w_10 = ef.clean_weights()
+w_10_clean = {i: w_10[i] for i in w_10 if w_10[i] > 0}
+print(w_10_clean)
 
+from pypfopt import discrete_allocation
+allocation, leftover = discrete_allocation.portfolio(
+    w_10, stocks.latest_prices, total_portfolio_value=2000
+)
+print(allocation)
+
+# plot
 ef.plot_mv_frontier()
 
 ax = ef.plot_scatter_efficient(10000)
