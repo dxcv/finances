@@ -9,7 +9,7 @@ from datetime import datetime
 
 from finances.investment.multivariate_estimation import shrinked_estimate_multivariate, mean_b, mean_gamma
 
-from finances.investment.assets_data import AssetsData
+from finances.investment.tools.assets_data import AssetsData
 
 
 import seaborn as sns
@@ -134,7 +134,7 @@ mean_hori, cov_hori = stocks.stats_at_horizon(data='linear')
 # print(stocks.stats_at_horizon(data='prices'))
 # print(stocks.stats_at_horizon(data='linear'))
 
-from finances.investment.efficient_frontier.efficient_frontier import EfficientFrontier
+from finances.investment.tools.efficient_frontier import EfficientFrontier
 
 
 ef = EfficientFrontier(mean_hori, cov_hori)
