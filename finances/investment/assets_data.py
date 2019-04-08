@@ -31,14 +31,14 @@ class AssetsData(object):
         self.stock_data = stock_data
         self.estimation_period = estimation_period
         self.N_horizon = N_horizon
-        self.assets = stock_data.index.get_level_values('symbol').unique()
+        self.assets = self.stock_data['close'].unstack('symbol').columns  #This is the easiest way I found to do this....
 
     @property
     def latest_prices(self):
         """
         Returns the latest values of the 'close' prices within the stock_data dataframe.
         """
-        return self.stock_data['close'].unstack('symbol').dropna().iloc[-1]
+        return self.stock_data['close'].unstack('symbol').dropna(how='all').iloc[-1]
     
     @property
     def cumm_returns(self):
@@ -47,7 +47,7 @@ class AssetsData(object):
             for the estimation period considered
         """
         rets_data = self.stock_data['logP'].unstack('symbol').iloc[::self.estimation_period].rolling(2).apply(lambda x: x[-1]-x[0], raw=True)
-        self.cumm_returns_data = rets_data.dropna()
+        self.cumm_returns_data = rets_data.dropna(how='all')
         return self.cumm_returns_data
 
     @property
@@ -57,7 +57,7 @@ class AssetsData(object):
             for the estimation period considered
         """
         linear = self.stock_data['close'].unstack('symbol').iloc[::self.estimation_period].rolling(2).apply(lambda x: x[-1]/x[0]-1, raw=True)
-        self.linear_returns_data = linear.dropna()
+        self.linear_returns_data = linear.dropna(how='all')
         return self.linear_returns_data
 
     def set_estimated_mu_cumm_rets(self, estimated_mean):
