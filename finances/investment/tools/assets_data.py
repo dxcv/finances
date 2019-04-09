@@ -1,6 +1,7 @@
 import os
 import numpy as np
 import pandas as pd
+from numpy.random import multivariate_normal
 
 class AssetsData(object):
     """
@@ -151,3 +152,8 @@ class AssetsData(object):
         cov_hori = inv_prices_n*cov_prices*inv_prices_m
 
         return mean_hori, cov_hori
+
+
+    def draw_random_prices_at_horizon(self, n_samples):
+        mean, cov = self.stats_at_horizon(data='prices')
+        return multivariate_normal(mean, cov, n_samples)
