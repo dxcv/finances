@@ -31,29 +31,23 @@ convert_name_dictionary={
     'XMR': 'monero',
     'BCH': 'bitcoin-cash',
     'NEO': 'neo',
-    'NEM': 'nem',
     'ETH': 'ethereum',
     'XRP': 'ripple',
     'LTC': 'litecoin',
     'ADA': 'cardano',
     'UBQ': 'ubiq',
-    'BIS': 'bismuth',
-    'IOTA': 'iota',
+    'MIOTA': 'iota',
     'EMC2': 'einsteinium',
     'TRX': 'tron',
     'FUN': 'funfair',
     'XLM': 'stellar',
-    'ADST': 'adshares',
     #
     'ICX': 'icon',
     'QTUM': 'qtum',
-    'VEN': 'vechain',
-    'XRB': 'raiblocks',
     'STEEM': 'steem',
-    'STRAAT': 'stratis',
     'XVG': 'verge',
     'EOS': 'eos',
-    'ONT': 'ontology'
+    'ONT': 'ontology',
 }
 
 
