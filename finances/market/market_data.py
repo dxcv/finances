@@ -11,9 +11,17 @@ import quandl
 import datetime
 import csv
 
-from coinmarketcap import Market
+import json
 
-COINMARKETCAP = Market()
+from coinmarketcapapi import CoinMarketCapAPI
+
+from pprint import pprint
+
+
+# pro: a4bade9d-117a-43d9-8a08-80735e2579e5
+# sandbox: 2d2b47fb-44be-4432-a8ee-cc1e60c55308
+
+COINMARKETCAP = CoinMarketCapAPI('a4bade9d-117a-43d9-8a08-80735e2579e5', sandbox=False)
 
 cfd, cfn = os.path.split(os.path.abspath(__file__))
 
@@ -55,20 +63,20 @@ class MarketData():
     crypto_data = pd.DataFrame()
 
     def __init__(self):
-        db_name_csv = 'main_crypto_eur_database.csv'
+        db_name_csv = 'main_crypto_eur_database_new.csv'
         self.crypto_db_path = os.path.join(self.data_base_path, 'crypto_currencies', db_name_csv)
-        self.load_crypto_data(currency='eur')
+        self.load_crypto_data(currency='EUR')
 
-    def load_crypto_data(self, currency='eur'):
+    def load_crypto_data(self, currency='EUR'):
         print('Loaded crypto currency database from {}'.format(self.crypto_db_path))
         self.crypto_data = pd.read_csv(self.crypto_db_path, index_col=0, parse_dates=True, infer_datetime_format=True)
         return self.crypto_data
 
-    def get_current_coin_price(self, crypto_code, currency='eur'):
+    def get_current_coin_price(self, crypto_code, currency='EUR'):
         crypto_name = self.crypto_dictionary[crypto_code]
         try:
-            coin = COINMARKETCAP.ticker(crypto_name, convert='eur')
-            value = float(coin[0]['price_{}'.format(currency)])
+            coin = COINMARKETCAP.cryptocurrency_quotes_latest(symbol=crypto_code, convert=currency)
+            value = float(coin.data[crypto_code]['quote'][currency]['price'])
         except:
             value = np.nan
             print('!!!! {} not working.'.format(crypto_name))
@@ -76,10 +84,11 @@ class MarketData():
 
     def get_coin_full_data(self, crypto_code):
         crypto_name = self.crypto_dictionary[crypto_code]
-        coin = COINMARKETCAP.ticker(crypto_name, convert='eur')
+        coin = COINMARKETCAP.ticker(crypto_name, convert='EUR')
+        print(coin)
         return coin[0]
 
-    def get_total_market_cap(self, currency='eur'):
+    def get_total_market_cap(self, currency='EUR'):
         try:
             total_market = COINMARKETCAP.stats(convert='EUR')
             value = total_market['total_market_cap_{}'.format(currency)]
@@ -113,10 +122,10 @@ class MarketData():
         data_base = self.crypto_data
         current_prices = {}
         for coin in self.crypto_dictionary:
-            current_prices[coin] = self.get_current_coin_price(coin, currency='eur')
+            current_prices[coin] = self.get_current_coin_price(coin, currency='EUR')
 
         # add the total market capitalization data
-        current_prices['TotalMarketCap'] = self.get_total_market_cap(currency='eur')
+        current_prices['TotalMarketCap'] = self.get_total_market_cap(currency='EUR')
 
         # prepare data to write csv
         current_prices['']=datetime.datetime.now().replace(second=0, microsecond=0)
@@ -147,12 +156,12 @@ class MarketData():
     def update_complete_data_base(self):
         self.update_market_price_db()
 
-        for coin in self.crypto_dictionary:
-            try:
-                self.update_coin_full_data(crypto_code=coin)
-            except:
-                print('Error in the {} full data update'.format(coin))
-                continue
+        # for coin in self.crypto_dictionary:
+        #     try:
+        #         self.update_coin_full_data(crypto_code=coin)
+        #     except:
+        #         print('Error in the {} full data update'.format(coin))
+        #         continue
 
 
     def load_coin_full_data_base(self, crypto_code):
