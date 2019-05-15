@@ -51,8 +51,8 @@ dynamic_stoploss_binance_bot(
     coin='TRX',
     bot_status_json_path=os.path.join(cfd, 'trade_bot_status_binance.json'),
     current_price=price_list['TRXBTC']*btc_price,
-    pct_gap=0.01,
-    minimum_gain=0.01,
+    pct_gap=0.03,
+    minimum_gain=0.02,
     reinvest_gap=0.5
 )
 
@@ -63,8 +63,8 @@ dynamic_stoploss_binance_bot(
     coin='IOTA',
     bot_status_json_path=os.path.join(cfd, 'trade_bot_status_binance.json'),
     current_price=price_list['IOTABTC']*btc_price,
-    pct_gap=0.01,
-    minimum_gain=0.01,
+    pct_gap=0.03,
+    minimum_gain=0.02,
     reinvest_gap=0.5
 )
 
@@ -75,8 +75,8 @@ dynamic_stoploss_binance_bot(
     coin='NEO',
     bot_status_json_path=os.path.join(cfd, 'trade_bot_status_binance.json'),
     current_price=price_list['NEOBTC']*btc_price,
-    pct_gap=0.01,
-    minimum_gain=0.01,
+    pct_gap=0.03,
+    minimum_gain=0.02,
     reinvest_gap=0.5
 )
 

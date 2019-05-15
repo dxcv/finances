@@ -8,8 +8,8 @@ cfd, cfn = os.path.split(os.path.abspath(__file__))
 
 trading_client = bts.Trading(
    username='769101',
-   key='UzPeX5VdvUbqFCXjNUWeVvQ4gNwq2gg4',
-   secret='Tmwzf86eWkyAvLds8K4lxH4pB2fb0zcg'
+   key='GHGSNlrGjiIGbd3874BMMAX5YVqIQcum',
+   secret='jRECCtaxM5M2XMDJAgNK24oFCfsZdWHx'
    )
 
 failed_times = 0
@@ -35,7 +35,7 @@ while failed_times<3:
             coin='eth',
             bot_status_json_path=os.path.join(cfd, 'trade_bot_status_bitstamp.json'),
             current_price=float(trading_client.ticker(base='eth', quote='eur')['last']),
-            pct_gap=0.03,
+            pct_gap=0.01,
             minimum_gain=0.02,
             reinvest_gap=0.5
             )
@@ -47,7 +47,7 @@ while failed_times<3:
             coin='ltc',
             bot_status_json_path=os.path.join(cfd, 'trade_bot_status_bitstamp.json'),
             current_price=float(trading_client.ticker(base='ltc', quote='eur')['last']),
-            pct_gap=0.03,
+            pct_gap=0.01,
             minimum_gain=0.02,
             reinvest_gap=0.5
             )
